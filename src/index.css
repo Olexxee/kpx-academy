@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --kpx-navy: #17324d;
+    --kpx-teal: #2a7f7f;
+    --kpx-ivory: #f7f5f0;
+    --kpx-peach: #f3d7cc;
+    --kpx-gold: #d4a85a;
+  }
+
+  body {
+    background-color: var(--kpx-ivory);
+    color: var(--kpx-navy);
+    font-family: "Inter", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Sora", sans-serif;
+  }
+}
+
+/* Custom footer override */
+.site-footer {
+  background-color: var(--kpx-navy);
+  color: #ffffff;
+}
+
+.site-footer a:hover {
+  color: var(--kpx-gold);
+}
