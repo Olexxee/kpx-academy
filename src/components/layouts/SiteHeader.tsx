@@ -6,6 +6,7 @@ const navigation = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Programmes", to: "/programs" },
+  { label: "Souvenirs", to: "/souvenirs" },
 ];
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
