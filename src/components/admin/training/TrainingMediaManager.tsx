@@ -36,7 +36,7 @@ export default function TrainingMediaManager({ program, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1D4ED8]/50 p-4 sm:p-6">
       <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
@@ -136,7 +136,7 @@ export default function TrainingMediaManager({ program, onClose }: Props) {
                     )}
 
                     {item.isPrimary && (
-                      <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-slate-900/90 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
+                      <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-[#1D4ED8]/90 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-sm">
                         <Star size={10} className="fill-current" />
                         Primary
                       </span>
