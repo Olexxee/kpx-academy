@@ -7,6 +7,10 @@ import { ProgramDetailsPage } from "./features/training/pages/ProgramDetailsPage
 import { TrainingProgramsPage } from "./features/training/pages/TrainingProgramsPage";
 import { PaymentSuccessPage } from "./pages/PaymentSuccessPage";
 import { PaymentFailedPage } from "./pages/PaymentFailedPage";
+import { SouvenirCataloguePage } from "./features/souvenirs/pages/SouvenirCataloguePage";
+import { SouvenirProductPage } from "./features/souvenirs/pages/SouvenirProductPage";
+import { SouvenirEnquiryPage } from "./features/souvenirs/pages/SouvenirEnquiryPage";
+import { SouvenirGuestAccessPage } from "./features/souvenirs/pages/SouvenirGuestAccessPage";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +24,10 @@ export const router = createBrowserRouter([
       { path: "/programs/:slug", element: <ProgramDetailsPage /> },
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
+      { path: "/souvenirs", element: <SouvenirCataloguePage /> },
+      { path: "/souvenirs/enquire", element: <SouvenirEnquiryPage /> },
+      { path: "/souvenirs/:resource/access/:token", element: <SouvenirGuestAccessPage /> },
+      { path: "/souvenirs/:slug", element: <SouvenirProductPage /> },
     ],
   },
 ]);
