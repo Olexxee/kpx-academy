@@ -73,7 +73,6 @@ export const ProgramDetailsPage = () => {
     data: program,
     isLoading,
     isError,
-    error,
     refetch,
   } = useTrainingProgram(slug);
 
@@ -145,7 +144,6 @@ export const ProgramDetailsPage = () => {
   const media = getOrderedMedia(fetchedMedia ?? program.media ?? []);
 
   const images = media.filter(isImageMedia);
-  const videos = media.filter(isVideoMedia);
   const primaryImage = images.find((item) => item.isPrimary) ?? images[0];
 
   const highlights = program.highlights ?? [];
