@@ -17,7 +17,15 @@ export const SouvenirGuestAccessPage = () => {
   const valid = isEnquiry || resource === "orders";
   const client = useQueryClient();
   const key = ["souvenirs","guest",resource,token];
-  const query = useQuery({queryKey:key,queryFn:()=>isEnquiry?getGuestSouvenirEnquiry(token):getGuestSouvenirOrder(token),enabled:valid&&Boolean(token),retry:false});
+  const query = useQuery<SouvenirGuestOrder | SouvenirGuestEnquiry>({
+    queryKey: key,
+    queryFn: async (): Promise<SouvenirGuestOrder | SouvenirGuestEnquiry> =>
+      isEnquiry
+        ? getGuestSouvenirEnquiry(token)
+        : getGuestSouvenirOrder(token),
+    enabled: valid && Boolean(token),
+    retry: false,
+  });
   const mutation = useMutation({
     mutationFn:({quoteId,decision}:{quoteId:string;decision:"ACCEPT"|"DECLINE"})=>respondToSouvenirQuote(token,quoteId,decision),
     onSuccess:()=>client.invalidateQueries({queryKey:key}),
