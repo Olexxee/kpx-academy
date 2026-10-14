@@ -5,6 +5,7 @@ const exploreLinks = [
   { label: "Home", to: "/" },
   { label: "About KPX Academy", to: "/about" },
   { label: "Training programmes", to: "/programs" },
+  { label: "Souvenir catalogue", to: "/souvenirs" },
   { label: "Registration", to: "/register" },
 ];
 
