@@ -11,7 +11,7 @@ export const FeaturedProgrammes = () => {
 
   const featured = (programmes ?? [])
     .filter((program) => program.active)
-    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.displayOrder - b.displayOrder)
     .slice(0, 3);
 
   return (
@@ -140,9 +140,11 @@ function FeaturedProgrammeCard({ program }: { program: TrainingProgram }) {
             </div>
           )}
 
-          <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-primary">
-            Featured
-          </span>
+          {program.featured && (
+            <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-secondary">
+              Featured
+            </span>
+          )}
         </div>
       </Link>
 
