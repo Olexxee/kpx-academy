@@ -75,7 +75,7 @@ export default function AdminTrainingPage() {
         <button
           type="button"
           onClick={handleCreate}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.99] sm:w-auto"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF] active:scale-[0.99] sm:w-auto"
         >
           <Plus size={17} />
           New program
@@ -207,7 +207,7 @@ export default function AdminTrainingPage() {
             <button
               type="button"
               onClick={handleCreate}
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#1D4ED8] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#1E40AF]"
             >
               <Plus size={14} />
               Create program
