@@ -170,7 +170,7 @@ export default function AdminRegistrationsPage() {
     <div className="mx-auto max-w-7xl p-6 sm:p-8">
       <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="rounded-xl bg-slate-900 p-3 text-white">
+          <div className="rounded-xl bg-[#1D4ED8] p-3 text-white">
             <ClipboardList size={22} />
           </div>
 
@@ -218,13 +218,13 @@ export default function AdminRegistrationsPage() {
               value={emailInput}
               onChange={(event) => setEmailInput(event.target.value)}
               placeholder="Filter by exact email address"
-              className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+              className="w-full rounded-xl border border-slate-200 py-2.5 pl-10 pr-3 text-sm outline-none focus:border-slate-400 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
           <button
             type="submit"
-            className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
+            className="rounded-xl bg-[#1D4ED8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1E40AF]"
           >
             Search
           </button>
