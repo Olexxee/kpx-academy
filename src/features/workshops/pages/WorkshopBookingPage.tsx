@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
 import { createWorkshopBooking, getWorkshopOfferings } from "../api";
 import type { CreateWorkshopBookingPayload, WorkshopVenueMode } from "../types";
@@ -40,8 +40,13 @@ export const WorkshopBookingPage = () => {
     queryFn: getWorkshopOfferings,
   });
   const offerings = offeringsQuery.data ?? [];
+  const [searchParams] = useSearchParams();
+  const requestedWorkshopType = searchParams.get("type");
   const [offeringId, setOfferingId] = useState("");
-  const selectedOffering = offerings.find((offering) => offering.id === offeringId) ?? offerings[0];
+  const selectedOffering =
+    offerings.find((offering) => offering.id === offeringId) ??
+    offerings.find((offering) => offering.workshopType === requestedWorkshopType) ??
+    offerings[0];
   const [tierId, setTierId] = useState("");
   const [venueMode, setVenueMode] = useState<WorkshopVenueMode>("UNDECIDED");
   const [form, setForm] = useState({
