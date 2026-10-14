@@ -1,0 +1,60 @@
+import { useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import { Container } from "../../../components/ui/Container";
+import { createSouvenirOrder, getSouvenirProduct } from "../api";
+import type { SouvenirOrderResult, SouvenirPriceTier } from "../types";
+
+const money = (amount: number | string, currency = "NGN") => {
+  const value = Number(amount);
+  if (!Number.isFinite(value)) return "Price on request";
+  try { return new Intl.NumberFormat("en-NG", { style: "currency", currency, maximumFractionDigits: 0 }).format(value); }
+  catch { return `${currency} ${value.toLocaleString("en-NG")}`; }
+};
+const matches = (tier: SouvenirPriceTier, quantity: number) => quantity >= tier.minQuantity && (tier.maxQuantity == null || quantity <= tier.maxQuantity);
+
+export const SouvenirProductPage = () => {
+  const { slug = "" } = useParams();
+  const { data: product, isLoading, isError, refetch } = useQuery({ queryKey: ["souvenirs", "product", slug], queryFn: () => getSouvenirProduct(slug), enabled: Boolean(slug) });
+  const [quantity, setQuantity] = useState(1);
+  const [colors, setColors] = useState<string[]>([]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsApp, setWhatsApp] = useState("");
+  const [notes, setNotes] = useState("");
+  const [result, setResult] = useState<SouvenirOrderResult | null>(null);
+  const mutation = useMutation({ mutationFn: createSouvenirOrder, onSuccess: setResult });
+  const tier = useMemo(() => product?.priceTiers?.find((item) => matches(item, quantity)), [product, quantity]);
+  const toggleColor = (id: string) => setColors((old) => old.includes(id) ? old.filter((value)=>value!==id) : old.length < 3 ? [...old,id] : old);
+
+  if (isLoading) return <section className="py-24"><Container><p className="text-text-muted">Loading souvenir package…</p></Container></section>;
+  if (isError || !product) return <section className="py-24"><Container><div className="mx-auto max-w-xl text-center"><h1 className="font-heading text-3xl font-bold text-primary">Package unavailable</h1><p className="mt-4 leading-7 text-text-muted">We could not load this souvenir package.</p><button type="button" onClick={()=>void refetch()} className="mt-5 rounded-control bg-secondary px-5 py-3 font-semibold text-white">Try again</button><div><Link to="/souvenirs" className="mt-5 inline-flex text-secondary underline">Back to souvenirs</Link></div></div></Container></section>;
+
+  if (result) return <section className="py-16 sm:py-24"><Container><div className="mx-auto max-w-2xl rounded-card border border-border bg-white p-7 sm:p-10"><p className="text-sm font-bold uppercase tracking-[0.16em] text-secondary">Request received</p><h1 className="mt-3 font-heading text-3xl font-bold text-primary">Your order request is recorded.</h1><p className="mt-4 leading-7 text-text-muted">Keep this reference and use the private link to check your order status.</p><div className="mt-6 rounded-control bg-background p-4"><p className="text-xs text-text-muted">Order reference</p><p className="mt-1 font-heading text-lg font-bold text-primary">{result.order.publicReference}</p><p className="mt-3 text-sm text-text-muted">{result.order.productName} · Quantity {result.order.quantity}</p><p className="mt-1 font-semibold text-primary">{money(result.order.totalPrice,result.order.currency)}</p></div><Link to={`/souvenirs/orders/access/${result.accessToken}`} className="mt-7 inline-flex min-h-12 items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white hover:bg-primary">View order status</Link><p className="mt-4 text-xs leading-6 text-text-muted">Save this private link somewhere secure. It grants access to your order.</p></div></Container></section>;
+
+  const canSubmit = Boolean(tier && colors.length >= 1 && colors.length <= 3);
+  return <div className="min-h-screen bg-background">
+    <div className="border-b border-border bg-white"><Container><nav aria-label="Breadcrumb" className="flex gap-2 py-4 text-sm text-text-muted"><Link to="/" className="hover:text-secondary">Home</Link><span>/</span><Link to="/souvenirs" className="hover:text-secondary">Souvenirs</Link><span>/</span><span className="font-medium text-primary">{product.name}</span></nav></Container></div>
+    <section className="py-10 sm:py-16"><Container><div className="grid items-start gap-10 lg:grid-cols-[1fr_0.9fr] lg:gap-14">
+      <div><div className="overflow-hidden rounded-card border border-border bg-[#F4DCD6]">{product.media?.length ? <img src={(product.media.find((item)=>item.isPrimary) ?? product.media[0]).url} alt={(product.media.find((item)=>item.isPrimary) ?? product.media[0]).altText || product.name} className="aspect-[4/3] w-full object-cover"/> : <div className="flex aspect-[4/3] items-end bg-primary p-8"><p className="font-heading text-3xl font-bold text-white">{product.name}</p></div>}</div>
+        {product.media?.length > 1 && <div className="mt-4 grid grid-cols-4 gap-3">{product.media.slice(0,4).map((item)=><img key={item.id} src={item.url} alt={item.altText || product.name} loading="lazy" className="aspect-square w-full rounded-control border border-border object-cover"/>)}</div>}
+        <p className="mt-8 text-sm font-bold uppercase tracking-[0.16em] text-secondary">Souvenir package</p><h1 className="mt-3 font-heading text-3xl font-bold text-primary sm:text-4xl">{product.name}</h1><p className="mt-4 whitespace-pre-line leading-8 text-text-muted">{product.description || "Contact us to discuss how this package can fit your event."}</p>
+        {product.productionLeadTimeDays != null && <p className="mt-5 text-sm text-text-muted">Estimated production lead time: <strong className="text-primary">{product.productionLeadTimeDays} days</strong></p>}
+        {product.bookingTerms && <div className="mt-6 rounded-control border border-border bg-white p-4"><h2 className="font-semibold text-primary">Package terms</h2><p className="mt-2 whitespace-pre-line text-sm leading-7 text-text-muted">{product.bookingTerms}</p></div>}
+      </div>
+      <form onSubmit={(event)=>{event.preventDefault();if(!canSubmit)return;mutation.mutate({customerName:name,customerEmail:email,customerWhatsApp:whatsApp,productId:product.id,quantity,colorOptionIds:colors,customerNotes:notes});}} className="rounded-card border border-border bg-white p-5 sm:p-7">
+        <p className="text-sm font-bold uppercase tracking-[0.16em] text-secondary">Place an order request</p><h2 className="mt-3 font-heading text-2xl font-bold text-primary">Choose your package</h2><p className="mt-2 text-sm leading-6 text-text-muted">Select a quantity and one to three colours. Package price depends on the quantity range.</p>
+        <label className="mt-6 block"><span className="mb-2 block text-sm font-semibold text-text">Quantity</span><input type="number" min={1} max={100000} value={quantity} onChange={(event)=>setQuantity(Math.max(1,Number(event.target.value)||1))} required className="min-h-12 w-full rounded-control border border-border px-4 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20"/></label>
+        <div className="mt-4 rounded-control bg-background p-4">{tier ? <><p className="text-sm text-text-muted">{tier.label}</p><p className="mt-1 font-heading text-2xl font-bold text-primary">{money(tier.totalPrice,tier.currency)}</p><p className="mt-1 text-xs text-text-muted">For quantity {tier.minQuantity}{tier.maxQuantity != null ? `–${tier.maxQuantity}` : "+"}.</p></> : <p className="text-sm font-medium text-secondary">No available package matches this quantity. Change the quantity or request a custom quote.</p>}</div>
+        <fieldset className="mt-5"><legend className="text-sm font-semibold text-text">Choose colours <span className="font-normal text-text-muted">(1–3)</span></legend><div className="mt-3 grid grid-cols-2 gap-2">{(product.colorOptions??[]).map((color)=><button type="button" key={color.id} onClick={()=>toggleColor(color.id)} aria-pressed={colors.includes(color.id)} className={`flex min-h-12 items-center gap-3 rounded-control border px-3 py-2 text-left text-sm transition ${colors.includes(color.id) ? "border-secondary bg-[#F4DCD6]/50 text-primary" : "border-border hover:border-secondary"}`}><span className="h-6 w-6 shrink-0 rounded-full border border-black/10" style={{backgroundColor:color.colorHex}}/><span className="flex-1">{color.name}</span>{colors.includes(color.id)&&<span className="font-bold text-secondary">✓</span>}</button>)}</div>{!product.colorOptions?.length&&<p className="mt-2 text-sm text-text-muted">Online colour selection is unavailable for this package. Please request a custom quote.</p>}</fieldset>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2"><label className="block"><span className="mb-2 block text-sm font-semibold text-text">Full name</span><input value={name} onChange={(e)=>setName(e.target.value)} autoComplete="name" required minLength={2} maxLength={100} className="min-h-12 w-full rounded-control border border-border px-3"/></label><label className="block"><span className="mb-2 block text-sm font-semibold text-text">Email address</span><input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} autoComplete="email" required maxLength={254} className="min-h-12 w-full rounded-control border border-border px-3"/></label></div>
+        <label className="mt-4 block"><span className="mb-2 block text-sm font-semibold text-text">WhatsApp number</span><input type="tel" value={whatsApp} onChange={(e)=>setWhatsApp(e.target.value)} autoComplete="tel" required minLength={7} maxLength={30} pattern="\+?[0-9 ()-]+" className="min-h-12 w-full rounded-control border border-border px-3"/></label>
+        <label className="mt-4 block"><span className="mb-2 block text-sm font-semibold text-text">Order notes <span className="font-normal text-text-muted">(optional)</span></span><textarea value={notes} onChange={(e)=>setNotes(e.target.value)} maxLength={3000} rows={3} className="w-full rounded-control border border-border px-3 py-3"/></label>
+        {mutation.isError&&<p role="alert" className="mt-4 text-sm text-red-700">{mutation.error instanceof Error?mutation.error.message:"We could not submit your request. Please try again."}</p>}
+        <button type="submit" disabled={!canSubmit||mutation.isPending} className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white transition hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50">{mutation.isPending?"Submitting…":"Submit order request"}</button>
+        <p className="mt-3 text-xs leading-5 text-text-muted">This records an order request. It does not charge you or confirm payment.</p>
+        <div className="mt-6 border-t border-border pt-5"><h3 className="font-heading text-lg font-bold text-primary">Need a custom design?</h3><p className="mt-2 text-sm leading-6 text-text-muted">Send us your design brief and reference files for a tailored quotation.</p><Link to={`/souvenirs/enquire?product=${encodeURIComponent(product.slug)}`} className="mt-4 inline-flex font-semibold text-secondary hover:text-primary">Request a custom quote →</Link></div>
+      </form>
+    </div></Container></section>
+  </div>;
+};

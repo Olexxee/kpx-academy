@@ -5,6 +5,7 @@ import { WhyKPX } from "../components/home/why-kpx/WhyKPX";
 import { FinalCTA } from "../components/home/cta/FinalCTA";
 import { HowTrainingWorks } from "../components/home/how-it-works/HowTrainingWorks"
 import { FeaturedProgrammes } from "../components/home/programmes/FeaturedProgrammes";
+import { CreativeWorkshopsPreview } from "../components/home/workshops/CreativeWorkshopsPreview";
 
 export const HomePage = () => {
   return (
@@ -12,7 +13,8 @@ export const HomePage = () => {
       <HeroSection />
       <AcademyIntro />
       <GalleryPreview />
-      <FeaturedProgrammes/>
+      <FeaturedProgrammes />
+      <CreativeWorkshopsPreview />
       <HowTrainingWorks/>
       <WhyKPX />
       <FinalCTA/>

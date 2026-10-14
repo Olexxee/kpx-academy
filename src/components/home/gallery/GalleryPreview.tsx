@@ -7,8 +7,8 @@ const galleryThemes = [
     title: "Beauty & Formulation",
     description:
       "Explore the world of beauty, product formulation, and hands-on creative learning.",
-    className: "bg-[#F3D7CC]",
-    accentClassName: "text-[#17324D]",
+    className: "bg-[#F4DCD6]",
+    accentClassName: "text-[#212529]",
     label: "BEAUTY",
   },
   {
@@ -16,8 +16,8 @@ const galleryThemes = [
     title: "Creative Skills",
     description:
       "Discover the possibilities of resin art, crafts, and creative expression.",
-    className: "bg-[#E8EDE8]",
-    accentClassName: "text-[#17324D]",
+    className: "bg-[#FAF8F5]",
+    accentClassName: "text-[#212529]",
     label: "CREATIVITY",
   },
   {
@@ -25,7 +25,7 @@ const galleryThemes = [
     title: "Trade & Entrepreneurship",
     description:
       "Build your understanding of sourcing, importation, and commercial opportunities.",
-    className: "bg-[#17324D]",
+    className: "bg-[#1D4ED8]",
     accentClassName: "text-white",
     label: "COMMERCE",
   },
@@ -35,7 +35,7 @@ export const GalleryPreview = () => {
   return (
     <section
       aria-labelledby="gallery-preview-heading"
-      className="bg-[#F7F5F0] py-16 sm:py-20 lg:py-28"
+      className="bg-background py-16 sm:py-20 lg:py-28"
     >
       <Container>
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
@@ -96,17 +96,17 @@ export const GalleryPreview = () => {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col items-start justify-between gap-4 border-t border-[#DCE2E5] pt-6 sm:flex-row sm:items-center">
+        <div className="mt-8 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
           <p className="max-w-xl text-sm leading-6 text-text-muted">
             Explore the Academy’s learning areas and see how practical knowledge
             can open up new possibilities.
           </p>
 
           <Link
-            to="/gallery"
+            to="/programs"
             className="inline-flex items-center gap-2 font-semibold text-secondary transition-colors hover:text-primary"
           >
-            Explore the gallery
+            Explore training programmes
             <span aria-hidden="true">→</span>
           </Link>
         </div>

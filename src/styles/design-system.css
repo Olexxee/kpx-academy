@@ -1,30 +1,24 @@
 :root {
-  /* KPX Academy brand colours */
-  :root {
+  /* KPX Academy brand palette */
   --kpx-royal-blue: #1d4ed8;
   --kpx-deep-magenta: #8b1e5a;
   --kpx-warm-white: #faf8f5;
   --kpx-soft-blush: #f4dcd6;
   --kpx-dark-charcoal: #212529;
-}
+  --kpx-pure-white: #ffffff;
 
-  /* Tailwind-compatible semantic colours */
-  --color-primary: var(--kpx-navy);
-  --color-secondary: var(--kpx-teal);
-  --color-neutral: var(--kpx-ivory);
-
-  --color-accent-beauty: var(--kpx-peach);
-  --color-accent-gold: var(--kpx-gold);
-
-  --color-background: var(--kpx-ivory);
-  --color-surface: var(--kpx-white);
-
-  --color-text: #17324d;
-  --color-text-muted: #586777;
-  --color-heading: var(--kpx-navy);
-
-  --color-border: #dce2e5;
-  --color-focus: var(--kpx-teal);
+  /* Semantic colours */
+  --color-primary: var(--kpx-royal-blue);
+  --color-secondary: var(--kpx-deep-magenta);
+  --color-neutral: var(--kpx-warm-white);
+  --color-accent-blush: var(--kpx-soft-blush);
+  --color-background: var(--kpx-warm-white);
+  --color-surface: var(--kpx-pure-white);
+  --color-text: var(--kpx-dark-charcoal);
+  --color-text-muted: #6b7280;
+  --color-heading: var(--kpx-dark-charcoal);
+  --color-border: #e5e2dc;
+  --color-focus: var(--kpx-deep-magenta);
 
   --color-success: #237a52;
   --color-warning: #946200;
@@ -80,11 +74,44 @@
   --space-24: 6rem;
 
   /* Elevation and motion */
-  --shadow-sm: 0 2px 8px rgb(23 50 77 / 5%);
-  --shadow-md: 0 8px 24px rgb(23 50 77 / 8%);
-  --shadow-lg: 0 16px 40px rgb(23 50 77 / 12%);
+  --shadow-sm: 0 2px 8px rgb(33 37 41 / 5%);
+  --shadow-md: 0 8px 24px rgb(33 37 41 / 8%);
+  --shadow-lg: 0 16px 40px rgb(33 37 41 / 12%);
 
   --duration-fast: 150ms;
   --duration-normal: 220ms;
   --ease-standard: ease;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-heading);
+  font-family: var(--font-heading);
+  line-height: var(--leading-heading);
+}
+
+::selection {
+  background: var(--kpx-soft-blush);
+  color: var(--kpx-dark-charcoal);
+}
+
+:focus-visible {
+  outline: 2px solid var(--kpx-deep-magenta);
+  outline-offset: 3px;
 }

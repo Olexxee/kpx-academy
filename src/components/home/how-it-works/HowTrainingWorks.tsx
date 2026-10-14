@@ -83,7 +83,7 @@ export const HowTrainingWorks = () => {
   return (
     <section
       aria-labelledby="how-training-works-heading"
-      className="bg-[#F7F5F0] py-16 sm:py-20 lg:py-28"
+      className="bg-background py-16 sm:py-20 lg:py-28"
     >
       <Container>
         <div className="mx-auto max-w-3xl text-center">
@@ -109,14 +109,14 @@ export const HowTrainingWorks = () => {
           {steps.map((step) => (
             <article
               key={step.number}
-              className="relative flex flex-col rounded-card border border-[#E4E1D9] bg-white p-6 sm:p-7"
+              className="relative flex flex-col rounded-card border border-border bg-white p-6 sm:p-7"
             >
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-control bg-[#E8F1EF] text-secondary">
+                <div className="flex h-12 w-12 items-center justify-center rounded-control bg-[#F4DCD6] text-secondary">
                   <StepIcon name={step.icon} />
                 </div>
 
-                <span className="font-heading text-sm font-semibold tracking-wider text-[#2A7F7F]">
+                <span className="font-heading text-sm font-semibold tracking-wider text-secondary">
                   {step.number}
                 </span>
               </div>

@@ -11,7 +11,7 @@ export const FeaturedProgrammes = () => {
 
   const featured = (programmes ?? [])
     .filter((program) => program.active)
-    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.displayOrder - b.displayOrder)
     .slice(0, 3);
 
   return (
@@ -133,16 +133,18 @@ function FeaturedProgrammeCard({ program }: { program: TrainingProgram }) {
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             />
           ) : (
-            <div className="flex h-full items-center justify-center bg-[#E8EDE8] px-6 text-center">
+            <div className="flex h-full items-center justify-center bg-[#F4DCD6] px-6 text-center">
               <span className="font-heading text-xl font-semibold text-primary">
                 KPX Academy
               </span>
             </div>
           )}
 
-          <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-primary">
-            Featured
-          </span>
+          {program.featured && (
+            <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-secondary">
+              Featured
+            </span>
+          )}
         </div>
       </Link>
 
@@ -175,7 +177,7 @@ function FeaturedProgrammeCard({ program }: { program: TrainingProgram }) {
 
           <Link
             to={`/programs/${program.slug}`}
-            className="inline-flex min-h-10 items-center justify-center rounded-control bg-secondary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#226969] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
+            className="inline-flex min-h-10 items-center justify-center rounded-control bg-secondary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
           >
             View details
           </Link>
