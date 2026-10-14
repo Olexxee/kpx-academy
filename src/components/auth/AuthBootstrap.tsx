@@ -10,9 +10,5 @@ export function AuthBootstrap({ children }: { children: ReactNode }) {
     if (isError || !isLoading) authActions.setHydrating(false);
   }, [data, isError, isLoading]);
 
-  if (isLoading) {
-    return <div className="flex min-h-screen items-center justify-center bg-[var(--kpx-warm-white)] text-[var(--kpx-dark-charcoal)]">Loading KPX Academy…</div>;
-  }
-
   return children;
 }
