@@ -22,7 +22,7 @@ interface Props {
 // ============================================================================
 
 const INPUT_CLASS =
-  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 caret-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-100 disabled:bg-slate-50";
+  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 caret-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#1D4ED8] focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50";
 
 const ERROR_INPUT_CLASS =
   "w-full rounded-xl border border-red-300 bg-white px-4 py-3 text-sm text-slate-900 caret-slate-900 outline-none transition placeholder:text-slate-400 focus:border-red-500 focus:ring-2 focus:ring-red-100";
@@ -215,7 +215,7 @@ export default function TrainingForm({ program, onClose }: Props) {
     : "Fill in the details below. You can add media after saving.";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:p-6">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#1D4ED8]/50 p-4 sm:p-6">
       <div className="my-4 w-full max-w-4xl rounded-2xl bg-white shadow-xl sm:my-8">
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-2xl border-b border-slate-200 bg-white px-6 py-4">
@@ -465,7 +465,7 @@ export default function TrainingForm({ program, onClose }: Props) {
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex min-w-40 items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex min-w-40 items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1E40AF] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPending && <Loader2 size={16} className="animate-spin" />}
               {isPending
@@ -499,7 +499,7 @@ function Section({
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5">
       <div className="mb-4 flex items-start gap-3">
-        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1D4ED8] text-xs font-semibold text-white">
           {index}
         </span>
         <div>
