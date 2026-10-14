@@ -5,13 +5,13 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --kpx-navy: #17324d;
-    --kpx-teal: #2a7f7f;
-    --kpx-ivory: #f7f5f0;
-    --kpx-peach: #f3d7cc;
-    --kpx-gold: #d4a85a;
-  }
+:root {
+  --kpx-royal-blue: #1d4ed8;
+  --kpx-deep-magenta: #8b1e5a;
+  --kpx-warm-white: #faf8f5;
+  --kpx-soft-blush: #f4dcd6;
+  --kpx-dark-charcoal: #212529;
+}
 
   body {
     background-color: var(--kpx-ivory);
@@ -25,10 +25,6 @@
 }
 
 /* Custom footer override */
-.site-footer {
-  background-color: var(--kpx-navy);
-  color: #ffffff;
-}
 
 .site-footer a:hover {
   color: var(--kpx-gold);

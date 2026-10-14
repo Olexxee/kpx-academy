@@ -1,11 +1,12 @@
 :root {
   /* KPX Academy brand colours */
-  --kpx-navy: #17324d;
-  --kpx-teal: #2a7f7f;
-  --kpx-ivory: #f7f5f0;
-  --kpx-peach: #f3d7cc;
-  --kpx-gold: #d4a85a;
-  --kpx-white: #ffffff;
+  :root {
+  --kpx-royal-blue: #1d4ed8;
+  --kpx-deep-magenta: #8b1e5a;
+  --kpx-warm-white: #faf8f5;
+  --kpx-soft-blush: #f4dcd6;
+  --kpx-dark-charcoal: #212529;
+}
 
   /* Tailwind-compatible semantic colours */
   --color-primary: var(--kpx-navy);

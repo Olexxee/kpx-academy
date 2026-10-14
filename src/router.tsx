@@ -1,6 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./components/layouts/Layout";
 import { HomePage } from "./pages/HomePage";
+import RegistrationPage from "./pages/RegistrationPage";
+import AboutPage from "./pages/AboutPage";
+import { ProgramDetailsPage } from "./features/training/pages/ProgramDetailsPage";
+import { PaymentSuccessPage } from "./pages/PaymentSuccessPage";
+import { PaymentFailedPage } from "./pages/PaymentFailedPage";
 
 export const router = createBrowserRouter([
   {
@@ -10,9 +15,26 @@ export const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-      // Future routes will be added here as children:
-      // { path: '/programs', element: <ProgramsPage /> },
-      // { path: '/about', element: <AboutPage /> },
+      {
+        path: "/about",
+        element: <AboutPage />,
+      },
+      {
+        path: "/register",
+        element: <RegistrationPage />,
+      },
+      {
+        path: "/programs/:slug",
+        element: <ProgramDetailsPage />,
+      },
+      {
+        path: "/payment/success",
+        element: <PaymentSuccessPage />,
+      },
+      {
+        path: "/payment/failed",
+        element: <PaymentFailedPage />,
+      },
     ],
   },
 ]);

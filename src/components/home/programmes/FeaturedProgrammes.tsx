@@ -3,17 +3,15 @@ import { useTrainingPrograms } from "../../../features/training/hooks/useTrainin
 import { useTrainingMedia } from "../../../features/training/hooks/useTrainingMedia";
 import { formatPrice } from "../../../features/training/utils/format";
 import { getPrimaryImage } from "../../../features/training/utils/media";
-import type {
-  TrainingProgram,
-} from "../../../features/training/types";
+import type { TrainingProgram } from "../../../features/training/types";
 import { Container } from "../../ui/Container";
 
 export const FeaturedProgrammes = () => {
   const { data: programmes, isLoading, isError } = useTrainingPrograms();
 
   const featured = (programmes ?? [])
-    .filter((program: { active: any; featured: any; }) => program.active && program.featured)
-    .sort((a: { displayOrder: number; }, b: { displayOrder: number; }) => a.displayOrder - b.displayOrder)
+    .filter((program) => program.active)
+    .sort((a, b) => a.displayOrder - b.displayOrder)
     .slice(0, 3);
 
   return (
@@ -25,7 +23,7 @@ export const FeaturedProgrammes = () => {
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
             <span className="text-sm font-semibold uppercase tracking-[0.16em] text-secondary">
-              Explore Our Training
+              Explore Our Trainings
             </span>
 
             <h2
