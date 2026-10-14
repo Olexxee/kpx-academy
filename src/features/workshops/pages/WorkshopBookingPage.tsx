@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
 import { createWorkshopBooking, getWorkshopOfferings } from "../api";
-import type { CreateWorkshopBookingPayload, WorkshopOffering, WorkshopVenueMode } from "../types";
+import type { CreateWorkshopBookingPayload, WorkshopVenueMode } from "../types";
 
 const workshopLabels: Record<string, string> = {
   RESIN_ART: "Resin art",
