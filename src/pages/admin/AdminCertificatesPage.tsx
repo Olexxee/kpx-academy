@@ -7,10 +7,6 @@ type View = "submissions" | "certificates" | "issue";
 type Submission = { id: string; studentName: string; studentEmail: string; trainingProgramTitle?: string; trainingProgram?: { title: string }; status: string; createdAt: string; notes?: string | null };
 type Certificate = { id: string; certificateNumber: string; studentName: string; studentEmail: string; trainingProgramTitle: string; status: string; issuedAt?: string; revokedAt?: string | null };
 
-function responseData<T>(response: { data: { data?: T } }): T {
-  return response.data.data as T;
-}
-
 export default function AdminCertificatesPage() {
   const [view, setView] = useState<View>("submissions");
   const [search, setSearch] = useState("");
@@ -19,17 +15,16 @@ export default function AdminCertificatesPage() {
   const [programTitle, setProgramTitle] = useState("");
   const [notice, setNotice] = useState("");
   const [reviewNotes, setReviewNotes] = useState("");
-  const [revokeReason, setRevokeReason] = useState("");
   const client = useQueryClient();
 
   const submissionsQuery = useQuery({
     queryKey: ["admin", "certificate-submissions", search],
-    queryFn: async () => responseData<Submission[]>(await registrationApi.get("/certificates/admin/submissions", { params: { page: 1, limit: 50, search: search.trim() || undefined } })),
+    queryFn: async () => { const response = await registrationApi.get<{ data: { items: Submission[] } }>("/certificates/admin/submissions", { params: { page: 1, limit: 50, search: search.trim() || undefined } }); return response.data.data.items; },
     enabled: view === "submissions",
   });
   const certificatesQuery = useQuery({
     queryKey: ["admin", "certificates", search],
-    queryFn: async () => responseData<Certificate[]>(await registrationApi.get("/certificates/admin", { params: { page: 1, limit: 50, search: search.trim() || undefined } })),
+    queryFn: async () => { const response = await registrationApi.get<{ data: { items: Certificate[] } }>("/certificates/admin", { params: { page: 1, limit: 50, search: search.trim() || undefined } }); return response.data.data.items; },
     enabled: view === "certificates",
   });
 
