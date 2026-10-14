@@ -4,6 +4,7 @@ import { Container } from "../../ui/Container";
 const workshopCards = [
   {
     number: "01",
+    type: "RESIN_ART",
     title: "Resin Art",
     description: "Turn colour, texture, and imagination into a hands-on creative experience for your group.",
     tone: "bg-[#F4DCD6]",
@@ -11,6 +12,7 @@ const workshopCards = [
   },
   {
     number: "02",
+    type: "LIP_CARE_FORMULATION",
     title: "Lip-care Formulation",
     description: "Explore the craft of creating lip-care products in a practical, guided group session.",
     tone: "bg-white",
@@ -18,6 +20,7 @@ const workshopCards = [
   },
   {
     number: "03",
+    type: "CUSTOM_GROUP",
     title: "Custom Group Workshops",
     description: "Planning a team activity, celebration, or special gathering? We can shape a session around your group.",
     tone: "bg-[#1D4ED8]",
@@ -50,6 +53,12 @@ export const CreativeWorkshopsPreview = () => (
             <div className="mt-12">
               <h3 className={`font-heading text-2xl font-bold ${workshop.text}`}>{workshop.title}</h3>
               <p className={`mt-3 text-sm leading-7 opacity-80 ${workshop.text}`}>{workshop.description}</p>
+              <Link
+                to={`/workshops/book?type=${workshop.type}`}
+                className={`mt-5 inline-flex min-h-10 items-center text-sm font-semibold underline underline-offset-4 transition hover:opacity-75 ${workshop.text}`}
+              >
+                Book this workshop <span aria-hidden="true" className="ml-2">→</span>
+              </Link>
             </div>
           </article>
         ))}
