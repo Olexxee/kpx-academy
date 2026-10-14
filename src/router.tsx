@@ -3,6 +3,7 @@ import { Layout } from "./components/layouts/Layout";
 import { HomePage } from "./pages/HomePage";
 import RegistrationPage from "./pages/RegistrationPage";
 import AboutPage from "./pages/AboutPage";
+import CertificatesPage from "./pages/CertificatesPage";
 import { ProgramDetailsPage } from "./features/training/pages/ProgramDetailsPage";
 import { TrainingProgramsPage } from "./features/training/pages/TrainingProgramsPage";
 import { PaymentSuccessPage } from "./pages/PaymentSuccessPage";
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
       { path: "/programs", element: <TrainingProgramsPage /> },
       { path: "/courses", element: <TrainingProgramsPage /> },
       { path: "/programs/:slug", element: <ProgramDetailsPage /> },
+      { path: "/certificates", element: <CertificatesPage /> },
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
       { path: "/workshops/book", element: <WorkshopBookingPage /> },

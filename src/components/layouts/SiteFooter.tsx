@@ -7,6 +7,7 @@ const exploreLinks = [
   { label: "Training programmes", to: "/programs" },
   { label: "Creative workshops", to: "/workshops/book" },
   { label: "Souvenir catalogue", to: "/souvenirs" },
+  { label: "Certificates", to: "/certificates" },
   { label: "Registration", to: "/register" },
 ];
 
