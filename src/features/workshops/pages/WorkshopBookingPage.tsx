@@ -178,7 +178,7 @@ export const WorkshopBookingPage = () => {
                     </select>
                   </label>
 
-                  {selectedOffering && <div className="rounded-control bg-background p-4"><p className="font-semibold text-primary">{selectedOffering.title}</p><p className="mt-2 text-sm leading-6 text-text-muted">{selectedOffering.description}</p>{selectedOffering.bookingTerms && <p className="mt-3 whitespace-pre-line text-sm leading-6 text-text-muted">Booking terms: {selectedOffering.bookingTerms}</p>}</div>}
+                  {selectedOffering && <div className="rounded-control bg-background p-4"><p className="font-semibold text-primary">{selectedOffering.title}</p><p className="mt-2 text-sm leading-6 text-text-muted">{selectedOffering.description}</p>{selectedOffering.bookingTerms && <p className="mt-3 whitespace-pre-line text-sm leading-6 text-text-muted">Booking terms: {selectedOffering.bookingTerms}</p>}{(selectedOffering.contactEmail || selectedOffering.contactWhatsApp) && <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3 text-sm font-semibold text-secondary">{selectedOffering.contactEmail && <a href={`mailto:${selectedOffering.contactEmail}`}>Email about this workshop</a>}{selectedOffering.contactWhatsApp && <a href={`https://wa.me/${selectedOffering.contactWhatsApp.replace(/\\D/g, "")}`} target="_blank" rel="noreferrer">WhatsApp about this workshop</a>}</div>}</div>}
 
                   <label className={labelClass}>Participant tier *
                     <select required value={selectedTier?.id ?? ""} onChange={(event) => setTierId(event.target.value)} className={fieldClass}>
