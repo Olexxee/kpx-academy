@@ -11,6 +11,7 @@ import { SouvenirCataloguePage } from "./features/souvenirs/pages/SouvenirCatalo
 import { SouvenirProductPage } from "./features/souvenirs/pages/SouvenirProductPage";
 import { SouvenirEnquiryPage } from "./features/souvenirs/pages/SouvenirEnquiryPage";
 import { SouvenirGuestAccessPage } from "./features/souvenirs/pages/SouvenirGuestAccessPage";
+import { WorkshopBookingPage } from "./features/workshops/pages/WorkshopBookingPage";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
       { path: "/programs/:slug", element: <ProgramDetailsPage /> },
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
+      { path: "/workshops/book", element: <WorkshopBookingPage /> },
       { path: "/souvenirs", element: <SouvenirCataloguePage /> },
       { path: "/souvenirs/enquire", element: <SouvenirEnquiryPage /> },
       { path: "/souvenirs/:resource/access/:token", element: <SouvenirGuestAccessPage /> },
