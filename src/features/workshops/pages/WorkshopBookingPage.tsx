@@ -23,6 +23,7 @@ const formatPrice = (price: number | string, currency: string) =>
 
 const localDateMinimum = () => {
   const date = new Date();
+  date.setDate(date.getDate() + 1);
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
   return date.toISOString().slice(0, 10);
 };
