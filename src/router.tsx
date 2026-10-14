@@ -12,6 +12,14 @@ import { SouvenirProductPage } from "./features/souvenirs/pages/SouvenirProductP
 import { SouvenirEnquiryPage } from "./features/souvenirs/pages/SouvenirEnquiryPage";
 import { SouvenirGuestAccessPage } from "./features/souvenirs/pages/SouvenirGuestAccessPage";
 import { WorkshopBookingPage } from "./features/workshops/pages/WorkshopBookingPage";
+import { AdminRoute } from "./components/auth/AdminRoute";
+import AdminLayout from "./components/admin/AdminLayout";
+import LoginPage from "./pages/LoginPage";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminTrainingPage from "./pages/admin/AdminTrainingPage";
+import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
+import AdminTestimonialsPage from "./features/testimonials/pages/AdminTestimonialsPage";
+import AdminCertificatesPage from "./pages/admin/AdminCertificatesPage";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +38,22 @@ export const router = createBrowserRouter([
       { path: "/souvenirs/enquire", element: <SouvenirEnquiryPage /> },
       { path: "/souvenirs/:resource/access/:token", element: <SouvenirGuestAccessPage /> },
       { path: "/souvenirs/:slug", element: <SouvenirProductPage /> },
+    ],
+  },
+  { path: "/admin/login", element: <LoginPage /> },
+  {
+    element: <AdminRoute />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          { path: "/admin", element: <AdminDashboardPage /> },
+          { path: "/admin/training", element: <AdminTrainingPage /> },
+          { path: "/admin/registrations", element: <AdminRegistrationsPage /> },
+          { path: "/admin/testimonials", element: <AdminTestimonialsPage /> },
+          { path: "/admin/certificates", element: <AdminCertificatesPage /> },
+        ],
+      },
     ],
   },
 ]);
