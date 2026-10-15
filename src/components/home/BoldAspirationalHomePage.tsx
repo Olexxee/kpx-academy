@@ -1,12 +1,6 @@
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const programmes = [
-  { number: "01", title: "Resin Art & Crafts", description: "Learn to transform creative ideas into beautiful, practical pieces.", tone: "bg-[#F4DCD6]", text: "text-[#8B1E5A]", tag: "CREATE", href: "/programs" },
-  { number: "02", title: "Lip Care & Beauty", description: "Explore product formulation with a practical, detail-first approach.", tone: "bg-[#1D4ED8]", text: "text-white", tag: "FORMULATE", href: "/programs" },
-  { number: "03", title: "China Importation", description: "Build your understanding of sourcing, ordering, and importing.", tone: "bg-[#8B1E5A]", text: "text-white", tag: "DISCOVER", href: "/programs" },
-];
-
 const benefits = [
   "Detailed, practical training",
   "Knowledge you can put into practice",
