@@ -74,20 +74,6 @@ export const BoldAspirationalHomePage = () => (
       </div>
     </section>
 
-    <section id="programmes" className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 md:px-12 md:py-24">
-      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Find your starting point</p><h2 className="mt-3 max-w-2xl text-4xl font-bold leading-tight tracking-[-.055em] sm:text-6xl">Big goals.<br />Practical next steps.</h2></div>
-        <Link to="/programs" className="inline-flex items-center gap-2 self-start rounded-full border border-[#212529]/20 px-5 py-3 text-sm font-bold transition hover:border-[#1D4ED8] hover:text-[#1D4ED8] sm:self-auto">Explore all courses <ArrowRight size={17} /></Link>
-      </div>
-      <div className="mt-10 grid gap-4 md:grid-cols-3 md:gap-5">
-        {programmes.map((programme) => <Link key={programme.number} to={programme.href} className={`group relative flex min-h-[285px] flex-col overflow-hidden rounded-[1.5rem] p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:min-h-[340px] sm:p-8 ${programme.tone} ${programme.text}`}>
-          <div className="flex items-start justify-between"><span className="text-xs font-bold tracking-[.18em] opacity-70">{programme.number} / KPX</span><span className="grid h-10 w-10 place-items-center rounded-full border border-current/25 transition group-hover:rotate-45"><ArrowUpRight size={19} /></span></div>
-          <div className="mt-auto"><p className="text-[10px] font-bold uppercase tracking-[.25em] opacity-70">{programme.tag}</p><h3 className="mt-3 max-w-xs text-2xl font-bold leading-tight tracking-[-.04em] sm:text-3xl">{programme.title}</h3><p className="mt-3 max-w-sm text-sm leading-6 opacity-80">{programme.description}</p></div>
-        </Link>)}
-      </div>
-      <p className="mt-5 text-xs leading-5 text-[#212529]/55">Programme availability and delivery details are provided on each course page.</p>
-    </section>
-
     <section className="px-5 pb-16 sm:px-8 md:px-12 md:pb-24">
       <div className="mx-auto grid max-w-[1344px] overflow-hidden rounded-[2rem] bg-[#F4DCD6] md:grid-cols-2">
         <div className="p-7 sm:p-10 md:p-14"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Beyond the classroom</p><h2 className="mt-4 text-3xl font-bold leading-tight tracking-[-.05em] sm:text-5xl">Bring creativity to your next event.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#212529]/75 sm:text-base">Make your next group activity creative, interactive, and memorable. Our workshops can bring hands-on resin art or lip-care formulation experiences to schools, teams, organisations, and private groups.</p><Link to="/workshops" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#8B1E5A] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#6e1747]">Explore creative workshops <ArrowRight size={17} /></Link></div>
