@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const benefits = [
@@ -102,7 +102,7 @@ export const BoldAspirationalHomePage = () => {
             </div>
             <p className="mb-4 text-xs font-bold uppercase tracking-[.24em] text-[#F4DCD6] sm:text-sm">KPX Academy · Practical skills. Real opportunities.</p>
             <h1 aria-live="polite" className="max-w-4xl whitespace-pre-line font-[Sora] text-[clamp(2.8rem,7.4vw,6.6rem)] font-extrabold leading-[.99] tracking-[-.065em]">
-              {slide.title.split("\\n").map((line, index) => (
+              {slide.title.split("\n").map((line, index) => (
                 <span key={line} className="block">{index === 1 ? <span className="text-[#F4DCD6]">{line}</span> : line}</span>
               ))}
             </h1>
