@@ -58,7 +58,7 @@ export default function AdminCertificatesPage() {
   });
   const revoke = useMutation({
     mutationFn: async ({ id, reason }: { id: string; reason: string }) => registrationApi.patch(`/certificates/admin/${encodeURIComponent(id)}/revoke`, { reason }),
-    onSuccess: async () => { setNotice("Certificate revocation request completed."); setRevokeReason(""); await invalidate(); },
+    onSuccess: async () => { setNotice("Certificate revocation request completed."); await invalidate(); },
     onError: () => setNotice("Certificate could not be revoked."),
   });
 
