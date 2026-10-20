@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, FileText, ImagePlus, LoaderCircle, Plus, Send, Trash2, UploadCloud } from "lucide-react";
+import { CheckCircle2, FileText, Plus, Send, Trash2, UploadCloud } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   createCategory, createGalleryImage, createHero, createResource, deleteGalleryImage, deleteResource,
@@ -32,7 +32,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
   };
 
   const submitHero = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); const form = new FormData(event.currentTarget);
+    event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement);
     await run(async () => {
       let image: Awaited<ReturnType<typeof uploadHeroImage>> | undefined;
       const file = form.get("image");
@@ -48,33 +48,33 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         secondaryCtaUrl: String(form.get("secondaryCtaUrl") || ""),
         ...(image ? { imageUrl: image.url, imagePublicId: image.publicId, imageAltText: String(form.get("imageAltText") || "") } : {}),
       });
-      event.currentTarget.reset();
+      formElement.reset();
     }, [["site-content", "admin", "hero"]]);
   };
 
   const submitCategory = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); const form = new FormData(event.currentTarget); const name = String(form.get("name") || "");
-    await run(async () => { await createCategory({ name, slug: slugify(String(form.get("slug") || name)), description: String(form.get("description") || ""), displayOrder: Number(form.get("displayOrder") || 0) }); event.currentTarget.reset(); }, [["site-content", "admin", "categories"], ["site-content", "admin", "gallery"]]);
+    event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement); const name = String(form.get("name") || "");
+    await run(async () => { await createCategory({ name, slug: slugify(String(form.get("slug") || name)), description: String(form.get("description") || ""), displayOrder: Number(form.get("displayOrder") || 0) }); formElement.reset(); }, [["site-content", "admin", "categories"], ["site-content", "admin", "gallery"]]);
   };
 
   const submitGalleryImage = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); const form = new FormData(event.currentTarget); const file = form.get("image");
+    event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement); const file = form.get("image");
     if (!(file instanceof File) || file.size === 0) { setError("Choose an image to upload."); return; }
     await run(async () => {
       const asset = await uploadGalleryImage(file);
       await createGalleryImage({ categoryId: String(form.get("categoryId") || ""), url: asset.url, publicId: asset.publicId, altText: String(form.get("altText") || ""), caption: String(form.get("caption") || ""), description: String(form.get("description") || ""), displayOrder: Number(form.get("displayOrder") || 0), featured: form.get("featured") === "on" });
-      event.currentTarget.reset();
+      formElement.reset();
     }, [["site-content", "admin", "gallery"], ["site-content", "admin", "categories"]]);
   };
 
   const submitResource = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); const form = new FormData(event.currentTarget); const file = form.get("pdf");
+    event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement); const file = form.get("pdf");
     if (!(file instanceof File) || file.size === 0) { setError("Choose a PDF manual to upload."); return; }
     await run(async () => {
       const asset = await uploadResourcePdf(file);
       const title = String(form.get("title") || "");
       await createResource({ title, slug: slugify(String(form.get("slug") || title)), description: String(form.get("description") || ""), fileUrl: asset.url, filePublicId: asset.publicId, fileBytes: asset.bytes, ...(String(form.get("trainingProgramId") || "") ? { trainingProgramId: String(form.get("trainingProgramId")) } : {}) });
-      event.currentTarget.reset();
+      formElement.reset();
     }, [["site-content", "admin", "resources"]]);
   };
 
@@ -187,6 +187,6 @@ function Status({ status }: { status: string }) {
   const styles = status === "PUBLISHED" ? "bg-emerald-50 text-emerald-700" : status === "ARCHIVED" ? "bg-slate-100 text-slate-600" : "bg-amber-50 text-amber-700";
   return <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${styles}`}>{status}</span>;
 }
-function SmallButton({ children, onClick, danger = false }: { children: React.ReactNode; onClick: () => void; danger?: boolean }) {
+function SmallButton({ children, onClick, danger = false }: { children: ReactNode; onClick: () => void; danger?: boolean }) {
   return <button type="button" onClick={onClick} className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-semibold ${danger ? "border-red-200 text-red-700 hover:bg-red-50" : "border-slate-200 text-slate-700 hover:bg-slate-50"}`}>{children}</button>;
 }
