@@ -1,12 +1,12 @@
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, FileText, Plus, Send, Trash2, UploadCloud } from "lucide-react";
+import { ArrowDown, ArrowUp, CheckCircle2, FileText, Pencil, Plus, Send, Trash2, UploadCloud } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   createCategory, createGalleryImage, createHero, createResource, deleteGalleryImage, deleteResource,
-  getAdminCategories, getAdminGallery, getAdminHeroes, getAdminResources, publishHero, updateHero, updateGalleryImage,
+  getAdminCategories, getAdminGallery, getAdminHeroes, getAdminResources, publishHero, updateCategory, updateHero, updateGalleryImage,
   updateResource, uploadGalleryImage, uploadHeroImage, uploadResourcePdf,
-  type GalleryImage, type HomepageHero, type Resource,
+  type GalleryCategory, type GalleryImage, type HomepageHero, type Resource,
 } from "../../api/siteContent.api";
 
 type Mode = "hero" | "gallery" | "resources";
@@ -68,6 +68,23 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
       formElement.reset();
       setEditingHeroId(null);
     }, [["site-content", "admin", "hero"]]);
+  };
+
+  const renameCategory = (category: GalleryCategory) => {
+    const name = window.prompt("Rename gallery category", category.name);
+    if (!name?.trim()) return;
+    void run(() => updateCategory(category.id, { name: name.trim(), slug: slugify(name) }), [["site-content", "admin", "categories"], ["site-content", "admin", "gallery"], ["site-content", "gallery"]]);
+  };
+  const toggleCategory = (category: GalleryCategory) => {
+    void run(() => updateCategory(category.id, { active: !category.active }), [["site-content", "admin", "categories"], ["site-content", "gallery"]]);
+  };
+  const reorderCategory = (categoryId: string, direction: -1 | 1) => {
+    const ordered = [...(categories.data ?? [])];
+    const index = ordered.findIndex((item) => item.id === categoryId);
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= ordered.length) return;
+    [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
+    void run(() => Promise.all(ordered.map((item, order) => updateCategory(item.id, { displayOrder: (order + 1) * 10 })),), [["site-content", "admin", "categories"], ["site-content", "gallery"]]);
   };
 
   const submitCategory = async (event: FormEvent<HTMLFormElement>) => {
@@ -139,7 +156,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
           <div><label className={labelClass}>Description</label><textarea name="description" rows={2} className={fieldClass}/></div>
           <div><label className={labelClass}>Display order</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={fieldClass}/></div>
           <button className={buttonClass} type="submit"><Plus size={16}/> Add category</button>
-          <div className="border-t border-slate-100 pt-4"><p className="text-sm font-bold">Categories</p><div className="mt-3 flex flex-wrap gap-2">{(categories.data ?? []).map((category) => <span key={category.id} className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700">{category.name} · {category._count?.images ?? 0}</span>)}</div></div>
+          <div className="border-t border-slate-100 pt-4"><p className="text-sm font-bold">Categories</p><div className="mt-3 space-y-2">{(categories.data ?? []).map((category, index) => <div key={category.id} className="flex items-center justify-between gap-2 rounded-xl border border-slate-100 p-3"><div className="min-w-0"><p className="truncate text-sm font-semibold text-slate-800">{category.name}</p><p className="mt-0.5 text-xs text-slate-500">{category._count?.images ?? 0} images · {category.active ? "Active" : "Archived"}</p></div><div className="flex shrink-0 gap-1"><button type="button" disabled={index === 0} onClick={() => reorderCategory(category.id, -1)} aria-label={"Move " + category.name + " up"} className="rounded-lg border border-slate-200 p-2 text-slate-600 disabled:opacity-30"><ArrowUp size={13}/></button><button type="button" disabled={index === (categories.data?.length ?? 0) - 1} onClick={() => reorderCategory(category.id, 1)} aria-label={"Move " + category.name + " down"} className="rounded-lg border border-slate-200 p-2 text-slate-600 disabled:opacity-30"><ArrowDown size={13}/></button><button type="button" onClick={() => renameCategory(category)} aria-label={"Rename " + category.name} className="rounded-lg border border-slate-200 p-2 text-slate-600"><Pencil size={13}/></button><button type="button" onClick={() => toggleCategory(category)} className="rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600">{category.active ? "Archive" : "Restore"}</button></div></div>)}</div></div>
         </form>
         <form onSubmit={submitGalleryImage} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-bold">Upload gallery image</h2>
