@@ -8,6 +8,8 @@ const navigation = [
   { label: "Programmes", to: "/programs" },
   { label: "Creative Workshops", to: "/workshops/book" },
   { label: "Souvenirs", to: "/souvenirs" },
+  { label: "Gallery", to: "/gallery" },
+  { label: "Resources", to: "/resources" },
   { label: "Certificates", to: "/certificates" },
 ];
 
