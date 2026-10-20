@@ -54,7 +54,7 @@ export const deleteResource = async (id: string) => registrationApi.delete(`/sit
 
 const uploadAsset = async (endpoint: string, file: File): Promise<UploadedAsset> => {
   const form = new FormData(); form.append("file", file);
-  return unwrap(await registrationApi.post<Envelope<UploadedAsset>>(endpoint, form, { headers: { "Content-Type": "multipart/form-data" } }));
+  return unwrap(await registrationApi.post<Envelope<UploadedAsset>>(endpoint, form));
 };
 export const uploadHeroImage = (file: File) => uploadAsset("/site-content/admin/uploads/hero-image", file);
 export const uploadGalleryImage = (file: File) => uploadAsset("/site-content/admin/uploads/gallery-image", file);
