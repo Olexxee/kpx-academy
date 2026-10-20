@@ -44,12 +44,14 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
   };
 
   const submitHero = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); const formElement = event.currentTarget; const form = new FormData(formElement);
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     await run(async () => {
       let image: Awaited<ReturnType<typeof uploadHeroImage>> | undefined;
       const file = form.get("image");
       if (file instanceof File && file.size > 0) image = await uploadHeroImage(file);
-      await createHero({
+      const payload = {
         eyebrow: String(form.get("eyebrow") || ""),
         heading: String(form.get("heading") || ""),
         highlightText: String(form.get("highlightText") || ""),
@@ -59,8 +61,11 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         secondaryCtaLabel: String(form.get("secondaryCtaLabel") || ""),
         secondaryCtaUrl: String(form.get("secondaryCtaUrl") || ""),
         ...(image ? { imageUrl: image.url, imagePublicId: image.publicId, imageAltText: String(form.get("imageAltText") || "") } : {}),
-      });
+      };
+      if (editingHeroId) await updateHero(editingHeroId, payload);
+      else await createHero(payload);
       formElement.reset();
+      setEditingHeroId(null);
     }, [["site-content", "admin", "hero"]]);
   };
 
