@@ -60,7 +60,7 @@ export const BoldAspirationalHomePage = () => {
   const heroQuery = useQuery({ queryKey: ["site-content", "hero"], queryFn: getPublicHero, retry: 1 });
   const publishedHero = heroQuery.data;
   const slides: HeroSlide[] = publishedHero ? [{
-    title: [publishedHero.heading, publishedHero.highlightText].filter(Boolean).join("\\n"),
+    title: [publishedHero.heading, publishedHero.highlightText].filter(Boolean).join("\n"),
     eyebrow: publishedHero.eyebrow || "Practical learning starts here",
     description: publishedHero.description,
     category: "KPX Academy",
