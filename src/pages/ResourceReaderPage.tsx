@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { getPublicResource } from "../api/siteContent.api";
+import { getPublicResource, getResourceDownloadUrl } from "../api/siteContent.api";
 
 export default function ResourceReaderPage() {
   const { slug = "" } = useParams();
@@ -13,7 +13,7 @@ export default function ResourceReaderPage() {
     <div className="mx-auto max-w-6xl">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
         <div><Link to="/resources" className="inline-flex items-center gap-2 text-sm font-semibold text-[#8B1E5A] hover:underline"><ArrowLeft size={16}/> All resources</Link><h1 className="mt-4 font-[Sora] text-3xl font-bold tracking-tight text-[#212529] sm:text-4xl">{resource.title}</h1>{resource.description && <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">{resource.description}</p>}</div>
-        <a href={resource.fileUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#8B1E5A] px-5 py-3 text-sm font-semibold text-white hover:bg-[#6e1747]"><Download size={16}/> Download PDF</a>
+        <a href={getResourceDownloadUrl(resource.slug)} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#8B1E5A] px-5 py-3 text-sm font-semibold text-white hover:bg-[#6e1747]"><Download size={16}/> Download PDF</a>
       </div>
       <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <iframe title={`${resource.title} PDF reader`} src={resource.fileUrl} className="h-[72vh] min-h-[560px] w-full" />
