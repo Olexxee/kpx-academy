@@ -199,27 +199,21 @@ export default function AdminCertificatesPage() {
     }) =>
       registrationApi.patch(
         `/certificates/admin/submissions/${encodeURIComponent(id)}/review`,
-        {
-          status,
-          reviewNotes: notes || undefined,
-        },
+        { status, reviewNotes: notes?.trim() || undefined },
       ),
-    onSuccess: async (_data, variables) => {
+    onSuccess: async (_, variables) => {
       setNotice("Submission review saved.");
-      setReviewNotes((current) => {
-        const next = { ...current };
-        delete next[variables.id];
-        return next;
-      });
+      setReviewNotes((current) => ({
+        ...current,
+        [variables.id]: "",
+      }));
       await invalidateRecords();
     },
-    onError: () => {
+    onError: () =>
       setNotice(
-        "The review could not be saved. Check the API response and backend deployment.",
-      );
-    },
+        "The review could not be saved. Confirm the certificate API is deployed.",
+      ),
   });
-
   const issueSubmission = useMutation({
     mutationFn: async (id: string) =>
       registrationApi.post(
@@ -229,13 +223,11 @@ export default function AdminCertificatesPage() {
       setNotice("Certificate issuance request completed.");
       await invalidateRecords();
     },
-    onError: () => {
+    onError: () =>
       setNotice(
-        "Certificate could not be issued. Confirm that the submission is approved.",
-      );
-    },
+        "Certificate could not be issued. Only approved submissions can be issued.",
+      ),
   });
-
   const directIssue = useMutation({
     mutationFn: async () =>
       registrationApi.post("/certificates/admin/issue", {
@@ -251,26 +243,19 @@ export default function AdminCertificatesPage() {
       setView("certificates");
       await invalidateRecords();
     },
-    onError: () => {
+    onError: () =>
       setNotice(
         "Direct issuance failed. Check the entered details and API response.",
-      );
-    },
+      ),
   });
-
   const resend = useMutation({
     mutationFn: async (id: string) =>
       registrationApi.post(
         `/certificates/admin/${encodeURIComponent(id)}/resend`,
       ),
-    onSuccess: () => {
-      setNotice("Certificate resend request completed.");
-    },
-    onError: () => {
-      setNotice("Certificate email could not be resent.");
-    },
+    onSuccess: () => setNotice("Certificate resend request completed."),
+    onError: () => setNotice("Certificate email could not be resent."),
   });
-
   const revoke = useMutation({
     mutationFn: async ({ id, reason }: { id: string; reason: string }) =>
       registrationApi.patch(
@@ -279,13 +264,9 @@ export default function AdminCertificatesPage() {
       ),
     onSuccess: async () => {
       setNotice("Certificate revocation request completed.");
-      setRevokingCertificateId(null);
-      setRevokeReason("");
       await invalidateRecords();
     },
-    onError: () => {
-      setNotice("Certificate could not be revoked.");
-    },
+    onError: () => setNotice("Certificate could not be revoked."),
   });
 
   const submissions = submissionsQuery.data ?? [];
