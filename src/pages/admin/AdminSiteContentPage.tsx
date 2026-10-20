@@ -1,12 +1,12 @@
 import { useState, type FormEvent, type ReactNode } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, FileText, Plus, Send, Trash2, UploadCloud } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   createCategory, createGalleryImage, createHero, createResource, deleteGalleryImage, deleteResource,
   getAdminCategories, getAdminGallery, getAdminHeroes, getAdminResources, publishHero, updateGalleryImage,
   updateResource, uploadGalleryImage, uploadHeroImage, uploadResourcePdf,
-  type GalleryCategory, type GalleryImage, type HomepageHero, type Resource,
+  type GalleryImage, type HomepageHero, type Resource,
 } from "../../api/siteContent.api";
 
 type Mode = "hero" | "gallery" | "resources";
