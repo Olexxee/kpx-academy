@@ -8,6 +8,7 @@ const navigation = [
   { label: "Programmes", to: "/programs" },
   { label: "Creative Workshops", to: "/workshops/book" },
   { label: "Souvenirs", to: "/souvenirs" },
+  { label: "Certificates", to: "/certificates" },
 ];
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
