@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { BookOpenText, Download, FileText, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { getPublicResources } from "../api/siteContent.api";
+import { getPublicResources, getResourceDownloadUrl } from "../api/siteContent.api";
 
 export default function ResourcesPage() {
   const [search, setSearch] = useState("");
@@ -33,7 +33,7 @@ export default function ResourcesPage() {
             {resource.description && <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{resource.description}</p>}
             <div className="mt-auto flex flex-wrap gap-3 pt-5">
               <Link to={`/resources/${resource.slug}`} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#8B1E5A] px-4 py-2 text-sm font-semibold text-white hover:bg-[#6e1747]">Read online</Link>
-              <a href={resource.fileUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"><Download size={15}/> Download</a>
+              <a href={getResourceDownloadUrl(resource.slug)} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"><Download size={15}/> Download</a>
             </div>
           </div>
         </article>)}
