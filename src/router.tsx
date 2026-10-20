@@ -21,6 +21,10 @@ import AdminTrainingPage from "./pages/admin/AdminTrainingPage";
 import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
 import AdminTestimonialsPage from "./features/testimonials/pages/AdminTestimonialsPage";
 import AdminCertificatesPage from "./pages/admin/AdminCertificatesPage";
+import AdminSiteContentPage from "./pages/admin/AdminSiteContentPage";
+import ResourcesPage from "./pages/ResourcesPage";
+import ResourceReaderPage from "./pages/ResourceReaderPage";
+import GalleryPage from "./pages/GalleryPage";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +37,9 @@ export const router = createBrowserRouter([
       { path: "/courses", element: <TrainingProgramsPage /> },
       { path: "/programs/:slug", element: <ProgramDetailsPage /> },
       { path: "/certificates", element: <CertificatesPage /> },
+      { path: "/resources", element: <ResourcesPage /> },
+      { path: "/resources/:slug", element: <ResourceReaderPage /> },
+      { path: "/gallery", element: <GalleryPage /> },
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
       { path: "/workshops/book", element: <WorkshopBookingPage /> },
@@ -54,6 +61,9 @@ export const router = createBrowserRouter([
           { path: "/admin/registrations", element: <AdminRegistrationsPage /> },
           { path: "/admin/testimonials", element: <AdminTestimonialsPage /> },
           { path: "/admin/certificates", element: <AdminCertificatesPage /> },
+          { path: "/admin/content", element: <AdminSiteContentPage mode="hero" /> },
+          { path: "/admin/gallery", element: <AdminSiteContentPage mode="gallery" /> },
+          { path: "/admin/resources", element: <AdminSiteContentPage mode="resources" /> },
         ],
       },
     ],
