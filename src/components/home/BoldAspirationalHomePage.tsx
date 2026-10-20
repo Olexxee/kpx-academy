@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getPublicHero } from "../../api/siteContent.api";
 
 const benefits = [
   "Detailed, practical training",
@@ -8,7 +10,9 @@ const benefits = [
   "Guidance as you learn and improve",
 ];
 
-const heroSlides = [
+interface HeroSlide { title: string; eyebrow: string; description: string; category: string; image: string; alt: string; }
+
+const heroSlides: HeroSlide[] = [
   {
     title: "Technology &\nDigital Skills",
     eyebrow: "Make technology work for you",
@@ -53,22 +57,32 @@ const heroSlides = [
 
 export const BoldAspirationalHomePage = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const slide = heroSlides[activeSlide];
+  const heroQuery = useQuery({ queryKey: ["site-content", "hero"], queryFn: getPublicHero, retry: 1 });
+  const publishedHero = heroQuery.data;
+  const slides: HeroSlide[] = publishedHero ? [{
+    title: [publishedHero.heading, publishedHero.highlightText].filter(Boolean).join("\n"),
+    eyebrow: publishedHero.eyebrow || "Practical learning starts here",
+    description: publishedHero.description,
+    category: "KPX Academy",
+    image: publishedHero.imageUrl || heroSlides[0].image,
+    alt: publishedHero.imageAltText || "KPX Academy practical learning",
+  }] : heroSlides;
+  const slide = slides[activeSlide % slides.length];
 
   useEffect(() => {
+    if (publishedHero) { setActiveSlide(0); return; }
     const intervalId = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % heroSlides.length);
     }, 6500);
-
     return () => window.clearInterval(intervalId);
-  }, []);
+  }, [publishedHero]);
 
   const showPreviousSlide = () => {
-    setActiveSlide((current) => (current - 1 + heroSlides.length) % heroSlides.length);
+    setActiveSlide((current) => (current - 1 + slides.length) % slides.length);
   };
 
   const showNextSlide = () => {
-    setActiveSlide((current) => (current + 1) % heroSlides.length);
+    setActiveSlide((current) => (current + 1) % slides.length);
   };
 
   return (
@@ -79,7 +93,7 @@ export const BoldAspirationalHomePage = () => {
 
       <section aria-label="Discover KPX Academy training" className="relative isolate min-h-[650px] overflow-hidden bg-[#07152F] text-white sm:min-h-[690px] lg:min-h-[720px]">
         <div className="absolute inset-0 -z-20">
-          {heroSlides.map((item, index) => (
+          {slides.map((item, index) => (
             <img
               key={item.category}
               src={item.image}
@@ -108,12 +122,12 @@ export const BoldAspirationalHomePage = () => {
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-white/85 sm:mt-7 sm:text-lg sm:leading-8">{slide.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to="/programs" className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#8B1E5A] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#a2266b] focus:outline-none focus:ring-4 focus:ring-white/30">
-                Explore our courses <ArrowRight size={18} />
-              </Link>
-              <Link to="/about" className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-white/5 px-7 py-4 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30">
-                Get to know us <ArrowUpRight size={17} />
-              </Link>
+              <a href={publishedHero?.primaryCtaUrl || "/programs"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#8B1E5A] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#a2266b] focus:outline-none focus:ring-4 focus:ring-white/30">
+                {publishedHero?.primaryCtaLabel || "Explore our courses"} <ArrowRight size={18} />
+              </a>
+              <a href={publishedHero?.secondaryCtaUrl || "/about"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-white/5 px-7 py-4 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30">
+                {publishedHero?.secondaryCtaLabel || "Get to know us"} <ArrowUpRight size={17} />
+              </a>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-white/80 sm:text-sm">
               {benefits.map((benefit) => <span key={benefit} className="inline-flex items-center gap-2"><Check size={15} className="text-[#F4DCD6]" />{benefit}</span>)}
@@ -124,7 +138,7 @@ export const BoldAspirationalHomePage = () => {
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[.22em] text-white/60">Explore our learning areas</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                {heroSlides.map((item, index) => (
+                {slides.map((item, index) => (
                   <button
                     key={item.category}
                     type="button"
@@ -138,7 +152,7 @@ export const BoldAspirationalHomePage = () => {
               </div>
             </div>
             <div className="flex items-center justify-between gap-5 sm:justify-end">
-              <p className="min-w-[100px] text-xs font-medium text-white/70"><span className="font-bold text-white">0{activeSlide + 1}</span> <span className="mx-1">/</span> 0{heroSlides.length} <span className="hidden lg:inline">· Discover more</span></p>
+              <p className="min-w-[100px] text-xs font-medium text-white/70"><span className="font-bold text-white">0{activeSlide + 1}</span> <span className="mx-1">/</span> 0{slides.length} <span className="hidden lg:inline">· Discover more</span></p>
               <div className="flex gap-2">
                 <button type="button" onClick={showPreviousSlide} aria-label="Previous training image" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"><ArrowLeft size={18} /></button>
                 <button type="button" onClick={showNextSlide} aria-label="Next training image" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"><ArrowRight size={18} /></button>

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Award, BookOpen, ClipboardList, GraduationCap, LayoutDashboard, LogOut, MessageSquareQuote } from "lucide-react";
+import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
 import { useAuthStore } from "../../features/auth/auth.store";
 
@@ -9,6 +9,9 @@ const links = [
   { to: "/admin/registrations", label: "Registrations", icon: ClipboardList },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { to: "/admin/certificates", label: "Certificates", icon: Award },
+  { to: "/admin/content", label: "Homepage hero", icon: PanelsTopLeft },
+  { to: "/admin/gallery", label: "Gallery", icon: Images },
+  { to: "/admin/resources", label: "Resources", icon: FileText },
 ];
 
 export default function AdminLayout() {
