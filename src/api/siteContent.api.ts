@@ -59,3 +59,5 @@ const uploadAsset = async (endpoint: string, file: File): Promise<UploadedAsset>
 export const uploadHeroImage = (file: File) => uploadAsset("/site-content/admin/uploads/hero-image", file);
 export const uploadGalleryImage = (file: File) => uploadAsset("/site-content/admin/uploads/gallery-image", file);
 export const uploadResourcePdf = (file: File) => uploadAsset("/site-content/admin/uploads/resource-pdf", file);
+
+export const getResourceDownloadUrl = (slug: string) => `${(registrationApi.defaults.baseURL ?? "").replace(/\/$/, "")}/site-content/resources/${encodeURIComponent(slug)}/download`;
