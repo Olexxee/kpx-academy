@@ -1,116 +1,28 @@
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, Images } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Container } from "../../ui/Container";
-
-const galleryThemes = [
-  {
-    number: "01",
-    title: "Beauty & Formulation",
-    description:
-      "Explore the world of beauty, product formulation, and hands-on creative learning.",
-    className: "bg-[#F4DCD6]",
-    accentClassName: "text-[#212529]",
-    label: "BEAUTY",
-  },
-  {
-    number: "02",
-    title: "Creative Skills",
-    description:
-      "Discover the possibilities of resin art, crafts, and creative expression.",
-    className: "bg-[#FAF8F5]",
-    accentClassName: "text-[#212529]",
-    label: "CREATIVITY",
-  },
-  {
-    number: "03",
-    title: "Trade & Entrepreneurship",
-    description:
-      "Build your understanding of sourcing, importation, and commercial opportunities.",
-    className: "bg-[#1D4ED8]",
-    accentClassName: "text-white",
-    label: "COMMERCE",
-  },
-];
+import { getPublicCategories } from "../../../api/siteContent.api";
 
 export const GalleryPreview = () => {
-  return (
-    <section
-      aria-labelledby="gallery-preview-heading"
-      className="bg-background py-16 sm:py-20 lg:py-28"
-    >
-      <Container>
-        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <span className="text-sm font-semibold uppercase tracking-[0.16em] text-secondary">
-              Learning in Practice
-            </span>
-
-            <h2
-              id="gallery-preview-heading"
-              className="mt-4 font-heading text-3xl font-semibold leading-tight text-primary sm:text-4xl lg:text-5xl"
-            >
-              Knowledge is powerful. Putting it into practice matters.
-            </h2>
-          </div>
-
-          <p className="max-w-md leading-7 text-text-muted">
-            From creative projects to practical product knowledge and commercial
-            skills, discover the different areas of learning at KPX Academy.
-          </p>
-        </div>
-
-        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:mt-14 lg:grid-cols-3">
-          {galleryThemes.map((theme) => (
-            <article
-              key={theme.number}
-              className={`flex min-h-[320px] flex-col justify-between rounded-card p-6 sm:min-h-[360px] sm:p-8 ${theme.className}`}
-            >
-              <div className="flex items-start justify-between gap-4">
-                <span
-                  className={`text-xs font-semibold tracking-[0.18em] ${theme.accentClassName}`}
-                >
-                  {theme.label}
-                </span>
-
-                <span
-                  aria-hidden="true"
-                  className={`font-heading text-sm ${theme.accentClassName} opacity-70`}
-                >
-                  {theme.number}
-                </span>
-              </div>
-
-              <div>
-                <h3
-                  className={`font-heading text-2xl font-semibold leading-snug ${theme.accentClassName}`}
-                >
-                  {theme.title}
-                </h3>
-
-                <p
-                  className={`mt-3 max-w-sm text-sm leading-7 ${theme.accentClassName} opacity-80`}
-                >
-                  {theme.description}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-8 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
-          <p className="max-w-xl text-sm leading-6 text-text-muted">
-            Explore the Academy’s learning areas and see how practical knowledge
-            can open up new possibilities.
-          </p>
-
-          <Link
-            to="/programs"
-            className="inline-flex items-center gap-2 font-semibold text-secondary transition-colors hover:text-primary"
-          >
-            Explore training programmes
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      </Container>
-    </section>
-  );
+  const query = useQuery({ queryKey: ["site-content", "gallery", "categories"], queryFn: getPublicCategories });
+  const categories = (query.data ?? []).slice(0, 3);
+  return <section aria-labelledby="gallery-preview-heading" className="bg-background py-16 sm:py-20 lg:py-28">
+    <Container>
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl"><span className="text-sm font-semibold uppercase tracking-[0.16em] text-secondary">Learning in Practice</span><h2 id="gallery-preview-heading" className="mt-4 font-heading text-3xl font-semibold leading-tight text-primary sm:text-4xl lg:text-5xl">Knowledge is powerful. Putting it into practice matters.</h2></div>
+        <div className="max-w-md"><p className="leading-7 text-text-muted">Explore real projects, training activities, and creative work shared by KPX Academy.</p><Link to="/gallery" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-secondary hover:text-primary">Explore the gallery <ArrowRight size={16}/></Link></div>
+      </div>
+      {query.isLoading && <div className="mt-10 grid gap-5 md:grid-cols-3"><div className="h-72 animate-pulse rounded-2xl bg-slate-100"/><div className="h-72 animate-pulse rounded-2xl bg-slate-100"/><div className="h-72 animate-pulse rounded-2xl bg-slate-100"/></div>}
+      {!query.isLoading && categories.length > 0 && <div className="mt-10 grid gap-5 md:grid-cols-2 lg:mt-14 lg:grid-cols-3">{categories.map((category, index) => {
+        const cover = category.images?.[0];
+        return <Link key={category.id} to={`/gallery?category=${encodeURIComponent(category.slug)}`} className="group relative flex min-h-[300px] overflow-hidden rounded-2xl bg-[#07152F] text-white focus:outline-none focus:ring-4 focus:ring-secondary/30">
+          {cover && <img src={cover.url} alt={cover.altText} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"/>}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07152F]/95 via-[#07152F]/30 to-transparent"/>
+          <div className="relative mt-auto w-full p-6 sm:p-7"><div className="mb-3 flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.2em] text-[#F4DCD6]">{String(index + 1).padStart(2, "0")} / Gallery</span><ArrowRight size={18} className="transition-transform group-hover:translate-x-1"/></div><h3 className="font-heading text-2xl font-semibold">{category.name}</h3>{category.description && <p className="mt-3 line-clamp-3 text-sm leading-6 text-white/80">{category.description}</p>}</div>
+        </Link>;
+      })}</div>}
+      {!query.isLoading && categories.length === 0 && <div className="mt-10 rounded-2xl border border-border bg-white px-6 py-10 text-center"><Images className="mx-auto text-secondary" size={30}/><p className="mt-3 text-sm text-text-muted">New gallery collections will appear here as they are published.</p></div>}
+    </Container>
+  </section>;
 };
