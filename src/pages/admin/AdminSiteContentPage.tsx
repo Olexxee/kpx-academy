@@ -60,7 +60,8 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         primaryCtaUrl: String(form.get("primaryCtaUrl") || "/programs"),
         secondaryCtaLabel: String(form.get("secondaryCtaLabel") || ""),
         secondaryCtaUrl: String(form.get("secondaryCtaUrl") || ""),
-        ...(image ? { imageUrl: image.url, imagePublicId: image.publicId, imageAltText: String(form.get("imageAltText") || "") } : {}),
+        imageAltText: String(form.get("imageAltText") || ""),
+        ...(image ? { imageUrl: image.url, imagePublicId: image.publicId } : {}),
       };
       if (editingHeroId) await updateHero(editingHeroId, payload);
       else await createHero(payload);
@@ -111,7 +112,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
 
     {mode === "hero" && <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.8fr)]">
       <form ref={heroFormRef} onSubmit={submitHero} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <h2 className="text-lg font-bold">Create hero draft</h2>
+        <h2 className="text-lg font-bold">{editingHeroId ? "Edit hero draft" : "Create hero draft"}</h2>
         <div><label className={labelClass}>Eyebrow</label><input name="eyebrow" className={fieldClass} placeholder="Practical learning starts here"/></div>
         <div><label className={labelClass}>Headline</label><input name="heading" required minLength={3} className={fieldClass} placeholder="Learn practical skills"/></div>
         <div><label className={labelClass}>Highlighted headline text</label><input name="highlightText" className={fieldClass} placeholder="More possibilities"/></div>
