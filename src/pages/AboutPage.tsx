@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 import { ArrowDownRight, ArrowRight, Check, Compass, Lightbulb, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getFounderProfile } from "../api/siteContent.api";
@@ -18,7 +19,7 @@ const areas = [
   "Entrepreneurship and sourcing",
 ];
 
-function Eyebrow({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
+function Eyebrow({ children, light = false }: { children: ReactNode; light?: boolean }) {
   return <p className={`text-xs font-bold uppercase tracking-[0.2em] ${light ? "text-[#D8E9E6]" : "text-[#2A7F7F]"}`}>{children}</p>;
 }
 
