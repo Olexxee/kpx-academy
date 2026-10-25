@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getPublicHero } from "../../api/siteContent.api";
+import { getPublicHeroSlides } from "../../api/siteContent.api";
 
 const benefits = [
   "Detailed, practical training",
@@ -57,25 +57,25 @@ const heroSlides: HeroSlide[] = [
 
 export const BoldAspirationalHomePage = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const heroQuery = useQuery({ queryKey: ["site-content", "hero"], queryFn: getPublicHero, retry: 1 });
-  const publishedHero = heroQuery.data;
-  const slides: HeroSlide[] = publishedHero ? [{
-    title: [publishedHero.heading, publishedHero.highlightText].filter(Boolean).join("\n"),
-    eyebrow: publishedHero.eyebrow || "Practical learning starts here",
-    description: publishedHero.description,
-    category: "KPX Academy",
-    image: publishedHero.imageUrl || heroSlides[0].image,
-    alt: publishedHero.imageAltText || "KPX Academy practical learning",
-  }] : heroSlides;
+  const heroQuery = useQuery({ queryKey: ["site-content", "hero", "slides"], queryFn: getPublicHeroSlides, retry: 1 });
+  const publishedHeroes = heroQuery.data ?? [];
+  const slides: HeroSlide[] = publishedHeroes.length ? publishedHeroes.map((hero, index) => ({
+    title: [hero.heading, hero.highlightText].filter(Boolean).join("\\n"),
+    eyebrow: hero.eyebrow || "Practical learning starts here",
+    description: hero.description,
+    category: hero.heading || `KPX Academy ${index + 1}`,
+    image: hero.imageUrl || heroSlides[index % heroSlides.length].image,
+    alt: hero.imageAltText || "KPX Academy practical learning",
+  })) : heroSlides;
   const slide = slides[activeSlide % slides.length];
 
   useEffect(() => {
-    if (publishedHero) { setActiveSlide(0); return; }
+    if (publishedHeroes.length) { setActiveSlide(0); return; }
     const intervalId = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % heroSlides.length);
     }, 6500);
     return () => window.clearInterval(intervalId);
-  }, [publishedHero]);
+  }, [publishedHeroes.length]);
 
   const showPreviousSlide = () => {
     setActiveSlide((current) => (current - 1 + slides.length) % slides.length);
@@ -122,11 +122,11 @@ export const BoldAspirationalHomePage = () => {
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-white/85 sm:mt-7 sm:text-lg sm:leading-8">{slide.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href={publishedHero?.primaryCtaUrl || "/programs"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#8B1E5A] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#a2266b] focus:outline-none focus:ring-4 focus:ring-white/30">
-                {publishedHero?.primaryCtaLabel || "Explore our courses"} <ArrowRight size={18} />
+              <a href={publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaUrl || "/programs"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#8B1E5A] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#a2266b] focus:outline-none focus:ring-4 focus:ring-white/30">
+                {publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaLabel || "Explore our courses"} <ArrowRight size={18} />
               </a>
-              <a href={publishedHero?.secondaryCtaUrl || "/about"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-white/5 px-7 py-4 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30">
-                {publishedHero?.secondaryCtaLabel || "Get to know us"} <ArrowUpRight size={17} />
+              <a href={publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.secondaryCtaUrl || "/about"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-white/5 px-7 py-4 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30">
+                {publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.secondaryCtaLabel || "Get to know us"} <ArrowUpRight size={17} />
               </a>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-white/80 sm:text-sm">
