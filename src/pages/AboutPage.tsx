@@ -1,4 +1,6 @@
-import React from "react";\nimport { useQuery } from "@tanstack/react-query";\nimport { getFounderProfile } from "../api/siteContent.api";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getFounderProfile } from "../api/siteContent.api";
 import { Link } from "react-router-dom";
 import { Container } from "../components/ui/Container";
 
