@@ -16,7 +16,25 @@ type View = "submissions" | "certificates" | "issue";
 type SubmissionStatus = "PENDING" | "APPROVED" | "REJECTED";
 type ReviewStatus = "APPROVED" | "REJECTED";
 
-interface Submission {
+interface CertificateApiResult {
+  success?: boolean;
+  message?: string;
+  data?: {
+    emailSent?: boolean;
+    emailError?: string | null;
+  };
+}
+
+const getApiErrorMessage = (error: unknown, fallback: string) => {
+  if (typeof error === "object" && error !== null && "response" in error) {
+    const response = (error as { response?: { data?: { message?: string } } }).response;
+    if (response?.data?.message) return response.data.message;
+  }
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
+};
+
+type Submission = {
   id: string;
   studentName: string;
   studentEmail: string;
@@ -25,7 +43,7 @@ interface Submission {
   status: SubmissionStatus;
   createdAt: string;
   notes?: string | null;
-}
+};
 
 interface Certificate {
   id: string;
@@ -215,46 +233,68 @@ export default function AdminCertificatesPage() {
       ),
   });
   const issueSubmission = useMutation({
-    mutationFn: async (id: string) =>
-      registrationApi.post(
+    mutationFn: async (id: string) => {
+      const response = await registrationApi.post<CertificateApiResult>(
         `/certificates/admin/submissions/${encodeURIComponent(id)}/issue`,
-      ),
-    onSuccess: async () => {
-      setNotice("Certificate issuance request completed.");
+      );
+      return response.data;
+    },
+    onSuccess: async (result) => {
+      setNotice(
+        result.data?.emailSent === false
+          ? `Certificate issued, but the email was not sent: ${result.data.emailError || "email provider did not accept the message"}`
+          : result.message || "Certificate issued and emailed successfully.",
+      );
       await invalidateRecords();
     },
-    onError: () =>
-      setNotice(
-        "Certificate could not be issued. Only approved submissions can be issued.",
-      ),
+    onError: (error) =>
+      setNotice(getApiErrorMessage(error, "Certificate could not be issued.")),
   });
   const directIssue = useMutation({
-    mutationFn: async () =>
-      registrationApi.post("/certificates/admin/issue", {
-        studentName: studentName.trim(),
-        studentEmail: studentEmail.trim(),
-        trainingProgramTitle: programTitle.trim(),
-      }),
-    onSuccess: async () => {
-      setNotice("Direct certificate issuance request completed.");
+    mutationFn: async () => {
+      const response = await registrationApi.post<CertificateApiResult>(
+        "/certificates/admin/issue",
+        {
+          studentName: studentName.trim(),
+          studentEmail: studentEmail.trim(),
+          trainingProgramTitle: programTitle.trim(),
+        },
+      );
+      return response.data;
+    },
+    onSuccess: async (result) => {
+      setNotice(
+        result.data?.emailSent === false
+          ? `Certificate issued, but the email was not sent: ${result.data.emailError || "email provider did not accept the message"}`
+          : result.message || "Certificate issued and emailed successfully.",
+      );
       setStudentName("");
       setStudentEmail("");
       setProgramTitle("");
       setView("certificates");
       await invalidateRecords();
     },
-    onError: () =>
-      setNotice(
-        "Direct issuance failed. Check the entered details and API response.",
-      ),
+    onError: (error) =>
+      setNotice(getApiErrorMessage(error, "Direct certificate issuance failed.")),
   });
   const resend = useMutation({
-    mutationFn: async (id: string) =>
-      registrationApi.post(
+    mutationFn: async (id: string) => {
+      const response = await registrationApi.post<CertificateApiResult>(
         `/certificates/admin/${encodeURIComponent(id)}/resend`,
-      ),
-    onSuccess: () => setNotice("Certificate resend request completed."),
-    onError: () => setNotice("Certificate email could not be resent."),
+      );
+      if (response.data?.success === false || response.data?.data?.emailSent === false) {
+        throw new Error(
+          response.data.message ||
+            response.data.data?.emailError ||
+            "The backend reported that the certificate email was not sent.",
+        );
+      }
+      return response.data;
+    },
+    onSuccess: (result) =>
+      setNotice(result.message || "Certificate email request succeeded."),
+    onError: (error) =>
+      setNotice(getApiErrorMessage(error, "Certificate email could not be resent.")),
   });
   const revoke = useMutation({
     mutationFn: async ({ id, reason }: { id: string; reason: string }) =>
@@ -633,9 +673,7 @@ export default function AdminCertificatesPage() {
                         {item.studentEmail}
                       </p>
 
-                      <p className="mt-2 text-sm">
-                        {item.trainingProgramTitle}
-                      </p>
+                      <p className="mt-2 text-sm">{item.trainingProgramTitle}</p>
 
                       <p className="mt-1 break-all font-mono text-xs text-[var(--kpx-royal-blue)]">
                         {item.certificateNumber}
