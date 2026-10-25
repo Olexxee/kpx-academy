@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import { getPublicResource, getResourceDownloadUrl } from "../api/siteContent.api";
+import { getPublicResource, getResourceDownloadUrl, getResourceViewUrl } from "../api/siteContent.api";
 
 export default function ResourceReaderPage() {
   const { slug = "" } = useParams();
@@ -16,9 +16,9 @@ export default function ResourceReaderPage() {
         <a href={getResourceDownloadUrl(resource.slug)} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-[#8B1E5A] px-5 py-3 text-sm font-semibold text-white hover:bg-[#6e1747]"><Download size={16}/> Download PDF</a>
       </div>
       <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <iframe title={`${resource.title} PDF reader`} src={resource.fileUrl} className="h-[72vh] min-h-[560px] w-full" />
+        <iframe title={`${resource.title} PDF reader`} src={getResourceViewUrl(resource.slug)} className="h-[72vh] min-h-[560px] w-full" />
       </div>
-      <p className="mt-3 text-xs leading-5 text-slate-500">If your browser does not display the PDF, use Download PDF to open it in a compatible reader.</p>
+      <p className="mt-3 text-xs leading-5 text-slate-500">If the preview does not load, <a className="font-semibold text-[#8B1E5A] underline" href={getResourceDownloadUrl(resource.slug)}>download the PDF</a> or <a className="font-semibold text-[#8B1E5A] underline" href={getResourceViewUrl(resource.slug)} target="_blank" rel="noreferrer">open the PDF in a new tab</a>.</p>
     </div>
   </main>;
 }
