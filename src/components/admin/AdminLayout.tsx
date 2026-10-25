@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft } from "lucide-react";
+import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Sparkles } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
 import { useAuthStore } from "../../features/auth/auth.store";
 
@@ -7,6 +7,7 @@ const links = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/admin/training", label: "Training programs", icon: GraduationCap },
   { to: "/admin/registrations", label: "Registrations", icon: ClipboardList },
+  { to: "/admin/creative-workspace", label: "Creative workspace", icon: Sparkles },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { to: "/admin/certificates", label: "Certificates", icon: Award },
   { to: "/admin/content", label: "Homepage hero", icon: PanelsTopLeft },
@@ -26,7 +27,7 @@ export default function AdminLayout() {
           <div><p className="font-semibold">KPX Academy</p><p className="text-xs text-white/60">Administration</p></div>
         </div>
         <p className="px-5 pb-2 pt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">Workspace</p>
-        <nav className="flex-1 space-y-1 px-3">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">
           {links.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${isActive ? "bg-[var(--kpx-royal-blue)] font-semibold text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}>
               <Icon size={18} /><span>{label}</span>
