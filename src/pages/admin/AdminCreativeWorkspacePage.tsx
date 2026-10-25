@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  CalendarDays, Check, ChevronLeft, ChevronRight, CircleAlert, Clock3,
+  CalendarDays, Check, ChevronLeft, ChevronRight, CircleAlert,
   Eye, EyeOff, LoaderCircle, Plus, Save, Sparkles, Users, X,
 } from "lucide-react";
 import type { WorkshopType } from "../../features/workshops/types";
@@ -107,6 +107,7 @@ export default function AdminCreativeWorkspacePage() {
         })
       : createAdminWorkshopOffering({
           ...offeringForm,
+          slug: offeringForm.slug.trim() || undefined,
           bookingTerms: offeringForm.bookingTerms || null,
           contactEmail: offeringForm.contactEmail || null,
           contactWhatsApp: offeringForm.contactWhatsApp || null,
