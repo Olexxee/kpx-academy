@@ -73,6 +73,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
       if (saved.status !== "PUBLISHED") await publishHero(saved.id);
       formElement.reset();
       setEditingHeroId(null);
+      setHeroPreview(null);
     }, [["site-content", "admin", "hero"], ["site-content", "hero"], ["site-content", "hero", "slides"]]);
   };
 
@@ -134,7 +135,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
     {error && <p role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
 
     {mode === "hero" && <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.8fr)]">
-      <form ref={heroFormRef} onSubmit={submitHero} onInput={(event) => { const form = event.currentTarget; const values = new FormData(form); const file = values.get("image"); const current = heroPreview?.imageUrl ?? (heroes.data ?? []).find((hero) => hero.id === editingHeroId)?.imageUrl ?? ""; setHeroPreview({ eyebrow: String(values.get("eyebrow") || "Practical learning starts here"), heading: String(values.get("heading") || "Your headline goes here"), highlightText: String(values.get("highlightText") || ""), description: String(values.get("description") || "Your supporting description will appear here."), primaryCtaLabel: String(values.get("primaryCtaLabel") || "Explore programmes"), secondaryCtaLabel: String(values.get("secondaryCtaLabel") || "Our story"), imageUrl: file instanceof File && file.size ? URL.createObjectURL(file) : current }); }} className="space-y-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+      <form ref={heroFormRef} onSubmit={submitHero} className="space-y-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[.16em] text-[#2A7F7F]">Slide editor</p><h2 className="mt-1 text-xl font-bold text-[#17324D]">{editingHeroId ? "Edit homepage slide" : "Create a new slide"}</h2><p className="mt-1 text-sm text-slate-500">Build the content, preview it, then publish it live.</p></div><span className="rounded-full bg-[#F7F5F0] px-3 py-1.5 text-xs font-bold text-[#17324D]">Step 1 of 3</span></div>
         <div><label className={labelClass}>Eyebrow</label><input name="eyebrow" className={fieldClass} placeholder="Practical learning starts here"/></div>
         <div><label className={labelClass}>Headline</label><input name="heading" required minLength={3} className={fieldClass} placeholder="Learn practical skills"/></div>
@@ -151,7 +152,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-xl font-bold text-[#17324D]">Homepage slide library</h2><p className="mt-1 text-sm text-slate-500">Published slides rotate on the public homepage. Edit, preview, and publish from here.</p></div><span className="rounded-full bg-[#F7F5F0] px-3 py-1.5 text-xs font-semibold text-[#17324D]">{(heroes.data ?? []).filter((hero) => hero.status === "PUBLISHED").length} published · {(heroes.data ?? []).length} total</span></div>
         {heroes.isLoading && <p className="mt-5 text-sm text-slate-500">Loading versions…</p>}
-        <div className="mt-5 space-y-3">{(heroes.data ?? []).map((hero) => <HeroVersion key={hero.id} hero={hero} onEdit={() => editHeroDraft(hero)} onPublish={() => run(() => publishHero(hero.id), [["site-content","admin","hero"],["site-content","hero"]])}/>)}</div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">{(heroes.data ?? []).map((hero) => <HeroVersion key={hero.id} hero={hero} onEdit={() => editHeroDraft(hero)} onPublish={() => run(() => publishHero(hero.id), [["site-content","admin","hero"],["site-content","hero"]])}/>)}</div>
         {!heroes.isLoading && (heroes.data ?? []).length === 0 && <p className="mt-5 rounded-xl bg-[#F7F5F0] p-5 text-sm text-slate-600">No homepage slides yet. Create your first slide using the editor.</p>}
         </div>
       </section>
