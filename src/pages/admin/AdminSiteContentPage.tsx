@@ -12,7 +12,7 @@ import {
 type Mode = "hero" | "gallery" | "resources";
 const fieldClass = "mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm outline-none focus:border-[#1D4ED8] focus:ring-2 focus:ring-[#1D4ED8]/15";
 const labelClass = "block text-sm font-semibold text-slate-700";
-const buttonClass = "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1e40af] disabled:cursor-not-allowed disabled:opacity-60";
+const buttonClass = "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-[#2A7F7F] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#236b6b] disabled:cursor-not-allowed disabled:opacity-60";
 const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
@@ -125,14 +125,14 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">{subtitle}</p>
     </div>
     <div className="mb-6 flex flex-wrap gap-2">
-      {[["hero","Homepage hero"],["gallery","Gallery"],["resources","Resources"]].map(([key,label]) => <Link key={key} to={key === "hero" ? "/admin/content" : key === "gallery" ? "/admin/gallery" : "/admin/resources"} className={`rounded-full border px-4 py-2 text-sm font-semibold ${mode === key ? "border-[#1D4ED8] bg-[#1D4ED8] text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>{label}</Link>)}
+      {[["hero","Homepage hero"],["gallery","Gallery"],["resources","Resources"]].map(([key,label]) => <Link key={key} to={key === "hero" ? "/admin/content" : key === "gallery" ? "/admin/gallery" : "/admin/resources"} className={`rounded-full border px-4 py-2 text-sm font-semibold ${mode === key ? "border-[#2A7F7F] bg-[#2A7F7F] text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>{label}</Link>)}
     </div>
     {message && <p role="status" className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{message}</p>}
     {error && <p role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>}
 
     {mode === "hero" && <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,.8fr)]">
       <form ref={heroFormRef} onSubmit={submitHero} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <h2 className="text-lg font-bold">{editingHeroId ? "Edit hero draft" : "Create hero draft"}</h2>
+        <h2 className="text-lg font-bold">{editingHeroId ? "Edit homepage slide" : "Add a homepage slide"}</h2>
         <div><label className={labelClass}>Eyebrow</label><input name="eyebrow" className={fieldClass} placeholder="Practical learning starts here"/></div>
         <div><label className={labelClass}>Headline</label><input name="heading" required minLength={3} className={fieldClass} placeholder="Learn practical skills"/></div>
         <div><label className={labelClass}>Highlighted headline text</label><input name="highlightText" className={fieldClass} placeholder="More possibilities"/></div>
@@ -141,13 +141,13 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         <div><label className={labelClass}>Hero image</label><input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className={fieldClass}/><p className="mt-1 text-xs text-slate-500">JPEG, PNG, WEBP or GIF; maximum 15 MB.</p></div>
         <div><label className={labelClass}>Image alt text</label><input name="imageAltText" className={fieldClass} placeholder="Describe the learning activity shown"/></div>
         <div><label className={labelClass}>Slide order (lower appears first)</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={fieldClass}/></div>
-        <div className="flex flex-wrap gap-2"><button className={buttonClass} type="submit"><Plus size={16}/> {editingHeroId ? "Update draft" : "Save as draft"}</button>{editingHeroId && <button type="button" onClick={() => { setEditingHeroId(null); heroFormRef.current?.reset(); }} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700">Cancel edit</button>}</div>
+        <div className="flex flex-wrap gap-2"><button className={buttonClass} type="submit"><Plus size={16}/> {editingHeroId ? "Update & publish" : "Publish to homepage"}</button>{editingHeroId && <button type="button" onClick={() => { setEditingHeroId(null); heroFormRef.current?.reset(); }} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700">Cancel edit</button>}</div>
       </form>
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <h2 className="text-lg font-bold">Hero versions</h2><p className="mt-1 text-sm text-slate-500">Publish each draft you want included in the rotating homepage slides. Published slides can coexist; use slide order to control their sequence.</p>
+        <h2 className="text-lg font-bold">Slides on your homepage</h2><p className="mt-1 text-sm text-slate-500">Published slides appear together in the carousel. Use slide order to control their sequence.</p>
         {heroes.isLoading && <p className="mt-5 text-sm text-slate-500">Loading versions…</p>}
         <div className="mt-5 space-y-3">{(heroes.data ?? []).map((hero) => <HeroVersion key={hero.id} hero={hero} onEdit={() => editHeroDraft(hero)} onPublish={() => run(() => publishHero(hero.id), [["site-content","admin","hero"],["site-content","hero"]])}/>)}</div>
-        {!heroes.isLoading && (heroes.data ?? []).length === 0 && <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No hero drafts yet.</p>}
+        {!heroes.isLoading && (heroes.data ?? []).length === 0 && <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No homepage slides yet. Add your first slide to get started.</p>}
       </section>
     </div>}
 
