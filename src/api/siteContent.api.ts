@@ -74,3 +74,15 @@ export interface FounderProfile {
 }
 export const getFounderProfile = async () => unwrap(await registrationApi.get<Envelope<FounderProfile>>("/site-content/founder"));
 export const updateFounderProfile = async (data: Partial<FounderProfile>) => unwrap(await registrationApi.patch<Envelope<FounderProfile>>("/site-content/admin/founder", data));
+
+
+export interface SiteBranding {
+  id: string;
+  logoUrl?: string | null;
+  logoPublicId?: string | null;
+  logoAltText?: string | null;
+  updatedAt?: string;
+}
+export const getSiteBranding = async () => unwrap(await registrationApi.get<Envelope<SiteBranding>>("/site-content/branding"));
+export const updateSiteBranding = async (data: Partial<SiteBranding>) => unwrap(await registrationApi.patch<Envelope<SiteBranding>>("/site-content/admin/branding", data));
+export const uploadSiteLogo = (file: File) => uploadAsset("/site-content/admin/uploads/logo", file);
