@@ -61,7 +61,9 @@ export const uploadHeroImage = (file: File) => uploadAsset("/site-content/admin/
 export const uploadGalleryImage = (file: File) => uploadAsset("/site-content/admin/uploads/gallery-image", file);
 export const uploadResourcePdf = (file: File) => uploadAsset("/site-content/admin/uploads/resource-pdf", file);
 
-export const getResourceDownloadUrl = (slug: string) => `${(registrationApi.defaults.baseURL ?? "").replace(/\/$/, "")}/site-content/resources/${encodeURIComponent(slug)}/download`;
+const resourceEndpoint = (slug: string, action: "view" | "download") => `${(registrationApi.defaults.baseURL ?? "").replace(/\/$/, "")}/site-content/resources/${encodeURIComponent(slug)}/${action}`;
+export const getResourceViewUrl = (slug: string) => resourceEndpoint(slug, "view");
+export const getResourceDownloadUrl = (slug: string) => resourceEndpoint(slug, "download");
 
 export interface FounderProfile {
   id: string;
