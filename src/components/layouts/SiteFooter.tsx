@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Container } from "../ui/Container";
+import { useQuery } from "@tanstack/react-query";
+import { getSiteBranding } from "../../api/siteContent.api";
 
 const exploreLinks = [
   { label: "Home", to: "/" },
@@ -19,6 +21,7 @@ const footerLinkClass =
 
 export const SiteFooter = () => {
   const currentYear = new Date().getFullYear();
+  const branding = useQuery({ queryKey: ["site-content", "branding"], queryFn: getSiteBranding, staleTime: 5 * 60 * 1000 });
 
   return (
     <footer className="site-footer bg-primary text-white">
@@ -26,8 +29,10 @@ export const SiteFooter = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_0.8fr] lg:gap-12">
           <div>
             <Link to="/" aria-label="KPX Academy home" className="inline-flex items-center gap-1 rounded-sm">
-              <span className="font-heading text-2xl font-bold tracking-tight text-white">KPX</span>
-              <span className="font-heading text-2xl font-bold tracking-tight text-[#F4DCD6]">ACADEMY</span>
+              {branding.data?.logoUrl ? <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="max-h-14 max-w-[220px] object-contain" /> : <>
+                <span className="font-heading text-2xl font-bold tracking-tight text-white">KPX</span>
+                <span className="font-heading text-2xl font-bold tracking-tight text-[#F4DCD6]">ACADEMY</span>
+              </>}
             </Link>
 
             <p className="mt-4 max-w-md font-heading text-lg font-semibold text-white">
