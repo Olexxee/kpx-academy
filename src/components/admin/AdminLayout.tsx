@@ -11,7 +11,9 @@ const links = [
   { to: "/admin/certificates", label: "Certificates", icon: Award },
   { to: "/admin/content", label: "Homepage hero", icon: PanelsTopLeft },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
-  { to: "/admin/resources", label: "Resources", icon: FileText },\n  { to: "/admin/souvenirs", label: "Souvenirs", icon: Package },\n  { to: "/admin/founder", label: "Founder media", icon: UserRound },
+  { to: "/admin/resources", label: "Resources", icon: FileText },
+  { to: "/admin/souvenirs", label: "Souvenirs", icon: Package },
+  { to: "/admin/founder", label: "Founder media", icon: UserRound },
 ];
 
 export default function AdminLayout() {
