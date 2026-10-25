@@ -60,7 +60,8 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         primaryCtaUrl: String(form.get("primaryCtaUrl") || "/programs"),
         secondaryCtaLabel: String(form.get("secondaryCtaLabel") || ""),
         secondaryCtaUrl: String(form.get("secondaryCtaUrl") || ""),
-        imageAltText: String(form.get("imageAltText") || ""),\n        displayOrder: Number(form.get("displayOrder") || 0),
+        imageAltText: String(form.get("imageAltText") || ""),
+        displayOrder: Number(form.get("displayOrder") || 0),
         ...(image ? { imageUrl: image.url, imagePublicId: image.publicId } : {}),
       };
       if (editingHeroId) await updateHero(editingHeroId, payload);
@@ -136,7 +137,8 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         <div><label className={labelClass}>Description</label><textarea name="description" required minLength={10} rows={4} className={fieldClass} placeholder="Describe what learners can expect from KPX Academy."/></div>
         <div className="grid gap-4 sm:grid-cols-2"><div><label className={labelClass}>Primary CTA label</label><input name="primaryCtaLabel" className={fieldClass} defaultValue="Explore programmes"/></div><div><label className={labelClass}>Primary CTA URL</label><input name="primaryCtaUrl" className={fieldClass} defaultValue="/programs"/></div><div><label className={labelClass}>Secondary CTA label</label><input name="secondaryCtaLabel" className={fieldClass} defaultValue="Our story"/></div><div><label className={labelClass}>Secondary CTA URL</label><input name="secondaryCtaUrl" className={fieldClass} defaultValue="/about"/></div></div>
         <div><label className={labelClass}>Hero image</label><input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className={fieldClass}/><p className="mt-1 text-xs text-slate-500">JPEG, PNG, WEBP or GIF; maximum 15 MB.</p></div>
-        <div><label className={labelClass}>Image alt text</label><input name="imageAltText" className={fieldClass} placeholder="Describe the learning activity shown"/></div>\n        <div><label className={labelClass}>Slide order (lower appears first)</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={fieldClass}/></div>
+        <div><label className={labelClass}>Image alt text</label><input name="imageAltText" className={fieldClass} placeholder="Describe the learning activity shown"/></div>
+        <div><label className={labelClass}>Slide order (lower appears first)</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={fieldClass}/></div>
         <div className="flex flex-wrap gap-2"><button className={buttonClass} type="submit"><Plus size={16}/> {editingHeroId ? "Update draft" : "Save as draft"}</button>{editingHeroId && <button type="button" onClick={() => { setEditingHeroId(null); heroFormRef.current?.reset(); }} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700">Cancel edit</button>}</div>
       </form>
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
