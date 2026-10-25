@@ -104,6 +104,11 @@ function SectionTitle({
 
 
 export default function AboutPage() {
+  const founder = useQuery({
+    queryKey: ["founder-profile"],
+    queryFn: getFounderProfile,
+  });
+
   return (
     <div className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
       {/* Hero */}
