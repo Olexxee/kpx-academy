@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CalendarDays, Check, ChevronLeft, ChevronRight, CircleAlert, Clock3,
   Eye, EyeOff, LoaderCircle, Plus, Save, Sparkles, Users, X,
 } from "lucide-react";
-import { registrationApi } from "../../lib/registrationApi";
 import type { WorkshopType } from "../../features/workshops/types";
 import {
   createAdminWorkshopOffering,
@@ -101,6 +100,7 @@ export default function AdminCreativeWorkspacePage() {
     mutationFn: () => editingId
       ? updateAdminWorkshopOffering(editingId, {
           ...offeringForm,
+          slug: offeringForm.slug.trim() || undefined,
           bookingTerms: offeringForm.bookingTerms || null,
           contactEmail: offeringForm.contactEmail || null,
           contactWhatsApp: offeringForm.contactWhatsApp || null,
