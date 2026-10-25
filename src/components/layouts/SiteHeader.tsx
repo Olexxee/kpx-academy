@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Container } from "../ui/Container";
+import { useQuery } from "@tanstack/react-query";
+import { getSiteBranding } from "../../api/siteContent.api";
 
 const navigation = [
   { label: "Home", to: "/" },
@@ -31,6 +33,7 @@ const ctaClass =
 export const SiteHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const branding = useQuery({ queryKey: ["site-content", "branding"], queryFn: getSiteBranding, staleTime: 5 * 60 * 1000 });
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -56,12 +59,12 @@ export const SiteHeader = () => {
             className="inline-flex items-center gap-1 rounded-sm"
             aria-label="KPX Academy home"
           >
-            <span className="font-heading text-xl font-bold tracking-tight text-primary sm:text-2xl">
-              KPX
-            </span>
-            <span className="font-heading text-xl font-bold tracking-tight text-secondary sm:text-2xl">
-              ACADEMY
-            </span>
+            {branding.data?.logoUrl ? (
+              <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="max-h-11 max-w-[190px] object-contain sm:max-h-12 sm:max-w-[220px]" />
+            ) : <>
+              <span className="font-heading text-xl font-bold tracking-tight text-primary sm:text-2xl">KPX</span>
+              <span className="font-heading text-xl font-bold tracking-tight text-secondary sm:text-2xl">ACADEMY</span>
+            </>}
           </Link>
 
           <nav
