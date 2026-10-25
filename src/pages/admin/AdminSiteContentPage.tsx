@@ -64,11 +64,13 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         displayOrder: Number(form.get("displayOrder") || 0),
         ...(image ? { imageUrl: image.url, imagePublicId: image.publicId } : {}),
       };
-      if (editingHeroId) await updateHero(editingHeroId, payload);
-      else await createHero(payload);
+      let saved: HomepageHero;
+      if (editingHeroId) saved = await updateHero(editingHeroId, payload);
+      else saved = await createHero(payload);
+      if (saved.status !== "PUBLISHED") await publishHero(saved.id);
       formElement.reset();
       setEditingHeroId(null);
-    }, [["site-content", "admin", "hero"]]);
+    }, [["site-content", "admin", "hero"], ["site-content", "hero"], ["site-content", "hero", "slides"]]);
   };
 
   const renameCategory = (category: GalleryCategory) => {
