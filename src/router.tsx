@@ -21,7 +21,9 @@ import AdminTrainingPage from "./pages/admin/AdminTrainingPage";
 import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
 import AdminTestimonialsPage from "./features/testimonials/pages/AdminTestimonialsPage";
 import AdminCertificatesPage from "./pages/admin/AdminCertificatesPage";
-import AdminSiteContentPage from "./pages/admin/AdminSiteContentPage";\nimport AdminSouvenirsPage from "./pages/admin/AdminSouvenirsPage";\nimport AdminFounderPage from "./pages/admin/AdminFounderPage";
+import AdminSiteContentPage from "./pages/admin/AdminSiteContentPage";
+import AdminSouvenirsPage from "./pages/admin/AdminSouvenirsPage";
+import AdminFounderPage from "./pages/admin/AdminFounderPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import ResourceReaderPage from "./pages/ResourceReaderPage";
 import GalleryPage from "./pages/GalleryPage";
@@ -64,7 +66,9 @@ export const router = createBrowserRouter([
           { path: "/admin/creative-workspace", element: <AdminCreativeWorkspacePage /> },
           { path: "/admin/content", element: <AdminSiteContentPage mode="hero" /> },
           { path: "/admin/gallery", element: <AdminSiteContentPage mode="gallery" /> },
-          { path: "/admin/resources", element: <AdminSiteContentPage mode="resources" /> },\n          { path: "/admin/souvenirs", element: <AdminSouvenirsPage /> },\n          { path: "/admin/founder", element: <AdminFounderPage /> },
+          { path: "/admin/resources", element: <AdminSiteContentPage mode="resources" /> },
+          { path: "/admin/souvenirs", element: <AdminSouvenirsPage /> },
+          { path: "/admin/founder", element: <AdminFounderPage /> },
         ],
       },
     ],
