@@ -61,3 +61,15 @@ export const uploadGalleryImage = (file: File) => uploadAsset("/site-content/adm
 export const uploadResourcePdf = (file: File) => uploadAsset("/site-content/admin/uploads/resource-pdf", file);
 
 export const getResourceDownloadUrl = (slug: string) => `${(registrationApi.defaults.baseURL ?? "").replace(/\/$/, "")}/site-content/resources/${encodeURIComponent(slug)}/download`;
+
+export interface FounderProfile {
+  id: string;
+  name: string;
+  role: string;
+  mediaUrl?: string | null;
+  mediaPublicId?: string | null;
+  mediaAltText?: string | null;
+  updatedAt?: string;
+}
+export const getFounderProfile = async () => unwrap(await registrationApi.get<Envelope<FounderProfile>>("/site-content/founder"));
+export const updateFounderProfile = async (data: Partial<FounderProfile>) => unwrap(await registrationApi.patch<Envelope<FounderProfile>>("/site-content/admin/founder", data));
