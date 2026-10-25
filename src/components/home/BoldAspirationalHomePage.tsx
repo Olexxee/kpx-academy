@@ -60,7 +60,7 @@ export const BoldAspirationalHomePage = () => {
   const heroQuery = useQuery({ queryKey: ["site-content", "hero", "slides"], queryFn: getPublicHeroSlides, retry: 1 });
   const publishedHeroes = heroQuery.data ?? [];
   const slides: HeroSlide[] = publishedHeroes.length ? publishedHeroes.map((hero, index) => ({
-    title: [hero.heading, hero.highlightText].filter(Boolean).join("\\n"),
+    title: [hero.heading, hero.highlightText].filter(Boolean).join("\n"),
     eyebrow: hero.eyebrow || "Practical learning starts here",
     description: hero.description,
     category: hero.heading || `KPX Academy ${index + 1}`,
@@ -70,12 +70,12 @@ export const BoldAspirationalHomePage = () => {
   const slide = slides[activeSlide % slides.length];
 
   useEffect(() => {
-    if (publishedHeroes.length) { setActiveSlide(0); return; }
+    setActiveSlide((current) => current % Math.max(slides.length, 1));
     const intervalId = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % heroSlides.length);
+      setActiveSlide((current) => (current + 1) % Math.max(slides.length, 1));
     }, 6500);
     return () => window.clearInterval(intervalId);
-  }, [publishedHeroes.length]);
+  }, [slides.length]);
 
   const showPreviousSlide = () => {
     setActiveSlide((current) => (current - 1 + slides.length) % slides.length);
@@ -87,7 +87,7 @@ export const BoldAspirationalHomePage = () => {
 
   return (
     <div className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
-      <div className="bg-[#1D4ED8] px-4 py-2.5 text-center text-xs font-semibold tracking-wide text-white sm:text-sm">
+      <div className="bg-[#17324D] px-4 py-2.5 text-center text-xs font-semibold tracking-wide text-white sm:text-sm">
         Practical Skills. More Possibilities. <span className="mx-2 text-[#F4DCD6]">✳</span> Your next chapter starts here.
       </div>
 
@@ -122,7 +122,7 @@ export const BoldAspirationalHomePage = () => {
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-white/85 sm:mt-7 sm:text-lg sm:leading-8">{slide.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href={publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaUrl || "/programs"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#8B1E5A] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#a2266b] focus:outline-none focus:ring-4 focus:ring-white/30">
+              <a href={publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaUrl || "/programs"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#2A7F7F] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#236b6b] focus:outline-none focus:ring-4 focus:ring-white/30">
                 {publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaLabel || "Explore our courses"} <ArrowRight size={18} />
               </a>
               <a href={publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.secondaryCtaUrl || "/about"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-white/5 px-7 py-4 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30">
@@ -171,15 +171,15 @@ export const BoldAspirationalHomePage = () => {
 
     <section className="px-5 pb-16 sm:px-8 md:px-12 md:pb-24">
       <div className="mx-auto grid max-w-[1344px] overflow-hidden rounded-[2rem] bg-[#F4DCD6] md:grid-cols-2">
-        <div className="p-7 sm:p-10 md:p-14"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Beyond the classroom</p><h2 className="mt-4 text-3xl font-bold leading-tight tracking-[-.05em] sm:text-5xl">Bring creativity to your next event.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#212529]/75 sm:text-base">Make your next group activity creative, interactive, and memorable. Our workshops can bring hands-on resin art or lip-care formulation experiences to schools, teams, organisations, and private groups.</p><Link to="/workshops" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#8B1E5A] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#6e1747]">Explore creative workshops <ArrowRight size={17} /></Link></div>
+        <div className="p-7 sm:p-10 md:p-14"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Beyond the classroom</p><h2 className="mt-4 text-3xl font-bold leading-tight tracking-[-.05em] sm:text-5xl">Bring creativity to your next event.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#212529]/75 sm:text-base">Make your next group activity creative, interactive, and memorable. Our workshops can bring hands-on resin art or lip-care formulation experiences to schools, teams, organisations, and private groups.</p><Link to="/workshops" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#17324D] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2A7F7F]">Explore creative workshops <ArrowRight size={17} /></Link></div>
         <div className="relative min-h-[260px] overflow-hidden md:min-h-[430px]"><img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1200&q=85" alt="Creative art materials ready for a collaborative workshop" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-[#212529]/30 to-transparent" /><div className="absolute bottom-5 left-5 rounded-xl bg-[#FAF8F5] px-4 py-3 text-xs font-bold text-[#212529] sm:bottom-8 sm:left-8 sm:px-5 sm:py-4">Make something together. <span className="ml-2 text-[#8B1E5A]">✳</span></div></div>
       </div>
     </section>
 
-    <section className="bg-[#1D4ED8] px-5 py-16 text-white sm:px-8 md:px-12 md:py-24">
+    <section className="bg-[#17324D] px-5 py-16 text-white sm:px-8 md:px-12 md:py-24">
       <div className="mx-auto flex max-w-[1344px] flex-col justify-between gap-8 md:flex-row md:items-end">
         <div><p className="text-xs font-bold uppercase tracking-[.22em] text-white/75">Your journey can start here</p><h2 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight tracking-[-.06em] sm:text-6xl">One new skill can open up a new possibility.</h2><p className="mt-5 max-w-2xl text-base leading-7 text-white/80">Explore what interests you, learn at your own pace where available, and take the next step with practical knowledge.</p></div>
-        <Link to="/programs" className="inline-flex min-h-14 shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[#FAF8F5] px-7 py-4 text-sm font-bold text-[#1D4ED8] transition hover:bg-[#F4DCD6]">Find your course <ArrowRight size={18} /></Link>
+        <Link to="/programs" className="inline-flex min-h-14 shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[#FAF8F5] px-7 py-4 text-sm font-bold text-[#17324D] transition hover:bg-[#F3D7CC]">Find your course <ArrowRight size={18} /></Link>
       </div>
     </section>
   </div>
