@@ -31,7 +31,7 @@ export interface SouvenirProduct {
   description?: string | null;
   bookingTerms?: string | null;
   productionLeadTimeDays?: number | null;
-  featured: boolean;
+  featured: boolean;\n  active: boolean;\n  displayOrder: number;
   media: SouvenirMedia[];
   colorOptions: SouvenirColorOption[];
   priceTiers: SouvenirPriceTier[];
