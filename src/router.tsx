@@ -22,6 +22,7 @@ import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
 import AdminTestimonialsPage from "./features/testimonials/pages/AdminTestimonialsPage";
 import AdminCertificatesPage from "./pages/admin/AdminCertificatesPage";
 import AdminSiteContentPage from "./pages/admin/AdminSiteContentPage";
+import AdminCreativeWorkspacePage from "./pages/admin/AdminCreativeWorkspacePage";
 import ResourcesPage from "./pages/ResourcesPage";
 import ResourceReaderPage from "./pages/ResourceReaderPage";
 import GalleryPage from "./pages/GalleryPage";
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
           { path: "/admin/registrations", element: <AdminRegistrationsPage /> },
           { path: "/admin/testimonials", element: <AdminTestimonialsPage /> },
           { path: "/admin/certificates", element: <AdminCertificatesPage /> },
+          { path: "/admin/creative-workspace", element: <AdminCreativeWorkspacePage /> },
           { path: "/admin/content", element: <AdminSiteContentPage mode="hero" /> },
           { path: "/admin/gallery", element: <AdminSiteContentPage mode="gallery" /> },
           { path: "/admin/resources", element: <AdminSiteContentPage mode="resources" /> },
