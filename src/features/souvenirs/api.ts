@@ -41,3 +41,17 @@ export const respondToSouvenirQuote = async (token: string, quoteId: string, dec
     `/souvenirs/enquiries/access/${encodeURIComponent(token)}/quote-response`,
     { quoteId, decision },
   )).data;
+
+ 
+// Authenticated catalogue administration.
+export const getAdminSouvenirProducts = async (): Promise<SouvenirProduct[]> =>
+  (await registrationApi.get<Envelope<SouvenirProduct[]>>("/souvenirs/admin/products")).data.data;
+
+export const createAdminSouvenirProduct = async (payload: Record<string, unknown>): Promise<SouvenirProduct> =>
+  (await registrationApi.post<Envelope<SouvenirProduct>>("/souvenirs/admin/products", payload)).data.data;
+
+export const updateAdminSouvenirProduct = async (id: string, payload: Record<string, unknown>): Promise<SouvenirProduct> =>
+  (await registrationApi.patch<Envelope<SouvenirProduct>>(`/souvenirs/admin/products/${encodeURIComponent(id)}`, payload)).data.data;
+
+export const setAdminSouvenirProductActive = async (id: string, active: boolean): Promise<SouvenirProduct> =>
+  (await registrationApi.patch<Envelope<SouvenirProduct>>(`/souvenirs/admin/products/${encodeURIComponent(id)}/status`, { active })).data.data;
