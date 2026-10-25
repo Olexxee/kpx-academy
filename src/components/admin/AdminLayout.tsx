@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, Sparkles, UserRound } from "lucide-react";
+import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, Sparkles, UserRound, Image } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
 import { useAuthStore } from "../../features/auth/auth.store";
 
@@ -11,6 +11,7 @@ const links = [
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { to: "/admin/certificates", label: "Certificates", icon: Award },
   { to: "/admin/content", label: "Homepage hero", icon: PanelsTopLeft },
+  { to: "/admin/logo", label: "Site logo", icon: Image },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/resources", label: "Resources", icon: FileText },
   { to: "/admin/souvenirs", label: "Souvenirs", icon: Package },
