@@ -6,7 +6,7 @@ export interface HomepageHero {
   description: string; primaryCtaLabel?: string | null; primaryCtaUrl?: string | null;
   secondaryCtaLabel?: string | null; secondaryCtaUrl?: string | null;
   imageUrl?: string | null; imagePublicId?: string | null; imageAltText?: string | null;
-  status: ContentStatus; publishedAt?: string | null; updatedAt: string;
+  status: ContentStatus; displayOrder?: number; publishedAt?: string | null; updatedAt: string;
 }
 export interface GalleryCategory {
   id: string; name: string; slug: string; description?: string | null; displayOrder: number; active: boolean;
@@ -29,6 +29,7 @@ export interface UploadedAsset { url: string; publicId: string; resourceType: st
 const unwrap = <T,>(response: { data: Envelope<T> }) => response.data.data;
 
 export const getPublicHero = async () => unwrap(await registrationApi.get<Envelope<HomepageHero | null>>("/site-content/hero"));
+export const getPublicHeroSlides = async () => unwrap(await registrationApi.get<Envelope<HomepageHero[]>>("/site-content/hero/slides"));
 export const getAdminHeroes = async () => unwrap(await registrationApi.get<Envelope<HomepageHero[]>>("/site-content/admin/hero"));
 export const createHero = async (data: Partial<HomepageHero> & Pick<HomepageHero, "heading" | "description">) => unwrap(await registrationApi.post<Envelope<HomepageHero>>("/site-content/admin/hero", data));
 export const updateHero = async (id: string, data: Partial<HomepageHero>) => unwrap(await registrationApi.patch<Envelope<HomepageHero>>(`/site-content/admin/hero/${id}`, data));
@@ -61,3 +62,15 @@ export const uploadGalleryImage = (file: File) => uploadAsset("/site-content/adm
 export const uploadResourcePdf = (file: File) => uploadAsset("/site-content/admin/uploads/resource-pdf", file);
 
 export const getResourceDownloadUrl = (slug: string) => `${(registrationApi.defaults.baseURL ?? "").replace(/\/$/, "")}/site-content/resources/${encodeURIComponent(slug)}/download`;
+
+export interface FounderProfile {
+  id: string;
+  name: string;
+  role: string;
+  mediaUrl?: string | null;
+  mediaPublicId?: string | null;
+  mediaAltText?: string | null;
+  updatedAt?: string;
+}
+export const getFounderProfile = async () => unwrap(await registrationApi.get<Envelope<FounderProfile>>("/site-content/founder"));
+export const updateFounderProfile = async (data: Partial<FounderProfile>) => unwrap(await registrationApi.patch<Envelope<FounderProfile>>("/site-content/admin/founder", data));

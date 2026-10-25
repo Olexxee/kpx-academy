@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react";\nimport { useQuery } from "@tanstack/react-query";\nimport { getFounderProfile } from "../api/siteContent.api";
 import { Link } from "react-router-dom";
 import { Container } from "../components/ui/Container";
 
@@ -255,18 +255,15 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-[#F4DCD6]">
                 <div className="absolute inset-5 rounded-[1.5rem] border border-[#8B1E5A]/20" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#8B1E5A] text-3xl font-bold text-white">
-                    KO
+                {founder.data?.mediaUrl ? (
+                  <img src={founder.data.mediaUrl} alt={founder.data.mediaAltText || founder.data.name} className="absolute inset-0 h-full w-full object-cover" />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#8B1E5A] text-3xl font-bold text-white">KO</div>
+                    <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-[#8B1E5A]">Founder portrait</p>
+                    <p className="mt-2 max-w-[15rem] text-sm leading-6 text-[#212529]/65">Portrait will appear here when added by the site administrator.</p>
                   </div>
-
-                  <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-[#8B1E5A]">
-                    Founder portrait
-                  </p>
-                  <p className="mt-2 max-w-[15rem] text-sm leading-6 text-[#212529]/65">
-                    Photograph to be added
-                  </p>
-                </div>
+                )}
 
                 <div
                   aria-hidden="true"
@@ -275,7 +272,7 @@ export default function AboutPage() {
               </div>
 
               <p className="mt-5 text-center text-sm text-[#212529]/55">
-                Kepemi Oluwafunke (Keplex), Founder
+                {founder.data?.name ?? "Kepemi Oluwafunke (Keplex)"}, {founder.data?.role ?? "Founder"}
               </p>
             </div>
 

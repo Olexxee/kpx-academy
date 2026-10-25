@@ -35,7 +35,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
 
   const editHeroDraft = (hero: HomepageHero) => {
     setEditingHeroId(hero.id);
-    const fields: Record<string, string> = { eyebrow: hero.eyebrow ?? "", heading: hero.heading, highlightText: hero.highlightText ?? "", description: hero.description, primaryCtaLabel: hero.primaryCtaLabel ?? "", primaryCtaUrl: hero.primaryCtaUrl ?? "", secondaryCtaLabel: hero.secondaryCtaLabel ?? "", secondaryCtaUrl: hero.secondaryCtaUrl ?? "", imageAltText: hero.imageAltText ?? "" };
+    const fields: Record<string, string> = { eyebrow: hero.eyebrow ?? "", heading: hero.heading, highlightText: hero.highlightText ?? "", description: hero.description, primaryCtaLabel: hero.primaryCtaLabel ?? "", primaryCtaUrl: hero.primaryCtaUrl ?? "", secondaryCtaLabel: hero.secondaryCtaLabel ?? "", secondaryCtaUrl: hero.secondaryCtaUrl ?? "", imageAltText: hero.imageAltText ?? "", displayOrder: String(hero.displayOrder ?? 0) };
     for (const [name, value] of Object.entries(fields)) {
       const field = heroFormRef.current?.elements.namedItem(name);
       if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) field.value = value;
@@ -60,7 +60,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         primaryCtaUrl: String(form.get("primaryCtaUrl") || "/programs"),
         secondaryCtaLabel: String(form.get("secondaryCtaLabel") || ""),
         secondaryCtaUrl: String(form.get("secondaryCtaUrl") || ""),
-        imageAltText: String(form.get("imageAltText") || ""),
+        imageAltText: String(form.get("imageAltText") || ""),\n        displayOrder: Number(form.get("displayOrder") || 0),
         ...(image ? { imageUrl: image.url, imagePublicId: image.publicId } : {}),
       };
       if (editingHeroId) await updateHero(editingHeroId, payload);
@@ -113,8 +113,8 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
     }, [["site-content", "admin", "resources"]]);
   };
 
-  const title = mode === "hero" ? "Homepage hero" : mode === "gallery" ? "Gallery manager" : "Resources library";
-  const subtitle = mode === "hero" ? "Draft a new hero, preview its content, then publish when it is ready." : mode === "gallery" ? "Create categories and upload the real training images shown on the public site." : "Upload training manuals as PDFs. Published resources are publicly readable without an account.";
+  const title = mode === "hero" ? "Homepage slides" : mode === "gallery" ? "Gallery manager" : "Resources library";
+  const subtitle = mode === "hero" ? "Create and publish multiple homepage slides. Published slides appear in the carousel in display order." : mode === "gallery" ? "Create categories and upload the real training images shown on the public site." : "Upload training manuals as PDFs. Published resources are publicly readable without an account.";
   return <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
     <div className="mb-7">
       <p className="text-xs font-bold uppercase tracking-[.18em] text-[#8B1E5A]">Site management</p>
@@ -136,11 +136,11 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         <div><label className={labelClass}>Description</label><textarea name="description" required minLength={10} rows={4} className={fieldClass} placeholder="Describe what learners can expect from KPX Academy."/></div>
         <div className="grid gap-4 sm:grid-cols-2"><div><label className={labelClass}>Primary CTA label</label><input name="primaryCtaLabel" className={fieldClass} defaultValue="Explore programmes"/></div><div><label className={labelClass}>Primary CTA URL</label><input name="primaryCtaUrl" className={fieldClass} defaultValue="/programs"/></div><div><label className={labelClass}>Secondary CTA label</label><input name="secondaryCtaLabel" className={fieldClass} defaultValue="Our story"/></div><div><label className={labelClass}>Secondary CTA URL</label><input name="secondaryCtaUrl" className={fieldClass} defaultValue="/about"/></div></div>
         <div><label className={labelClass}>Hero image</label><input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className={fieldClass}/><p className="mt-1 text-xs text-slate-500">JPEG, PNG, WEBP or GIF; maximum 15 MB.</p></div>
-        <div><label className={labelClass}>Image alt text</label><input name="imageAltText" className={fieldClass} placeholder="Describe the learning activity shown"/></div>
+        <div><label className={labelClass}>Image alt text</label><input name="imageAltText" className={fieldClass} placeholder="Describe the learning activity shown"/></div>\n        <div><label className={labelClass}>Slide order (lower appears first)</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={fieldClass}/></div>
         <div className="flex flex-wrap gap-2"><button className={buttonClass} type="submit"><Plus size={16}/> {editingHeroId ? "Update draft" : "Save as draft"}</button>{editingHeroId && <button type="button" onClick={() => { setEditingHeroId(null); heroFormRef.current?.reset(); }} className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700">Cancel edit</button>}</div>
       </form>
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <h2 className="text-lg font-bold">Hero versions</h2><p className="mt-1 text-sm text-slate-500">Publishing a draft replaces the active hero. The live version stays unchanged while you edit drafts.</p>
+        <h2 className="text-lg font-bold">Hero versions</h2><p className="mt-1 text-sm text-slate-500">Publish each draft you want included in the rotating homepage slides. Published slides can coexist; use slide order to control their sequence.</p>
         {heroes.isLoading && <p className="mt-5 text-sm text-slate-500">Loading versions…</p>}
         <div className="mt-5 space-y-3">{(heroes.data ?? []).map((hero) => <HeroVersion key={hero.id} hero={hero} onEdit={() => editHeroDraft(hero)} onPublish={() => run(() => publishHero(hero.id), [["site-content","admin","hero"],["site-content","hero"]])}/>)}</div>
         {!heroes.isLoading && (heroes.data ?? []).length === 0 && <p className="mt-5 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">No hero drafts yet.</p>}
