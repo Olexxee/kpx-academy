@@ -6,7 +6,7 @@ export interface HomepageHero {
   description: string; primaryCtaLabel?: string | null; primaryCtaUrl?: string | null;
   secondaryCtaLabel?: string | null; secondaryCtaUrl?: string | null;
   imageUrl?: string | null; imagePublicId?: string | null; imageAltText?: string | null;
-  status: ContentStatus; publishedAt?: string | null; updatedAt: string;
+  status: ContentStatus; displayOrder?: number; publishedAt?: string | null; updatedAt: string;
 }
 export interface GalleryCategory {
   id: string; name: string; slug: string; description?: string | null; displayOrder: number; active: boolean;
