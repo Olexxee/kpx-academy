@@ -54,6 +54,8 @@ interface Certificate {
   status: string;
   issuedAt?: string;
   revokedAt?: string | null;
+  emailSentAt?: string | null;
+  lastEmailError?: string | null;
 }
 
 interface ListResponse<T> {
@@ -291,8 +293,10 @@ export default function AdminCertificatesPage() {
       }
       return response.data;
     },
-    onSuccess: (result) =>
-      setNotice(result.message || "Certificate email request succeeded."),
+    onSuccess: async (result) => {
+      setNotice(result.message || "Certificate email accepted by the provider.");
+      await invalidateRecords();
+    },
     onError: (error) =>
       setNotice(getApiErrorMessage(error, "Certificate email could not be resent.")),
   });
@@ -678,6 +682,22 @@ export default function AdminCertificatesPage() {
                       <p className="mt-1 break-all font-mono text-xs text-[var(--kpx-royal-blue)]">
                         {item.certificateNumber}
                       </p>
+
+                      <div className="mt-2 text-xs text-gray-500">
+                        {item.emailSentAt ? (
+                          <p>
+                            Email accepted{" "}
+                            {new Date(item.emailSentAt).toLocaleString()}
+                          </p>
+                        ) : (
+                          <p>Email acceptance time not recorded</p>
+                        )}
+                        {item.lastEmailError && (
+                          <p className="mt-1 break-words text-amber-700">
+                            Email note: {item.lastEmailError}
+                          </p>
+                        )}
+                      </div>
 
                       <div className="mt-3">
                         <StatusBadge status={item.status} />
