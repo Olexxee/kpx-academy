@@ -29,6 +29,7 @@ export interface UploadedAsset { url: string; publicId: string; resourceType: st
 const unwrap = <T,>(response: { data: Envelope<T> }) => response.data.data;
 
 export const getPublicHero = async () => unwrap(await registrationApi.get<Envelope<HomepageHero | null>>("/site-content/hero"));
+export const getPublicHeroSlides = async () => unwrap(await registrationApi.get<Envelope<HomepageHero[]>>("/site-content/hero/slides"));
 export const getAdminHeroes = async () => unwrap(await registrationApi.get<Envelope<HomepageHero[]>>("/site-content/admin/hero"));
 export const createHero = async (data: Partial<HomepageHero> & Pick<HomepageHero, "heading" | "description">) => unwrap(await registrationApi.post<Envelope<HomepageHero>>("/site-content/admin/hero", data));
 export const updateHero = async (id: string, data: Partial<HomepageHero>) => unwrap(await registrationApi.patch<Envelope<HomepageHero>>(`/site-content/admin/hero/${id}`, data));
