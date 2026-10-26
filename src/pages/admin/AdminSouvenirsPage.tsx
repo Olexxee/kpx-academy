@@ -80,10 +80,10 @@ export default function AdminSouvenirsPage() {
                 <input name="minQuantity" required type="number" min="1" placeholder="Minimum quantity" className={field}/>
                 <input name="maxQuantity" type="number" min="1" placeholder="Maximum quantity (optional)" className={field}/>
                 <input name="totalPrice" required type="number" min="1" step="0.01" placeholder="Total price" className={field}/>
-                <select name="currency" className={field}><option value="NGN">NGN</option><option value="USD">USD</option><option value="GBP">GBP</option></select>
+                <input type="hidden" name="currency" value="NGN" />
                 <button type="submit" disabled={createTier.isPending} className="rounded-xl bg-[#1D4ED8] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{createTier.isPending ? "Saving tier…" : "Add active tier"}</button>
               </form>
-              {(createTier.isError || toggleTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error || toggleTier.error) instanceof Error ? (createTier.error || toggleTier.error as Error).message : "Could not update pricing."}</p>}
+              {(createTier.isError || toggleTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error ?? toggleTier.error)?.message || "Could not update pricing."}</p>}
             </div>
           </article>)}
           {!products.data?.length && <p className="py-8 text-sm text-slate-500">No souvenir packages yet. Create the first one.</p>}
