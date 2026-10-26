@@ -11,8 +11,7 @@ export const FeaturedProgrammes = () => {
 
   const featured = (programmes ?? [])
     .filter((program) => program.active)
-    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.displayOrder - b.displayOrder)
-    ;
+    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.displayOrder - b.displayOrder);
 
   return (
     <section
