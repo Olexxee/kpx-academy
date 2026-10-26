@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { ArrowDownRight, ArrowRight, Check, Compass, Lightbulb, Sparkles } from "lucide-react";
+import { ArrowDownRight, ArrowRight, Check, Compass, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getFounderProfile } from "../api/siteContent.api";
 import { Container } from "../components/ui/Container";
@@ -55,7 +55,7 @@ export default function AboutPage() {
             <div className="relative lg:justify-self-end lg:max-w-sm">
               <div className="rounded-[2rem] border border-white/15 bg-white/[0.06] p-7 backdrop-blur-sm sm:p-9">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1D4ED8]"><Sparkles size={18} /></span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1D4ED8]"><Compass size={18} /></span>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/65">The KPX promise</p>
                 </div>
                 <div className="my-7 h-px bg-white/15" />
