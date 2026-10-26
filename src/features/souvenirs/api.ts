@@ -55,3 +55,14 @@ export const updateAdminSouvenirProduct = async (id: string, payload: Record<str
 
 export const setAdminSouvenirProductActive = async (id: string, active: boolean): Promise<SouvenirProduct> =>
   (await registrationApi.patch<Envelope<SouvenirProduct>>(`/souvenirs/admin/products/${encodeURIComponent(id)}/status`, { active })).data.data;
+
+export const createAdminSouvenirPriceTier = async (productId: string, payload: {
+  label: string; minQuantity: number; maxQuantity?: number | null; totalPrice: number; currency: string; displayOrder?: number;
+}) => (await registrationApi.post<Envelope<SouvenirProduct["priceTiers"][number]>>(
+  `/souvenirs/admin/products/${encodeURIComponent(productId)}/price-tiers`, payload,
+)).data.data;
+
+export const setAdminSouvenirPriceTierActive = async (tierId: string, active: boolean) =>
+  (await registrationApi.patch<Envelope<SouvenirProduct["priceTiers"][number]>>(
+    `/souvenirs/admin/price-tiers/${encodeURIComponent(tierId)}/status`, { active },
+  )).data.data;
