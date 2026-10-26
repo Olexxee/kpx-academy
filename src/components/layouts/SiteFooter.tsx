@@ -29,7 +29,7 @@ export const SiteFooter = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_0.8fr] lg:gap-12">
           <div>
             <Link to="/" aria-label="KPX Academy home" className="inline-flex items-center gap-1 rounded-sm">
-              {branding.data?.logoUrl ? <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="max-h-14 max-w-[220px] object-contain" /> : <>
+              {branding.data?.logoUrl ? <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="h-14 w-14 rounded-full border border-white/20 bg-white p-1 object-contain" /> : <>
                 <span className="font-heading text-2xl font-bold tracking-tight text-white">KPX</span>
                 <span className="font-heading text-2xl font-bold tracking-tight text-[#F4DCD6]">ACADEMY</span>
               </>}

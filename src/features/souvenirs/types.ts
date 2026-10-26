@@ -22,6 +22,7 @@ export interface SouvenirPriceTier {
   totalPrice: number | string;
   currency: string;
   displayOrder: number;
+  active?: boolean;
 }
 
 export interface SouvenirProduct {

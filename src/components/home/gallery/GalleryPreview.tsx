@@ -6,7 +6,7 @@ import { getPublicCategories } from "../../../api/siteContent.api";
 
 export const GalleryPreview = () => {
   const query = useQuery({ queryKey: ["site-content", "gallery", "categories"], queryFn: getPublicCategories });
-  const categories = (query.data ?? []).slice(0, 3);
+  const categories = (query.data ?? []);
   return <section aria-labelledby="gallery-preview-heading" className="bg-background py-16 sm:py-20 lg:py-28">
     <Container>
       <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">

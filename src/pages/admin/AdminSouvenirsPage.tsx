@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Save, Eye, EyeOff } from "lucide-react";
-import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive } from "../../features/souvenirs/api";
+import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
 
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]";
@@ -20,6 +20,14 @@ export default function AdminSouvenirsPage() {
   const toggle = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) => setAdminSouvenirProductActive(id, active),
     onSuccess: async () => { setNotice("Catalogue visibility updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const createTier = useMutation({
+    mutationFn: ({ productId, data }: { productId: string; data: { label: string; minQuantity: number; maxQuantity: number | null; totalPrice: number; currency: string; displayOrder: number } }) => createAdminSouvenirPriceTier(productId, data),
+    onSuccess: async () => { setNotice("Price tier saved and activated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const toggleTier = useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) => setAdminSouvenirPriceTierActive(id, active),
+    onSuccess: async () => { setNotice("Price tier status updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
   const startEdit = (product: SouvenirProduct) => {
     setEditing(product.id);
@@ -49,6 +57,34 @@ export default function AdminSouvenirsPage() {
           {(products.data ?? []).map((product) => <article key={product.id} className="flex gap-3 py-4">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">{(product.media?.find((item) => item.isPrimary) ?? product.media?.[0])?.url && <img src={(product.media.find((item) => item.isPrimary) ?? product.media[0]).url} alt="" className="h-full w-full object-cover" />}</div>
             <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.active ? "Published" : "Hidden"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers · {product.colorOptions?.length ?? 0} colours</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold"><button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button><button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide" : "Publish"}</button></div></div>
+            <div className="border-t border-slate-100 bg-slate-50/70 p-3">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Quantity price tiers</p>
+              {(product.priceTiers ?? []).map((tier) => <div key={tier.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 py-2 last:border-0">
+                <div className="min-w-0"><p className="text-sm font-medium text-slate-800">{tier.label} · {tier.minQuantity}{tier.maxQuantity == null ? "+" : "–" + tier.maxQuantity} units</p><p className="text-xs text-slate-500">{tier.currency} {Number(tier.totalPrice).toLocaleString()} · {tier.active === false ? "Inactive" : "Active"}</p></div>
+                <button type="button" disabled={toggleTier.isPending} onClick={() => toggleTier.mutate({ id: tier.id, active: tier.active === false })} className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 disabled:opacity-50">{tier.active === false ? "Activate" : "Deactivate"}</button>
+              </div>)}
+              <form className="mt-3 grid gap-2 sm:grid-cols-2" onSubmit={(event) => {
+                event.preventDefault();
+                const form = new FormData(event.currentTarget);
+                createTier.mutate({ productId: product.id, data: {
+                  label: String(form.get("tierLabel") || "").trim(),
+                  minQuantity: Number(form.get("minQuantity")),
+                  maxQuantity: String(form.get("maxQuantity") || "").trim() ? Number(form.get("maxQuantity")) : null,
+                  totalPrice: Number(form.get("totalPrice")),
+                  currency: String(form.get("currency") || "NGN"),
+                  displayOrder: (product.priceTiers ?? []).length,
+                }});
+                event.currentTarget.reset();
+              }}>
+                <input name="tierLabel" required minLength={2} placeholder="Tier label (e.g. 50–99 units)" className={field}/>
+                <input name="minQuantity" required type="number" min="1" placeholder="Minimum quantity" className={field}/>
+                <input name="maxQuantity" type="number" min="1" placeholder="Maximum quantity (optional)" className={field}/>
+                <input name="totalPrice" required type="number" min="1" step="0.01" placeholder="Total price" className={field}/>
+                <input type="hidden" name="currency" value="NGN" />
+                <button type="submit" disabled={createTier.isPending} className="rounded-xl bg-[#1D4ED8] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{createTier.isPending ? "Saving tier…" : "Add active tier"}</button>
+              </form>
+              {(createTier.isError || toggleTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error ?? toggleTier.error)?.message || "Could not update pricing."}</p>}
+            </div>
           </article>)}
           {!products.data?.length && <p className="py-8 text-sm text-slate-500">No souvenir packages yet. Create the first one.</p>}
         </div>}

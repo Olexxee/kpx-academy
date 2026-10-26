@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CalendarDays, Check, ChevronLeft, ChevronRight, CircleAlert,
-  Eye, EyeOff, LoaderCircle, Plus, Save, Sparkles, Users, X,
+  Eye, EyeOff, LoaderCircle, Plus, Save, Users, X,
 } from "lucide-react";
 import type { WorkshopType } from "../../features/workshops/types";
 import {
@@ -166,7 +166,7 @@ export default function AdminCreativeWorkspacePage() {
     <div className="mx-auto max-w-7xl p-5 sm:p-8">
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="rounded-2xl bg-[#8B1E5A] p-3 text-white"><Sparkles size={23} /></div>
+          <div className="rounded-2xl bg-[#8B1E5A] p-3 text-white"><Check size={23} /></div>
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#8B1E5A]">KPX Academy · Admin</p>
             <h1 className="mt-1 text-2xl font-semibold text-slate-900 sm:text-3xl">Creative workspace</h1>

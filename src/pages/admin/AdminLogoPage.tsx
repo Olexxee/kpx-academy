@@ -54,7 +54,7 @@ export default function AdminLogoPage() {
         {branding.isLoading ? <p className="text-sm text-slate-500">Loading site branding…</p> : <>
           <div className="rounded-2xl border border-dashed border-slate-300 bg-[#F7F5F0] p-6">
             <div className="flex min-h-36 items-center justify-center">
-              {branding.data?.logoUrl ? <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "Current KPX Academy logo"} className="max-h-28 max-w-full object-contain" /> : <div className="text-center text-slate-500"><ImagePlus className="mx-auto mb-2" size={28}/><p className="text-sm font-medium">No custom logo uploaded</p><p className="mt-1 text-xs">The site will continue to show the text logo.</p></div>}
+              {branding.data?.logoUrl ? <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "Current KPX Academy logo"} className="h-28 w-28 rounded-full border border-slate-200 bg-white p-2 object-contain shadow-sm" /> : <div className="text-center text-slate-500"><ImagePlus className="mx-auto mb-2" size={28}/><p className="text-sm font-medium">No custom logo uploaded</p><p className="mt-1 text-xs">The site will continue to show the text logo.</p></div>}
             </div>
             {branding.data?.logoUrl && <p className="mt-3 text-center text-xs text-slate-500">Current uploaded logo</p>}
           </div>

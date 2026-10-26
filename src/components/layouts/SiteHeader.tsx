@@ -60,7 +60,7 @@ export const SiteHeader = () => {
             aria-label="KPX Academy home"
           >
             {branding.data?.logoUrl ? (
-              <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="max-h-11 max-w-[190px] object-contain sm:max-h-12 sm:max-w-[220px]" />
+              <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="h-11 w-11 rounded-full border border-border bg-white p-1 object-contain sm:h-12 sm:w-12" />
             ) : <>
               <span className="font-heading text-xl font-bold tracking-tight text-primary sm:text-2xl">KPX</span>
               <span className="font-heading text-xl font-bold tracking-tight text-secondary sm:text-2xl">ACADEMY</span>

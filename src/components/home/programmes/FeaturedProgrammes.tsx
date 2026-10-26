@@ -11,8 +11,7 @@ export const FeaturedProgrammes = () => {
 
   const featured = (programmes ?? [])
     .filter((program) => program.active)
-    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.displayOrder - b.displayOrder)
-    .slice(0, 3);
+    .sort((a, b) => Number(b.featured) - Number(a.featured) || a.displayOrder - b.displayOrder);
 
   return (
     <section
@@ -34,7 +33,7 @@ export const FeaturedProgrammes = () => {
             </h2>
 
             <p className="mt-4 max-w-xl leading-7 text-text-muted">
-              Explore selected training programmes and discover where your next
+              Explore our available training programmes and discover where your next
               learning journey could begin.
             </p>
           </div>

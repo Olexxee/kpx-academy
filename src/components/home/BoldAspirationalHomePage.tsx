@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getPublicHeroSlides } from "../../api/siteContent.api";
@@ -88,7 +88,7 @@ export const BoldAspirationalHomePage = () => {
   return (
     <div className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
       <div className="bg-[#17324D] px-4 py-2.5 text-center text-xs font-semibold tracking-wide text-white sm:text-sm">
-        Practical Skills. More Possibilities. <span className="mx-2 text-[#F4DCD6]">✳</span> Your next chapter starts here.
+        Practical Skills. More Possibilities. <span className="mx-2 text-[#F4DCD6]">·</span> Your next chapter starts here.
       </div>
 
       <section aria-label="Discover KPX Academy training" className="relative isolate min-h-[650px] overflow-hidden bg-[#07152F] text-white sm:min-h-[690px] lg:min-h-[720px]">
@@ -111,7 +111,7 @@ export const BoldAspirationalHomePage = () => {
         <div className="mx-auto flex min-h-[650px] max-w-[1440px] flex-col px-5 pb-7 pt-16 sm:min-h-[690px] sm:px-8 sm:pt-20 lg:min-h-[720px] lg:px-12 lg:pt-24">
           <div className="my-auto max-w-3xl pb-10">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[.19em] text-white backdrop-blur-sm sm:text-xs">
-              <Sparkles size={14} className="text-[#F4DCD6]" />
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#F4DCD6]" />
               {slide.eyebrow}
             </div>
             <p className="mb-4 text-xs font-bold uppercase tracking-[.24em] text-[#F4DCD6] sm:text-sm">KPX Academy · Practical skills. Real opportunities.</p>
@@ -172,7 +172,7 @@ export const BoldAspirationalHomePage = () => {
     <section className="px-5 pb-16 sm:px-8 md:px-12 md:pb-24">
       <div className="mx-auto grid max-w-[1344px] overflow-hidden rounded-[2rem] bg-[#F4DCD6] md:grid-cols-2">
         <div className="p-7 sm:p-10 md:p-14"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Beyond the classroom</p><h2 className="mt-4 text-3xl font-bold leading-tight tracking-[-.05em] sm:text-5xl">Bring creativity to your next event.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#212529]/75 sm:text-base">Make your next group activity creative, interactive, and memorable. Our workshops can bring hands-on resin art or lip-care formulation experiences to schools, teams, organisations, and private groups.</p><Link to="/workshops" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#17324D] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2A7F7F]">Explore creative workshops <ArrowRight size={17} /></Link></div>
-        <div className="relative min-h-[260px] overflow-hidden md:min-h-[430px]"><img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1200&q=85" alt="Creative art materials ready for a collaborative workshop" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-[#212529]/30 to-transparent" /><div className="absolute bottom-5 left-5 rounded-xl bg-[#FAF8F5] px-4 py-3 text-xs font-bold text-[#212529] sm:bottom-8 sm:left-8 sm:px-5 sm:py-4">Make something together. <span className="ml-2 text-[#8B1E5A]">✳</span></div></div>
+        <div className="relative min-h-[260px] overflow-hidden md:min-h-[430px]"><img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1200&q=85" alt="Creative art materials ready for a collaborative workshop" className="absolute inset-0 h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-[#212529]/30 to-transparent" /><div className="absolute bottom-5 left-5 rounded-xl bg-[#FAF8F5] px-4 py-3 text-xs font-bold text-[#212529] sm:bottom-8 sm:left-8 sm:px-5 sm:py-4">Make something together. </div></div>
       </div>
     </section>
 
