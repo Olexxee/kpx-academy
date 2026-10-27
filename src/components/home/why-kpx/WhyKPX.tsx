@@ -3,27 +3,27 @@ import { Container } from "../../ui/Container";
 const reasons = [
   {
     number: "01",
-    title: "Practical by design",
+    title: "Practical Learning",
     description:
-      "Focus on useful knowledge and skills that you can develop through your chosen training programme.",
+      " We focus on useful knowledge and practical skills that learners can develop and apply beyond the training.",
   },
   {
     number: "02",
-    title: "Detailed learning",
+    title: "Detailed Instructions",
     description:
-      "Explore your subject through structured training designed to help you build understanding step by step.",
+      "We breakdown concepts and processes into clear, structured lessons to support understanding and skill developemnt.",
   },
   {
     number: "03",
-    title: "Different paths to explore",
+    title: "Relevant Learning Opportunities",
     description:
-      "Discover learning opportunities across beauty and formulation, creative skills, and trade and entrepreneurship.",
+      "We offer trainning across creative, beauty, and enterpreneurial fields, giving learners different paths to explore their interests.",
   },
   {
     number: "04",
-    title: "Learning with purpose",
+    title: "Growth and Empowerment",
     description:
-      "Choose training that aligns with your interests and the skills you want to develop.",
+      "We encourage learners to build confidence in thier abilities, strengthen their skills, and explore opportunities for personal and business growth.",
   },
 ];
 
@@ -52,9 +52,7 @@ export const WhyKPX = () => {
             </h2>
 
             <p className="mt-5 max-w-lg text-base leading-8 text-text-muted">
-              The right learning experience starts with clear knowledge,
-              thoughtful training, and the opportunity to develop skills
-              relevant to your interests.
+              Our approach combines practical knowledge, detailed intruction, and valuable learning experiences to help learners develop usefull skills and grow with confidence.
             </p>
 
             <div className="mt-8 border-l-2 border-secondary pl-5">

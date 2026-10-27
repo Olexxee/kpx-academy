@@ -5,28 +5,28 @@ const steps = [
     number: "01",
     title: "Choose what you want to learn",
     description:
-      "Explore the available training programmes and find one that matches your interests and learning goals.",
+      "Explore our available training programmes and select the one that aligns with your interests, learning goals, or business aspirations. Review the program details to understand what the training offers before proceeding.",
     icon: "compass",
   },
   {
     number: "02",
-    title: "Register for your programme",
+    title: "Complete your registration",
     description:
-      "Complete the registration process and review the programme details and applicable fee before making payment.",
+      "Fill out the registration form with your full name and a valid email address. Ensure your name is entered correctly as you want it to appera on your certificate, and provide an email address you can access to recieve your enrolment confirmation and class access instructions.",
     icon: "clipboard-check",
   },
   {
     number: "03",
-    title: "Confirm your enrolment",
+    title: "Complete your payment",
     description:
-      "Complete payment through the website. After your payment is verified, you'll receive your confirmation and Telegram onboarding instructions.",
+      "Review the applicable programme fee and follow the payment  instructions provided on the website. Once your payment has been verified, your enrolment will be confirmed",
     icon: "shield-check",
   },
   {
     number: "04",
     title: "Begin your learning journey",
     description:
-      "Follow your onboarding instructions to access your training on Telegram and start developing your knowledge and practical skills.",
+      "Check your email for your enrolment confirmation and instructions for accessing your training. Follow the information provided to join your class and begin your learning journey.",
     icon: "graduation-cap",
   },
 ];
@@ -154,8 +154,8 @@ export const HowTrainingWorks = () => {
             <span className="font-semibold text-primary">
               Your access matters.
             </span>{" "}
-            Telegram onboarding instructions are provided after payment
-            verification. You do not need a public training link to register.
+            Onboarding instructions are provided after payment
+            verification.
           </p>
         </div>
       </Container>
