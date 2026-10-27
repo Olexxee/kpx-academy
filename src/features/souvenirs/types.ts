@@ -48,7 +48,8 @@ export interface SouvenirOrderResult {
     accessCode?: string | null;
     amount: number | string;
     currency: string;
-  };
+  } | null;
+  paymentError?: string | null;
   order: {
     publicReference: string;
     productName: string;
