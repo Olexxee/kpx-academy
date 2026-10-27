@@ -74,3 +74,8 @@ export const uploadAdminSouvenirProductMedia = async (productId: string, files: 
   const response = await registrationApi.post<Envelope<SouvenirProduct["media"]>>(path, form);
   return response.data.data;
 };
+
+export const verifySouvenirPayment = async (reference: string) => {
+  const path = "/payment/verify/" + encodeURIComponent(reference);
+  return (await registrationApi.get<Envelope<{ status: string; souvenirOrderStatus?: string | null }>>(path)).data.data;
+};
