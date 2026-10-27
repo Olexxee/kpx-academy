@@ -79,3 +79,8 @@ export const verifySouvenirPayment = async (reference: string) => {
   const path = "/payment/verify/" + encodeURIComponent(reference);
   return (await registrationApi.get<Envelope<{ status: string; souvenirOrderStatus?: string | null }>>(path)).data.data;
 };
+
+export const retryGuestSouvenirPayment = async (token: string) => {
+  const path = "/souvenirs/orders/access/" + encodeURIComponent(token) + "/payment";
+  return (await registrationApi.post<Envelope<{ authorizationUrl: string; reference: string; amount: number | string; currency: string }>>(path, {})).data.data;
+};
