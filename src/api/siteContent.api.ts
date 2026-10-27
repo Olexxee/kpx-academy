@@ -34,6 +34,7 @@ export const getAdminHeroes = async () => unwrap(await registrationApi.get<Envel
 export const createHero = async (data: Partial<HomepageHero> & Pick<HomepageHero, "heading" | "description">) => unwrap(await registrationApi.post<Envelope<HomepageHero>>("/site-content/admin/hero", data));
 export const updateHero = async (id: string, data: Partial<HomepageHero>) => unwrap(await registrationApi.patch<Envelope<HomepageHero>>(`/site-content/admin/hero/${id}`, data));
 export const publishHero = async (id: string) => unwrap(await registrationApi.post<Envelope<HomepageHero>>(`/site-content/admin/hero/${id}/publish`));
+export const deleteHero = async (id: string) => registrationApi.delete(`/site-content/admin/hero/${id}`);
 
 export const getPublicCategories = async () => unwrap(await registrationApi.get<Envelope<GalleryCategory[]>>("/site-content/gallery/categories"));
 export const getAdminCategories = async () => unwrap(await registrationApi.get<Envelope<GalleryCategory[]>>("/site-content/admin/gallery/categories"));

@@ -164,7 +164,7 @@ export const BoldAspirationalHomePage = () => {
         </div>
       </section>
 
-    <section className="bg-[#212529] text-white">
+    <section className="bg-[#8B1E5A] text-white">
       <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-14 sm:px-8 md:grid-cols-[.7fr_1.3fr] md:items-center md:px-12 md:py-20">
         <div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">A little about us</p><h2 className="mt-4 max-w-md text-3xl font-bold leading-tight tracking-[-.04em] sm:text-5xl">Learning should lead to <span className="text-[#F4DCD6]">possibility.</span></h2></div>
         <div className="max-w-2xl md:justify-self-end"><p className="text-base leading-7 text-white/75 sm:text-lg sm:leading-8">KPX Academy brings practical, skill-based training together in one place. We help learners understand the process, practise with purpose, and explore ways to use their skills in everyday life or business.</p><Link to="/about" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#F4DCD6] hover:text-white">Our story <ArrowRight size={17} /></Link></div>
