@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Save, Eye, EyeOff } from "lucide-react";
-import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive } from "../../features/souvenirs/api";
+import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
 
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]";
@@ -28,6 +28,10 @@ export default function AdminSouvenirsPage() {
   const toggleTier = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) => setAdminSouvenirPriceTierActive(id, active),
     onSuccess: async () => { setNotice("Price tier status updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const uploadMedia = useMutation({
+    mutationFn: ({ productId, files }: { productId: string; files: File[] }) => uploadAdminSouvenirProductMedia(productId, files),
+    onSuccess: async () => { setNotice("Reference images uploaded."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
   const startEdit = (product: SouvenirProduct) => {
     setEditing(product.id);
@@ -57,6 +61,25 @@ export default function AdminSouvenirsPage() {
           {(products.data ?? []).map((product) => <article key={product.id} className="flex gap-3 py-4">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">{(product.media?.find((item) => item.isPrimary) ?? product.media?.[0])?.url && <img src={(product.media.find((item) => item.isPrimary) ?? product.media[0]).url} alt="" className="h-full w-full object-cover" />}</div>
             <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.active ? "Published" : "Hidden"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers · {product.colorOptions?.length ?? 0} colours</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold"><button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button><button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide" : "Publish"}</button></div></div>
+            <div className="border-t border-slate-100 bg-white p-3">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Package reference images</p>
+              <div className="mb-3 flex flex-wrap gap-2">
+                {(product.media ?? []).map((image) => <img key={image.id} src={image.url} alt={image.altText || product.name} className="h-16 w-16 rounded-lg border border-slate-200 object-cover" />)}
+              </div>
+              <form className="flex flex-wrap items-center gap-2" onSubmit={(event) => {
+                event.preventDefault();
+                const form = event.currentTarget;
+                const picker = form.elements.namedItem("media") as HTMLInputElement;
+                const files = Array.from(picker.files ?? []);
+                if (!files.length) return;
+                uploadMedia.mutate({ productId: product.id, files }, { onSuccess: () => { form.reset(); } });
+              }}>
+                <input name="media" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple required className="min-w-0 flex-1 text-xs" />
+                <button type="submit" disabled={uploadMedia.isPending} className="rounded-lg bg-[#1D4ED8] px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">{uploadMedia.isPending ? "Uploading…" : "Upload images"}</button>
+              </form>
+              {uploadMedia.isError && <p role="alert" className="mt-2 text-xs text-red-700">{uploadMedia.error instanceof Error ? uploadMedia.error.message : "Could not upload images."}</p>}
+              <p className="mt-2 text-xs text-slate-500">Images guide customers; they do not select an image as a product option.</p>
+            </div>
             <div className="border-t border-slate-100 bg-slate-50/70 p-3">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Quantity price tiers</p>
               {(product.priceTiers ?? []).map((tier) => <div key={tier.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 py-2 last:border-0">
@@ -98,7 +121,7 @@ export default function AdminSouvenirsPage() {
         <div className="grid gap-4 sm:grid-cols-2"><div><label className={label}>Production lead time (days)</label><input name="productionLeadTimeDays" type="number" min="0" max="365" className={field} /></div><div><label className={label}>Display order</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={field} /></div></div>
         <label className="flex items-center gap-2 text-sm font-medium text-slate-700"><input type="checkbox" name="featured" /> Feature this package</label>
         <button disabled={save.isPending} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"><Plus size={16} className="hidden" /><Save size={16}/>{save.isPending ? "Saving…" : editing ? "Save changes" : "Create package"}</button>
-        <p className="text-xs leading-5 text-slate-500">This editor covers package details and catalogue visibility. Existing API operations for image assets, colour options and quantity tiers remain available; those controls need a dedicated media upload endpoint before they can be safely exposed here.</p>
+        <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, catalogue visibility, and quantity-based pricing. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
       </form>
     </div>
   </div>;

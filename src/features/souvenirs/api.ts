@@ -66,3 +66,21 @@ export const setAdminSouvenirPriceTierActive = async (tierId: string, active: bo
   (await registrationApi.patch<Envelope<SouvenirProduct["priceTiers"][number]>>(
     `/souvenirs/admin/price-tiers/${encodeURIComponent(tierId)}/status`, { active },
   )).data.data;
+
+export const uploadAdminSouvenirProductMedia = async (productId: string, files: File[]) => {
+  const form = new FormData();
+  files.forEach((file) => form.append("media", file));
+  const path = "/souvenirs/admin/products/" + encodeURIComponent(productId) + "/media/upload";
+  const response = await registrationApi.post<Envelope<SouvenirProduct["media"]>>(path, form);
+  return response.data.data;
+};
+
+export const verifySouvenirPayment = async (reference: string) => {
+  const path = "/payment/verify/" + encodeURIComponent(reference);
+  return (await registrationApi.get<Envelope<{ status: string; souvenirOrderStatus?: string | null }>>(path)).data.data;
+};
+
+export const retryGuestSouvenirPayment = async (token: string) => {
+  const path = "/souvenirs/orders/access/" + encodeURIComponent(token) + "/payment";
+  return (await registrationApi.post<Envelope<{ authorizationUrl: string; reference: string; amount: number | string; currency: string }>>(path, {})).data.data;
+};
