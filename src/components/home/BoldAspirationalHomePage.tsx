@@ -164,7 +164,7 @@ export const BoldAspirationalHomePage = () => {
         </div>
       </section>
 
-    <section className="bg-[#212529] text-white">
+    <section className="bg-[#8B1E5A] text-white">
       <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-14 sm:px-8 md:grid-cols-[.7fr_1.3fr] md:items-center md:px-12 md:py-20">
         <div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">A little about us</p><h2 className="mt-4 max-w-md text-3xl font-bold leading-tight tracking-[-.04em] sm:text-5xl">Learning should lead to <span className="text-[#F4DCD6]">possibility.</span></h2></div>
         <div className="max-w-2xl md:justify-self-end"><p className="text-base leading-7 text-white/75 sm:text-lg sm:leading-8">KPX Academy brings practical, skill-based training together in one place. We help learners understand the process, practise with purpose, and explore ways to use their skills in everyday life or business.</p><Link to="/about" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#F4DCD6] hover:text-white">Our story <ArrowRight size={17} /></Link></div>
@@ -173,7 +173,7 @@ export const BoldAspirationalHomePage = () => {
 
     <section className="px-5 pb-16 sm:px-8 md:px-12 md:pb-24">
       <div className="mx-auto grid max-w-[1344px] overflow-hidden rounded-[2rem] bg-[#F4DCD6] md:grid-cols-2">
-        <div className="p-7 sm:p-10 md:p-14"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Beyond the classroom</p><h2 className="mt-4 text-3xl font-bold leading-tight tracking-[-.05em] sm:text-5xl">Bring creativity to your next event.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#212529]/75 sm:text-base">Make your next group activity creative, interactive, and memorable. Our workshops can bring hands-on resin art or lip-care formulation experiences to schools, teams, organisations, and private groups.</p><Link to="/workshops" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#17324D] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2A7F7F]">Explore creative workshops <ArrowRight size={17} /></Link></div>
+        <div className="p-7 sm:p-10 md:p-14"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#8B1E5A]">Beyond the classroom</p><h2 className="mt-4 text-3xl font-bold leading-tight tracking-[-.05em] sm:text-5xl">Bring creativity to your next event.</h2><p className="mt-5 max-w-lg text-sm leading-7 text-[#212529]/75 sm:text-base">Make your next group activity creative, interactive, and memorable. Our workshops can bring hands-on resin art or lip-care formulation experiences to schools, teams, organisations, and private groups.</p><Link to="/workshops/book" className="mt-7 inline-flex items-center gap-3 rounded-full bg-[#17324D] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2A7F7F]">Explore creative workshops <ArrowRight size={17} /></Link></div>
         <div className="relative min-h-[260px] overflow-hidden shadow-[0_18px_45px_rgba(23,50,77,0.18)] md:min-h-[430px]"><SiteImage src={siteImages.homepageHero} alt="KPX Academy practical learning and creative workshops" className="absolute inset-0 h-full w-full object-cover object-center" /><div className="absolute inset-0 bg-gradient-to-t from-[#212529]/30 to-transparent" /><div className="absolute bottom-5 left-5 rounded-xl bg-[#FAF8F5] px-4 py-3 text-xs font-bold text-[#212529] sm:bottom-8 sm:left-8 sm:px-5 sm:py-4">Make something together. </div></div>
       </div>
     </section>
