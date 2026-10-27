@@ -122,7 +122,7 @@ export const BoldAspirationalHomePage = () => {
                 <span key={line} className="block">{index === 1 ? <span className="text-[#F4DCD6]">{line}</span> : line}</span>
               ))}
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-white/85 sm:mt-7 sm:text-lg sm:leading-8">{slide.description}</p>
+            <p className="mt-6 max-w-xl text-secondary leading-7 text-white/85 sm:mt-7 sm:text-lg sm:leading-8">{slide.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a href={publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaUrl || "/programs"} className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-[#2A7F7F] px-7 py-4 text-sm font-bold text-white shadow-lg shadow-black/15 transition hover:bg-[#236b6b] focus:outline-none focus:ring-4 focus:ring-white/30">
                 {publishedHeroes[activeSlide % Math.max(publishedHeroes.length, 1)]?.primaryCtaLabel || "Explore our courses"} <ArrowRight size={18} />
