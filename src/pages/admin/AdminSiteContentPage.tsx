@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDown, ArrowUp, CheckCircle2, FileText, Pencil, Plus, Send, Trash2, UploadCloud } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
-  createCategory, createGalleryImage, createHero, createResource, deleteGalleryImage, deleteResource,
+  createCategory, createGalleryImage, createHero, createResource, deleteGalleryImage, deleteHero, deleteResource,
   getAdminCategories, getAdminGallery, getAdminHeroes, getAdminResources, publishHero, updateCategory, updateHero, updateGalleryImage,
   updateResource, uploadGalleryImage, uploadHeroImage, uploadResourcePdf,
   type GalleryCategory, type GalleryImage, type HomepageHero, type Resource,
@@ -152,7 +152,7 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-xl font-bold text-[#17324D]">Homepage slide library</h2><p className="mt-1 text-sm text-slate-500">Published slides rotate on the public homepage. Edit, preview, and publish from here.</p></div><span className="rounded-full bg-[#F7F5F0] px-3 py-1.5 text-xs font-semibold text-[#17324D]">{(heroes.data ?? []).filter((hero) => hero.status === "PUBLISHED").length} published · {(heroes.data ?? []).length} total</span></div>
         {heroes.isLoading && <p className="mt-5 text-sm text-slate-500">Loading versions…</p>}
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">{(heroes.data ?? []).map((hero) => <HeroVersion key={hero.id} hero={hero} onEdit={() => editHeroDraft(hero)} onPublish={() => run(() => publishHero(hero.id), [["site-content","admin","hero"],["site-content","hero"]])}/>)}</div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">{(heroes.data ?? []).map((hero) => <HeroVersion key={hero.id} hero={hero} onEdit={() => editHeroDraft(hero)} onPublish={() => run(() => publishHero(hero.id), [["site-content","admin","hero"],["site-content","hero"],["site-content","hero","slides"]])} onDelete={() => { if (window.confirm(`Delete the "${hero.heading}" homepage slide? This also removes its uploaded image where possible.`)) void run(() => deleteHero(hero.id), [["site-content","admin","hero"],["site-content","hero"],["site-content","hero","slides"]]); }}/>)}</div>
         {!heroes.isLoading && (heroes.data ?? []).length === 0 && <p className="mt-5 rounded-xl bg-[#F7F5F0] p-5 text-sm text-slate-600">No homepage slides yet. Create your first slide using the editor.</p>}
         </div>
       </section>
@@ -209,11 +209,11 @@ export default function AdminSiteContentPage({ mode }: { mode: Mode }) {
   </div>;
 }
 
-function HeroVersion({ hero, onPublish, onEdit }: { hero: HomepageHero; onPublish: () => void; onEdit: () => void }) {
+function HeroVersion({ hero, onPublish, onEdit, onDelete }: { hero: HomepageHero; onPublish: () => void; onEdit: () => void; onDelete: () => void }) {
   return <article className="overflow-hidden rounded-2xl border border-slate-200 transition hover:border-[#2A7F7F]/50 hover:shadow-sm">
     {hero.imageUrl ? <img src={hero.imageUrl} alt={hero.imageAltText ?? ""} className="h-32 w-full object-cover"/> : <div className="grid h-24 place-items-center bg-[#F7F5F0] text-sm text-slate-400">No image selected</div>}
     <div className="p-4"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#2A7F7F]">Slide {hero.displayOrder ?? 0}</p><h3 className="mt-1 font-bold text-[#17324D]">{hero.heading}</h3><p className="mt-1 line-clamp-2 text-sm leading-5 text-slate-500">{hero.description}</p></div><Status status={hero.status}/></div>
-    <div className="mt-4 flex flex-wrap gap-2"><SmallButton onClick={onEdit}><Pencil size={13}/> Edit</SmallButton>{hero.status !== "PUBLISHED" && <SmallButton onClick={onPublish}><Send size={13}/> Publish</SmallButton>}</div></div>
+    <div className="mt-4 flex flex-wrap gap-2"><SmallButton onClick={onEdit}><Pencil size={13}/> Edit</SmallButton>{hero.status !== "PUBLISHED" && <SmallButton onClick={onPublish}><Send size={13}/> Publish</SmallButton>}<SmallButton onClick={onDelete} danger><Trash2 size={13}/> Delete</SmallButton></div></div>
   </article>;
 }
 function GalleryCard({ image, onPublish, onArchive, onDelete }: { image: GalleryImage; onPublish: () => void; onArchive: () => void; onDelete: () => void }) {
