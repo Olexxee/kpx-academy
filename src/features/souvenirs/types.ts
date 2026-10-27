@@ -41,6 +41,14 @@ export interface SouvenirProduct {
 }
 
 export interface SouvenirOrderResult {
+  payment: {
+    paymentId: string;
+    reference: string;
+    authorizationUrl: string;
+    accessCode?: string | null;
+    amount: number | string;
+    currency: string;
+  };
   order: {
     publicReference: string;
     productName: string;
