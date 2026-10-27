@@ -3,14 +3,18 @@ import { BookOpenText, Download, FileText, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublicResources, getResourceDownloadUrl } from "../api/siteContent.api";
+import { SiteImage } from "../components/ui/SiteImage";
+import { siteImages } from "../config/siteImages";
 
 export default function ResourcesPage() {
   const [search, setSearch] = useState("");
   const query = useQuery({ queryKey: ["site-content", "resources", search], queryFn: () => getPublicResources(search || undefined) });
   const resources = query.data ?? [];
   return <div className="min-h-[70vh] bg-[#FAF8F5]">
-    <section className="bg-[#07152F] px-5 py-16 text-white sm:px-8 sm:py-20">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative isolate overflow-hidden bg-[#07152F] px-5 py-16 text-white sm:px-8 sm:py-20">
+      <SiteImage src={siteImages.resources} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/90 via-[#07152F]/75 to-[#07152F]/45" />
+      <div className="relative z-10 mx-auto max-w-6xl">
         <p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">KPX learning library</p>
         <h1 className="mt-4 max-w-3xl font-[Sora] text-4xl font-extrabold tracking-tight sm:text-6xl">Resources to keep you learning.</h1>
         <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">Read training manuals and practical guides online, or download a copy to use offline.</p>

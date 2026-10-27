@@ -3,6 +3,8 @@ import type { FormEvent } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
+import { SiteImage } from "../../../components/ui/SiteImage";
+import { siteImages } from "../../../config/siteImages";
 import { createWorkshopBooking, getWorkshopOfferings } from "../api";
 import type { CreateWorkshopBookingPayload, WorkshopVenueMode } from "../types";
 
@@ -128,8 +130,10 @@ export const WorkshopBookingPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="bg-primary py-14 text-white sm:py-20 lg:py-24">
-        <Container>
+      <section className="relative isolate overflow-hidden bg-primary py-14 text-white sm:py-20 lg:py-24">
+        <SiteImage src={siteImages.creativeWorkshop} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/95 via-[#17324D]/80 to-[#17324D]/45" />
+        <Container className="relative z-10">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70 sm:text-sm">KPX Academy · Creative Workshops</p>
           <div className="mt-5 max-w-3xl">
             <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">Make your next event <span className="text-[#F4DCD6]">hands-on.</span></h1>

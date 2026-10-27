@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
+import { SiteImage } from "../../../components/ui/SiteImage";
+import { siteImages } from "../../../config/siteImages";
 import { useTrainingPrograms } from "../hooks/useTrainingPrograms";
 import { useTrainingMedia } from "../hooks/useTrainingMedia";
 import { formatPrice } from "../utils/format";
@@ -47,9 +49,9 @@ export const TrainingProgramsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-primary text-white">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full border border-white/15 sm:h-96 sm:w-96" />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-5 top-24 h-48 w-48 rounded-full border border-white/10 sm:right-24 sm:top-20 sm:h-64 sm:w-64" />
+      <section className="relative isolate overflow-hidden bg-primary text-white">
+        <SiteImage src={siteImages.programmes} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/95 via-[#17324D]/80 to-[#17324D]/50" />
         <Container className="relative py-16 sm:py-20 lg:py-28">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70 sm:text-sm">KPX Academy · Learn with purpose</p>
           <div className="mt-5 max-w-3xl">
