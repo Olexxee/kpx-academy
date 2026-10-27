@@ -2,6 +2,8 @@ import { useMemo, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { Award, BadgeCheck, FileCheck2, Search, ShieldCheck, UploadCloud } from "lucide-react";
 import { Container } from "../components/ui/Container";
+import { SiteImage } from "../components/ui/SiteImage";
+import { siteImages } from "../config/siteImages";
 import { registrationApi } from "../lib/registrationApi";
 import { useTrainingPrograms } from "../features/training/hooks/useTrainingPrograms";
 
@@ -132,8 +134,10 @@ export default function CertificatesPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-primary py-16 text-white sm:py-20">
-        <Container className="relative">
+      <section className="relative isolate overflow-hidden bg-primary py-16 text-white sm:py-20">
+        <SiteImage src={siteImages.certificates} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/95 via-[#17324D]/80 to-[#17324D]/50" />
+        <Container className="relative z-10">
           <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F4DCD6]">
             <Award size={16} /> Student certificate services
           </p>
