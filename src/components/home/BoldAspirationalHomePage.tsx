@@ -119,7 +119,7 @@ export const BoldAspirationalHomePage = () => {
             <p className="mb-4 text-xs font-bold uppercase tracking-[.24em] text-[#F4DCD6] sm:text-sm">KPX Academy · Practical skills. Real opportunities.</p>
             <h1 aria-live="polite" className="max-w-4xl whitespace-pre-line font-[Sora] text-[clamp(2.8rem,7.4vw,6.6rem)] font-extrabold leading-[.99] tracking-[-.065em]">
               {slide.title.split("\n").map((line, index) => (
-                <span key={line} className="block">{index === 1 ? <span className="text-[#D94A91]">{line}</span> : line}</span>
+                <span key={line} className="block">{index === 0 ? <span className="text-[#D94A91]">{line}</span> : index === 1 ? <span className="text-[#F4DCD6]">{line}</span> : line}</span>
               ))}
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-white/85 sm:mt-7 sm:text-lg sm:leading-8">{slide.description}</p>
