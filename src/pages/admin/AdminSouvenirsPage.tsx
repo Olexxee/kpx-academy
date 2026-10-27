@@ -121,7 +121,7 @@ export default function AdminSouvenirsPage() {
         <div className="grid gap-4 sm:grid-cols-2"><div><label className={label}>Production lead time (days)</label><input name="productionLeadTimeDays" type="number" min="0" max="365" className={field} /></div><div><label className={label}>Display order</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={field} /></div></div>
         <label className="flex items-center gap-2 text-sm font-medium text-slate-700"><input type="checkbox" name="featured" /> Feature this package</label>
         <button disabled={save.isPending} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"><Plus size={16} className="hidden" /><Save size={16}/>{save.isPending ? "Saving…" : editing ? "Save changes" : "Create package"}</button>
-        <p className="text-xs leading-5 text-slate-500">This editor covers package details and catalogue visibility. Existing API operations for image assets, colour options and quantity tiers remain available; those controls need a dedicated media upload endpoint before they can be safely exposed here.</p>
+        <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, catalogue visibility, and quantity-based pricing. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
       </form>
     </div>
   </div>;
