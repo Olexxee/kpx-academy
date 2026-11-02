@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
@@ -24,11 +24,12 @@ export default function AdminLayout() {
   const logout = useLogout();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useLocation();
+  useEffect(() => setMobileNavOpen(false), [location.pathname]);
 
   return (
     <div className="kpx-admin-shell min-h-screen bg-[var(--kpx-warm-white)] text-[var(--kpx-dark-charcoal)]">
       {mobileNavOpen && <button type="button" aria-label="Close admin navigation" className="fixed inset-0 z-40 bg-black/55 backdrop-blur-[2px] lg:hidden" onClick={() => setMobileNavOpen(false)} />}
-      <aside id="admin-mobile-navigation" aria-label="Admin navigation" className={`fixed inset-y-0 left-0 z-50 flex w-[min(19rem,85vw)] flex-col bg-[var(--kpx-dark-charcoal)] text-white shadow-2xl transition-transform duration-300 ease-out lg:hidden ${mobileNavOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside id="admin-mobile-navigation" aria-label="Admin navigation" aria-hidden={!mobileNavOpen} inert={!mobileNavOpen} className={`fixed inset-y-0 left-0 z-50 flex w-[min(19rem,85vw)] flex-col bg-[var(--kpx-dark-charcoal)] text-white shadow-2xl transition-transform duration-300 ease-out lg:hidden ${mobileNavOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex items-center justify-between gap-3 border-b border-white/10 p-5">
           <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--kpx-royal-blue)]"><BookOpen size={21} /></span><div><p className="font-semibold">KPX Academy</p><p className="text-xs text-white/60">Administration</p></div></div>
           <button type="button" onClick={() => setMobileNavOpen(false)} aria-label="Close menu" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white/80 hover:bg-white/10"><X size={20}/></button>
