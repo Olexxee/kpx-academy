@@ -20,7 +20,7 @@ export interface SouvenirPriceTier {
   label: string;
   minQuantity: number;
   maxQuantity?: number | null;
-  unitPrice: number | string;
+  unitPrice: number | string | null;
   /** Legacy field retained by the backend for old catalogue records. */
   totalPrice?: number | string;
   currency: string;
@@ -57,6 +57,7 @@ export interface SouvenirOrderResult {
     publicReference: string;
     productName: string;
     quantity: number;
+    unitPrice?: number | string | null;
     totalPrice: number | string;
     currency: string;
     status: string;
@@ -120,6 +121,7 @@ export interface SouvenirGuestOrder {
   customerName: string;
   productName: string;
   quantity: number;
+  unitPrice?: number | string | null;
   totalPrice: number | string;
   currency: string;
   status: string;
