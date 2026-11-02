@@ -57,7 +57,7 @@ export const setAdminSouvenirProductActive = async (id: string, active: boolean)
   (await registrationApi.patch<Envelope<SouvenirProduct>>(`/souvenirs/admin/products/${encodeURIComponent(id)}/status`, { active })).data.data;
 
 export const createAdminSouvenirPriceTier = async (productId: string, payload: {
-  label: string; minQuantity: number; maxQuantity?: number | null; totalPrice: number; currency: string; displayOrder?: number;
+  label: string; minQuantity: number; maxQuantity?: number | null; unitPrice: number; currency: string; displayOrder?: number;
 }) => (await registrationApi.post<Envelope<SouvenirProduct["priceTiers"][number]>>(
   `/souvenirs/admin/products/${encodeURIComponent(productId)}/price-tiers`, payload,
 )).data.data;
@@ -84,3 +84,26 @@ export const retryGuestSouvenirPayment = async (token: string) => {
   const path = "/souvenirs/orders/access/" + encodeURIComponent(token) + "/payment";
   return (await registrationApi.post<Envelope<{ authorizationUrl: string; reference: string; amount: number | string; currency: string }>>(path, {})).data.data;
 };
+
+export const updateAdminSouvenirPriceTier = async (tierId: string, payload: {
+  label?: string; minQuantity?: number; maxQuantity?: number | null; unitPrice?: number; currency?: string; displayOrder?: number;
+}) => (await registrationApi.patch<Envelope<SouvenirProduct["priceTiers"][number]>>(
+  `/souvenirs/admin/price-tiers/${encodeURIComponent(tierId)}`, payload,
+)).data.data;
+
+export const createAdminSouvenirColorOption = async (productId: string, payload: {
+  name: string; colorHex: string; displayOrder?: number;
+}) => (await registrationApi.post<Envelope<SouvenirProduct["colorOptions"][number]>>(
+  `/souvenirs/admin/products/${encodeURIComponent(productId)}/colors`, payload,
+)).data.data;
+
+export const updateAdminSouvenirColorOption = async (colorId: string, payload: {
+  name?: string; colorHex?: string; displayOrder?: number;
+}) => (await registrationApi.patch<Envelope<SouvenirProduct["colorOptions"][number]>>(
+  `/souvenirs/admin/colors/${encodeURIComponent(colorId)}`, payload,
+)).data.data;
+
+export const setAdminSouvenirColorOptionActive = async (colorId: string, active: boolean) =>
+  (await registrationApi.patch<Envelope<SouvenirProduct["colorOptions"][number]>>(
+    `/souvenirs/admin/colors/${encodeURIComponent(colorId)}/status`, { active },
+  )).data.data;
