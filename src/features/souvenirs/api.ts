@@ -75,6 +75,31 @@ export const uploadAdminSouvenirProductMedia = async (productId: string, files: 
   return response.data.data;
 };
 
+export const updateAdminSouvenirProductMedia = async (mediaId: string, payload: { isPrimary?: boolean; altText?: string | null; sortOrder?: number }) =>
+  (await registrationApi.patch<Envelope<SouvenirProduct["media"][number]>>(
+    `/souvenirs/admin/media/${encodeURIComponent(mediaId)}`, payload,
+  )).data.data;
+
+export const deleteAdminSouvenirProductMedia = async (mediaId: string) =>
+  (await registrationApi.delete<Envelope<{ id: string; deleted?: boolean; promotedMediaId?: string | null }>>(
+    `/souvenirs/admin/media/${encodeURIComponent(mediaId)}`,
+  )).data.data;
+
+export const deleteAdminSouvenirProduct = async (productId: string) =>
+  (await registrationApi.delete<Envelope<{ id: string; deleted: boolean }>>(
+    `/souvenirs/admin/products/${encodeURIComponent(productId)}`,
+  )).data.data;
+
+export const archiveAdminSouvenirProduct = async (productId: string) =>
+  (await registrationApi.post<Envelope<SouvenirProduct>>(
+    `/souvenirs/admin/products/${encodeURIComponent(productId)}/archive`, {},
+  )).data.data;
+
+export const restoreAdminSouvenirProduct = async (productId: string) =>
+  (await registrationApi.post<Envelope<SouvenirProduct>>(
+    `/souvenirs/admin/products/${encodeURIComponent(productId)}/restore`, {},
+  )).data.data;
+
 export const verifySouvenirPayment = async (reference: string) => {
   const path = "/payments/verify/" + encodeURIComponent(reference);
   return (await registrationApi.get<Envelope<{ status: string; souvenirOrderStatus?: string | null }>>(path)).data.data;
