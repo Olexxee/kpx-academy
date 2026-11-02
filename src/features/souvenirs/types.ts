@@ -129,6 +129,7 @@ export interface SouvenirProduct {
   productionLeadTimeDays?: number | null;
   featured: boolean;
   active: boolean;
+  archivedAt?: string | null;
   displayOrder: number;
   media: SouvenirMedia[];
   colorOptions: SouvenirColorOption[];
