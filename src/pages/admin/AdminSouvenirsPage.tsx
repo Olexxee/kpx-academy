@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Save, Eye, EyeOff } from "lucide-react";
-import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia } from "../../features/souvenirs/api";
+import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, updateAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
+import { SouvenirColourManager } from "../../features/souvenirs/components/SouvenirColourManager";
 
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]";
 const label = "block text-sm font-semibold text-slate-700";
@@ -22,9 +23,10 @@ export default function AdminSouvenirsPage() {
     onSuccess: async () => { setNotice("Catalogue visibility updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
   const createTier = useMutation({
-    mutationFn: ({ productId, data }: { productId: string; data: { label: string; minQuantity: number; maxQuantity: number | null; totalPrice: number; currency: string; displayOrder: number } }) => createAdminSouvenirPriceTier(productId, data),
+    mutationFn: ({ productId, data }: { productId: string; data: { label: string; minQuantity: number; maxQuantity: number | null; unitPrice: number; currency: string; displayOrder: number } }) => createAdminSouvenirPriceTier(productId, data),
     onSuccess: async () => { setNotice("Price tier saved and activated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
+  const updateTier = useMutation({ mutationFn: ({ id, data }: { id: string; data: { unitPrice: number } }) => updateAdminSouvenirPriceTier(id, data), onSuccess: async () => { setNotice("Per-piece rate saved."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });
   const toggleTier = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) => setAdminSouvenirPriceTierActive(id, active),
     onSuccess: async () => { setNotice("Price tier status updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
@@ -80,11 +82,16 @@ export default function AdminSouvenirsPage() {
               {uploadMedia.isError && <p role="alert" className="mt-2 text-xs text-red-700">{uploadMedia.error instanceof Error ? uploadMedia.error.message : "Could not upload images."}</p>}
               <p className="mt-2 text-xs text-slate-500">Images guide customers; they do not select an image as a product option.</p>
             </div>
+            <SouvenirColourManager product={product} />
             <div className="border-t border-slate-100 bg-slate-50/70 p-3">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Quantity price tiers</p>
-              {(product.priceTiers ?? []).map((tier) => <div key={tier.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 py-2 last:border-0">
-                <div className="min-w-0"><p className="text-sm font-medium text-slate-800">{tier.label} · {tier.minQuantity}{tier.maxQuantity == null ? "+" : "–" + tier.maxQuantity} units</p><p className="text-xs text-slate-500">{tier.currency} {Number(tier.totalPrice).toLocaleString()} · {tier.active === false ? "Inactive" : "Active"}</p></div>
-                <button type="button" disabled={toggleTier.isPending} onClick={() => toggleTier.mutate({ id: tier.id, active: tier.active === false })} className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 disabled:opacity-50">{tier.active === false ? "Activate" : "Deactivate"}</button>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Volume-based per-piece pricing</p>
+              {(product.priceTiers ?? []).map((tier) => <div key={tier.id} className="border-b border-slate-200 py-3 last:border-0">
+                <div className="flex flex-wrap items-center justify-between gap-2"><div className="min-w-0"><p className="text-sm font-medium text-slate-800">{tier.label} · {tier.minQuantity}{tier.maxQuantity == null ? "+" : "–" + tier.maxQuantity} units</p><p className="text-xs text-slate-500">{tier.unitPrice == null ? "Needs per-piece rate" : `${tier.currency} ${Number(tier.unitPrice).toLocaleString()} per piece`} · {tier.active === false ? "Inactive" : "Active"}</p></div>
+                  <button type="button" disabled={toggleTier.isPending || tier.unitPrice == null} onClick={() => toggleTier.mutate({ id: tier.id, active: tier.active === false })} className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 disabled:opacity-50">{tier.active === false ? "Activate" : "Deactivate"}</button></div>
+                <form className="mt-2 flex gap-2" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); updateTier.mutate({ id: tier.id, data: { unitPrice: Number(form.get("unitPrice")) } }); }}>
+                  <input name="unitPrice" aria-label="Unit price per piece" required type="number" min="0.01" step="0.01" defaultValue={tier.unitPrice ?? ""} placeholder="Unit price per piece (NGN)" className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]"/>
+                  <button type="submit" disabled={updateTier.isPending} className="rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700">Save rate</button>
+                </form>
               </div>)}
               <form className="mt-3 grid gap-2 sm:grid-cols-2" onSubmit={(event) => {
                 event.preventDefault();
@@ -93,7 +100,7 @@ export default function AdminSouvenirsPage() {
                   label: String(form.get("tierLabel") || "").trim(),
                   minQuantity: Number(form.get("minQuantity")),
                   maxQuantity: String(form.get("maxQuantity") || "").trim() ? Number(form.get("maxQuantity")) : null,
-                  totalPrice: Number(form.get("totalPrice")),
+                  unitPrice: Number(form.get("unitPrice")),
                   currency: String(form.get("currency") || "NGN"),
                   displayOrder: (product.priceTiers ?? []).length,
                 }});
@@ -102,11 +109,11 @@ export default function AdminSouvenirsPage() {
                 <input name="tierLabel" required minLength={2} placeholder="Tier label (e.g. 50–99 units)" className={field}/>
                 <input name="minQuantity" required type="number" min="1" placeholder="Minimum quantity" className={field}/>
                 <input name="maxQuantity" type="number" min="1" placeholder="Maximum quantity (optional)" className={field}/>
-                <input name="totalPrice" required type="number" min="1" step="0.01" placeholder="Total price" className={field}/>
+                <input name="unitPrice" required type="number" min="0.01" step="0.01" placeholder="Unit price per piece (NGN)" className={field}/>
                 <input type="hidden" name="currency" value="NGN" />
                 <button type="submit" disabled={createTier.isPending} className="rounded-xl bg-[#1D4ED8] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{createTier.isPending ? "Saving tier…" : "Add active tier"}</button>
               </form>
-              {(createTier.isError || toggleTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error ?? toggleTier.error)?.message || "Could not update pricing."}</p>}
+              {(createTier.isError || toggleTier.isError || updateTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error ?? toggleTier.error ?? updateTier.error)?.message || "Could not update pricing."}</p>}
             </div>
           </article>)}
           {!products.data?.length && <p className="py-8 text-sm text-slate-500">No souvenir packages yet. Create the first one.</p>}
@@ -121,7 +128,7 @@ export default function AdminSouvenirsPage() {
         <div className="grid gap-4 sm:grid-cols-2"><div><label className={label}>Production lead time (days)</label><input name="productionLeadTimeDays" type="number" min="0" max="365" className={field} /></div><div><label className={label}>Display order</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={field} /></div></div>
         <label className="flex items-center gap-2 text-sm font-medium text-slate-700"><input type="checkbox" name="featured" /> Feature this package</label>
         <button disabled={save.isPending} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"><Plus size={16} className="hidden" /><Save size={16}/>{save.isPending ? "Saving…" : editing ? "Save changes" : "Create package"}</button>
-        <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, catalogue visibility, and quantity-based pricing. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
+        <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, colour options, catalogue visibility, and volume-based per-piece pricing. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
       </form>
     </div>
   </div>;
