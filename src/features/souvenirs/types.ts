@@ -1,3 +1,95 @@
+export interface SouvenirPaletteColor {
+  name: string;
+  colorHex: string;
+}
+
+export const SOUVENIR_COLOR_PALETTE: SouvenirPaletteColor[] = [
+  {
+    "name": "Black",
+    "colorHex": "#000000"
+  },
+  {
+    "name": "White",
+    "colorHex": "#FFFFFF"
+  },
+  {
+    "name": "Charcoal",
+    "colorHex": "#36454F"
+  },
+  {
+    "name": "Grey",
+    "colorHex": "#808080"
+  },
+  {
+    "name": "Navy",
+    "colorHex": "#17324D"
+  },
+  {
+    "name": "Blue",
+    "colorHex": "#1565C0"
+  },
+  {
+    "name": "Sky Blue",
+    "colorHex": "#4FC3F7"
+  },
+  {
+    "name": "Teal",
+    "colorHex": "#2A7F7F"
+  },
+  {
+    "name": "Emerald",
+    "colorHex": "#008F6B"
+  },
+  {
+    "name": "Green",
+    "colorHex": "#2E7D32"
+  },
+  {
+    "name": "Lime",
+    "colorHex": "#A4C639"
+  },
+  {
+    "name": "Yellow",
+    "colorHex": "#FDD835"
+  },
+  {
+    "name": "Gold",
+    "colorHex": "#D4A85A"
+  },
+  {
+    "name": "Orange",
+    "colorHex": "#F57C00"
+  },
+  {
+    "name": "Red",
+    "colorHex": "#E53935"
+  },
+  {
+    "name": "Maroon",
+    "colorHex": "#800000"
+  },
+  {
+    "name": "Wine",
+    "colorHex": "#722F37"
+  },
+  {
+    "name": "Pink",
+    "colorHex": "#F4A6C1"
+  },
+  {
+    "name": "Magenta",
+    "colorHex": "#C2185B"
+  },
+  {
+    "name": "Purple",
+    "colorHex": "#6A1B9A"
+  },
+  {
+    "name": "Brown",
+    "colorHex": "#795548"
+  }
+];
+
 export interface SouvenirMedia {
   id: string;
   url: string;
