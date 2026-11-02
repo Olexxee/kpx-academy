@@ -22,7 +22,7 @@ export interface SouvenirPriceTier {
   maxQuantity?: number | null;
   unitPrice: number | string | null;
   /** Legacy field retained by the backend for old catalogue records. */
-  totalPrice?: number | string;
+  totalPrice: number | string;
   currency: string;
   displayOrder: number;
   active?: boolean;
