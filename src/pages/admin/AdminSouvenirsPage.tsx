@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Save, Eye, EyeOff } from "lucide-react";
 import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, updateAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
-import { SouvenirColourManager } from "../../features/souvenirs/components/SouvenirColourManager";
 
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]";
 const label = "block text-sm font-semibold text-slate-700";
@@ -50,19 +49,19 @@ export default function AdminSouvenirsPage() {
     save.mutate({ ...(editing ? { id: editing } : {}), data: { name, slug: String(form.get("slug") || slugify(name)), description: String(form.get("description") || ""), bookingTerms: String(form.get("bookingTerms") || ""), productionLeadTimeDays: String(form.get("productionLeadTimeDays") || "") ? Number(form.get("productionLeadTimeDays")) : null, displayOrder: Number(form.get("displayOrder") || 0), featured: form.get("featured") === "on" } });
     event.currentTarget.reset();
   };
-  return <div className="mx-auto w-full max-w-7xl px-4 py-7 sm:px-8">
+  return <div className="mx-auto w-full max-w-7xl px-3 py-6 sm:px-6 sm:py-7 xl:px-8">
     <p className="text-xs font-bold uppercase tracking-[.18em] text-[#8B1E5A]">Catalogue management</p>
     <h1 className="mt-2 text-3xl font-bold text-slate-900">Souvenir packages</h1>
-    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Create and maintain ready-made souvenir packages shown on the public catalogue. Product images, colour options, and quantity pricing are managed through the package's existing catalogue data.</p>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Create and maintain ready-made souvenir packages shown on the public catalogue. Product images and quantity pricing are managed here. Customers choose their colours directly from the fixed palette when placing an order.</p>
     {notice && <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{notice}</p>}
     {save.isError && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{save.error instanceof Error ? save.error.message : "Could not save package."}</p>}
-    <div className="mt-7 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,.8fr)]">
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+    <div className="mt-7 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,.8fr)]">
+      <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
         <div className="flex items-center justify-between"><h2 className="text-lg font-bold">Catalogue inventory</h2><span className="text-sm text-slate-500">{products.data?.length ?? 0} packages</span></div>
         {products.isLoading ? <p className="py-8 text-sm text-slate-500">Loading packages…</p> : products.isError ? <p role="alert" className="py-8 text-sm text-red-700">Could not load souvenir packages. Refresh and try again.</p> : <div className="mt-4 divide-y divide-slate-100">
           {(products.data ?? []).map((product) => <article key={product.id} className="flex gap-3 py-4">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">{(product.media?.find((item) => item.isPrimary) ?? product.media?.[0])?.url && <img src={(product.media.find((item) => item.isPrimary) ?? product.media[0]).url} alt="" className="h-full w-full object-cover" />}</div>
-            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.active ? "Published" : "Hidden"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers · {product.colorOptions?.length ?? 0} colours</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold"><button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button><button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide" : "Publish"}</button></div></div>
+            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.active ? "Published" : "Hidden"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold"><button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button><button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide" : "Publish"}</button></div></div>
             <div className="border-t border-slate-100 bg-white p-3">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Package reference images</p>
               <div className="mb-3 flex flex-wrap gap-2">
@@ -82,7 +81,6 @@ export default function AdminSouvenirsPage() {
               {uploadMedia.isError && <p role="alert" className="mt-2 text-xs text-red-700">{uploadMedia.error instanceof Error ? uploadMedia.error.message : "Could not upload images."}</p>}
               <p className="mt-2 text-xs text-slate-500">Images guide customers; they do not select an image as a product option.</p>
             </div>
-            <SouvenirColourManager product={product} />
             <div className="border-t border-slate-100 bg-slate-50/70 p-3">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Volume-based per-piece pricing</p>
               {(product.priceTiers ?? []).map((tier) => <div key={tier.id} className="border-b border-slate-200 py-3 last:border-0">
@@ -128,7 +126,7 @@ export default function AdminSouvenirsPage() {
         <div className="grid gap-4 sm:grid-cols-2"><div><label className={label}>Production lead time (days)</label><input name="productionLeadTimeDays" type="number" min="0" max="365" className={field} /></div><div><label className={label}>Display order</label><input name="displayOrder" type="number" min="0" defaultValue="0" className={field} /></div></div>
         <label className="flex items-center gap-2 text-sm font-medium text-slate-700"><input type="checkbox" name="featured" /> Feature this package</label>
         <button disabled={save.isPending} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"><Plus size={16} className="hidden" /><Save size={16}/>{save.isPending ? "Saving…" : editing ? "Save changes" : "Create package"}</button>
-        <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, colour options, catalogue visibility, and volume-based per-piece pricing. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
+        <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, catalogue visibility, and volume-based per-piece pricing. Customers choose their preferred colours during checkout. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
       </form>
     </div>
   </div>;
