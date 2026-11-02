@@ -141,7 +141,7 @@ export default function CertificatesPage() {
           <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F4DCD6]">
             <Award size={16} /> Student certificate services
           </p>
-          <h1 className="mt-4 max-w-3xl font-heading text-4xl font-bold leading-tight sm:text-5xl">
+          <h1 className="mt-4 max-w-3xl font-heading text-4xl font-bold leading-tight text-[#D94A91] sm:text-5xl">
             Your learning deserves to be recognised.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">

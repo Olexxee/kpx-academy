@@ -16,7 +16,7 @@ export default function ResourcesPage() {
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/90 via-[#07152F]/75 to-[#07152F]/45" />
       <div className="relative z-10 mx-auto max-w-6xl">
         <p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">KPX learning library</p>
-        <h1 className="mt-4 max-w-3xl font-[Sora] text-4xl font-extrabold tracking-tight sm:text-6xl">Resources to keep you learning.</h1>
+        <h1 className="mt-4 max-w-3xl font-[Sora] text-4xl font-extrabold tracking-tight text-[#D94A91] sm:text-6xl">Resources to keep you learning.</h1>
         <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">Read training manuals and practical guides online, or download a copy to use offline.</p>
         <label className="mt-8 flex max-w-xl items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F4DCD6]">
           <Search size={19} className="shrink-0 text-white/70" />
