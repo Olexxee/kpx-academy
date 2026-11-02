@@ -59,9 +59,11 @@ export default function AdminSouvenirsPage() {
       <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
         <div className="flex items-center justify-between"><h2 className="text-lg font-bold">Catalogue inventory</h2><span className="text-sm text-slate-500">{products.data?.length ?? 0} packages</span></div>
         {products.isLoading ? <p className="py-8 text-sm text-slate-500">Loading packages…</p> : products.isError ? <p role="alert" className="py-8 text-sm text-red-700">Could not load souvenir packages. Refresh and try again.</p> : <div className="mt-4 divide-y divide-slate-100">
-          {(products.data ?? []).map((product) => <article key={product.id} className="flex gap-3 py-4">
+          {(products.data ?? []).map((product) => <article key={product.id} className="space-y-4 rounded-2xl border border-slate-100 p-3 sm:p-4">
+            <div className="flex min-w-0 items-start gap-3">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">{(product.media?.find((item) => item.isPrimary) ?? product.media?.[0])?.url && <img src={(product.media.find((item) => item.isPrimary) ?? product.media[0]).url} alt="" className="h-full w-full object-cover" />}</div>
             <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.active ? "Published" : "Hidden"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold"><button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button><button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide" : "Publish"}</button></div></div>
+            </div>
             <div className="border-t border-slate-100 bg-white p-3">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Package reference images</p>
               <div className="mb-3 flex flex-wrap gap-2">
