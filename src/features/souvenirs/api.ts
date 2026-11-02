@@ -11,7 +11,7 @@ export const getSouvenirProduct = async (slug: string): Promise<SouvenirProduct>
 
 export const createSouvenirOrder = async (payload: {
   customerName: string; customerEmail: string; customerWhatsApp: string;
-  productId: string; quantity: number; colorOptionIds: string[]; customerNotes?: string;
+  productId: string; quantity: number; colorSelections: Array<{ name: string; colorHex: string }>; customerNotes?: string;
 }): Promise<SouvenirOrderResult> =>
   (await registrationApi.post<Envelope<SouvenirOrderResult>>("/souvenirs/orders", payload)).data.data;
 
