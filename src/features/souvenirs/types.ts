@@ -12,6 +12,7 @@ export interface SouvenirColorOption {
   colorHex: string;
   swatchImageUrl?: string | null;
   displayOrder: number;
+  active?: boolean;
 }
 
 export interface SouvenirPriceTier {
