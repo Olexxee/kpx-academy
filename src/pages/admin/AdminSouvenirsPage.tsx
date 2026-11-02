@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Save, Eye, EyeOff } from "lucide-react";
-import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, updateAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia } from "../../features/souvenirs/api";
+import { Plus, Save, Eye, EyeOff, Trash2, Star, X } from "lucide-react";
+import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, updateAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia, updateAdminSouvenirProductMedia, deleteAdminSouvenirProductMedia, deleteAdminSouvenirProduct, archiveAdminSouvenirProduct, restoreAdminSouvenirProduct } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
 
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]";
@@ -12,6 +12,7 @@ export default function AdminSouvenirsPage() {
   const client = useQueryClient();
   const [editing, setEditing] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
+  const [previewImage, setPreviewImage] = useState<{ url: string; altText: string } | null>(null);
   const products = useQuery({ queryKey: ["souvenirs", "admin"], queryFn: getAdminSouvenirProducts });
   const save = useMutation({
     mutationFn: async (payload: { id?: string; data: Record<string, unknown> }) => payload.id ? updateAdminSouvenirProduct(payload.id, payload.data) : createAdminSouvenirProduct(payload.data),
@@ -33,6 +34,26 @@ export default function AdminSouvenirsPage() {
   const uploadMedia = useMutation({
     mutationFn: ({ productId, files }: { productId: string; files: File[] }) => uploadAdminSouvenirProductMedia(productId, files),
     onSuccess: async () => { setNotice("Reference images uploaded."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const setPrimaryMedia = useMutation({
+    mutationFn: (mediaId: string) => updateAdminSouvenirProductMedia(mediaId, { isPrimary: true }),
+    onSuccess: async () => { setNotice("Primary package image updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const deleteMedia = useMutation({
+    mutationFn: (mediaId: string) => deleteAdminSouvenirProductMedia(mediaId),
+    onSuccess: async (result) => { setNotice(result.promotedMediaId ? "Image deleted and another image promoted to primary." : "Image deleted."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const deleteProduct = useMutation({
+    mutationFn: (productId: string) => deleteAdminSouvenirProduct(productId),
+    onSuccess: async () => { setNotice("Souvenir package permanently deleted."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const archiveProduct = useMutation({
+    mutationFn: (productId: string) => archiveAdminSouvenirProduct(productId),
+    onSuccess: async () => { setNotice("Package archived and removed from the public catalogue."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
+  });
+  const restoreProduct = useMutation({
+    mutationFn: (productId: string) => restoreAdminSouvenirProduct(productId),
+    onSuccess: async () => { setNotice("Package restored as a draft. Publish it when ready."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
   const startEdit = (product: SouvenirProduct) => {
     setEditing(product.id);
@@ -62,13 +83,32 @@ export default function AdminSouvenirsPage() {
           {(products.data ?? []).map((product) => <article key={product.id} className="space-y-4 rounded-2xl border border-slate-100 p-3 sm:p-4">
             <div className="flex min-w-0 items-start gap-3">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">{(product.media?.find((item) => item.isPrimary) ?? product.media?.[0])?.url && <img src={(product.media.find((item) => item.isPrimary) ?? product.media[0]).url} alt="" className="h-full w-full object-cover" />}</div>
-            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.active ? "Published" : "Hidden"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold"><button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button><button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide" : "Publish"}</button></div></div>
+            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold text-slate-900">{product.name}</h3><span className={`rounded-full px-2 py-1 text-xs font-semibold ${product.archivedAt ? "bg-amber-50 text-amber-800" : product.active ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{product.archivedAt ? "Archived" : product.active ? "Published" : "Draft"}</span></div><p className="mt-1 truncate text-xs text-slate-500">/{product.slug} · {product.priceTiers?.length ?? 0} price tiers</p><div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold">
+<button type="button" onClick={() => startEdit(product)} className="text-[#1D4ED8] hover:underline">Edit details</button>
+{product.archivedAt ? <button type="button" disabled={restoreProduct.isPending} onClick={() => restoreProduct.mutate(product.id)} className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 disabled:opacity-50"><Eye size={13}/> Restore draft</button> : <>
+<button type="button" disabled={toggle.isPending} onClick={() => toggle.mutate({ id: product.id, active: !product.active })} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">{product.active ? <EyeOff size={13}/> : <Eye size={13}/>} {product.active ? "Hide from catalogue" : "Publish"}</button>
+<button type="button" disabled={archiveProduct.isPending} onClick={() => { if (window.confirm(`Archive "${product.name}"? It will be removed from the public catalogue but its records and order history will be preserved.`)) archiveProduct.mutate(product.id); }} className="text-amber-800 hover:text-amber-950 disabled:opacity-50">Archive</button>
+</>}
+<button type="button" disabled={deleteProduct.isPending || !product.archivedAt} title={!product.archivedAt ? "Archive this package before permanent deletion" : "Permanently delete this package"} onClick={() => { if (window.confirm(`Permanently delete "${product.name}"? This is blocked when order history exists. This action also removes its Cloudinary reference images.`)) deleteProduct.mutate(product.id); }} className="inline-flex items-center gap-1 text-red-700 hover:text-red-900 disabled:opacity-50"><Trash2 size={13}/> Delete</button>
+</div></div>
             </div>
             <div className="border-t border-slate-100 bg-white p-3">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Package reference images</p>
-              <div className="mb-3 flex flex-wrap gap-2">
-                {(product.media ?? []).map((image) => <img key={image.id} src={image.url} alt={image.altText || product.name} className="h-16 w-16 rounded-lg border border-slate-200 object-cover" />)}
+              <div className="mb-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {(product.media ?? []).map((image) => <div key={image.id} className="min-w-0 rounded-xl border border-slate-200 p-2">
+                  <button type="button" onClick={() => setPreviewImage({ url: image.url, altText: image.altText || product.name })} className="block w-full overflow-hidden rounded-lg bg-slate-100" aria-label={`Preview ${image.altText || product.name}`}>
+                    <img src={image.url} alt={image.altText || product.name} className="h-28 w-full object-cover" />
+                  </button>
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold text-slate-600">{image.isPrimary ? "Primary image" : "Reference image"}</span>
+                    <div className="flex gap-2">
+                      {!image.isPrimary && <button type="button" title="Set as primary" aria-label="Set as primary" disabled={setPrimaryMedia.isPending} onClick={() => setPrimaryMedia.mutate(image.id)} className="text-xs font-semibold text-[#1D4ED8] disabled:opacity-50"><Star size={14}/></button>}
+                      <button type="button" title="Delete image" aria-label="Delete image" disabled={deleteMedia.isPending} onClick={() => { if (window.confirm("Delete this reference image?")) deleteMedia.mutate(image.id); }} className="text-xs font-semibold text-red-700 disabled:opacity-50"><Trash2 size={14}/></button>
+                    </div>
+                  </div>
+                </div>)}
               </div>
+              {(setPrimaryMedia.isError || deleteMedia.isError || deleteProduct.isError || archiveProduct.isError || restoreProduct.isError) && <p role="alert" className="mb-2 text-xs text-red-700">{(setPrimaryMedia.error ?? deleteMedia.error ?? deleteProduct.error ?? archiveProduct.error ?? restoreProduct.error)?.message || "Could not update package media."}</p>}
               <form className="flex flex-wrap items-center gap-2" onSubmit={(event) => {
                 event.preventDefault();
                 const form = event.currentTarget;
@@ -131,5 +171,9 @@ export default function AdminSouvenirsPage() {
         <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, catalogue visibility, and volume-based per-piece pricing. Customers choose their preferred colours during checkout. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
       </form>
     </div>
+    {previewImage && <div role="dialog" aria-modal="true" aria-label="Image preview" className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-4" onClick={() => setPreviewImage(null)}>
+      <button type="button" onClick={() => setPreviewImage(null)} aria-label="Close image preview" className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><X size={22}/></button>
+      <img src={previewImage.url} alt={previewImage.altText} onClick={(event) => event.stopPropagation()} className="max-h-[88vh] max-w-full rounded-xl object-contain shadow-2xl"/>
+    </div>}
   </div>;
 }
