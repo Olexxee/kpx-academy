@@ -37,7 +37,7 @@ export default function AboutPage() {
             <div className="max-w-3xl">
               <Eyebrow light>Get to know KPX Academy</Eyebrow>
               <h1 className="mt-6 text-5xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#D94A91] sm:text-6xl lg:text-7xl">
-                Skills are the start.
+                Skills are the start. Possibility is the point.
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
                 We make practical learning feel closer, clearer, and more useful—so you can build your abilities and decide what comes next.
