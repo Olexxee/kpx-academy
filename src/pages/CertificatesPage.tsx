@@ -1,5 +1,5 @@
-import { useMemo, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Award, BadgeCheck, FileCheck2, Search, ShieldCheck, UploadCloud } from "lucide-react";
 import { Container } from "../components/ui/Container";
 import { SiteImage } from "../components/ui/SiteImage";
@@ -39,6 +39,7 @@ const inputClass =
 const labelClass = "block text-sm font-semibold text-primary";
 
 export default function CertificatesPage() {
+  const [searchParams] = useSearchParams();
   const { data: programs = [], isLoading: programsLoading, isError: programsError, refetch } = useTrainingPrograms();
   const availablePrograms = useMemo(() => programs.filter((program) => program.active), [programs]);
 
@@ -56,9 +57,7 @@ export default function CertificatesPage() {
   const [submissionError, setSubmissionError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleVerify = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const number = certificateNumber.trim();
+  const verifyCertificate = useCallback(async (number: string) => {
     setVerification(null);
     setVerifyError("");
 
@@ -78,6 +77,19 @@ export default function CertificatesPage() {
     } finally {
       setIsVerifying(false);
     }
+  }, []);
+
+  useEffect(() => {
+    const number = searchParams.get("number")?.trim();
+    if (!number) return;
+
+    setCertificateNumber(number);
+    void verifyCertificate(number);
+  }, [searchParams, verifyCertificate]);
+
+  const handleVerify = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await verifyCertificate(certificateNumber.trim());
   };
 
   const handleSubmission = async (event: FormEvent<HTMLFormElement>) => {
