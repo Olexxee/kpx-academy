@@ -17,6 +17,8 @@ export interface TrainingProgram {
 
   deliveryMode: "PHYSICAL" | "ONLINE" | "HYBRID";
   location?: string | null;
+  /** Private admin-managed Telegram invite link; never returned by public APIs. */
+  telegramGroupUrl?: string | null;
 
   startDate?: string | null;
   endDate?: string | null;
@@ -77,6 +79,7 @@ export interface CreateTrainingData {
 
   deliveryMode?: "PHYSICAL" | "ONLINE" | "HYBRID";
   location?: string | null;
+  telegramGroupUrl?: string | null;
 
   startDate?: string | null;
   endDate?: string | null;

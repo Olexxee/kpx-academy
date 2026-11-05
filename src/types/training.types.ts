@@ -13,6 +13,7 @@ export interface TrainingProgram {
 
   deliveryMode: "PHYSICAL" | "ONLINE" | "HYBRID";
   location?: string | null;
+  telegramGroupUrl?: string | null;
 
   startDate?: string | null;
   endDate?: string | null;
@@ -48,6 +49,7 @@ export interface TrainingProgramFormValues {
 
   deliveryMode: "PHYSICAL" | "ONLINE" | "HYBRID";
   location: string;
+  telegramGroupUrl: string;
 
   startDate: string;
   endDate: string;
