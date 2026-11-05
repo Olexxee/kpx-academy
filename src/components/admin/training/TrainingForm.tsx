@@ -51,6 +51,16 @@ const slugify = (value: string) =>
 const toDateInput = (value: string | null | undefined): string =>
   value ? value.slice(0, 10) : "";
 
+const isValidTelegramGroupUrl = (value: string): boolean => {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" &&
+      ["t.me", "telegram.me", "www.telegram.me"].includes(url.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+};
+
 const emptyForm = (): TrainingProgramFormValues => ({
   title: "",
   slug: "",
@@ -61,6 +71,7 @@ const emptyForm = (): TrainingProgramFormValues => ({
   duration: "",
   deliveryMode: "PHYSICAL",
   location: "",
+  telegramGroupUrl: "",
   startDate: "",
   endDate: "",
   registrationDeadline: "",
@@ -84,6 +95,7 @@ const toFormValues = (p: TrainingProgram): TrainingProgramFormValues => ({
   duration: p.duration ?? "",
   deliveryMode: p.deliveryMode,
   location: p.location ?? "",
+  telegramGroupUrl: p.telegramGroupUrl ?? "",
   startDate: toDateInput(p.startDate),
   endDate: toDateInput(p.endDate),
   registrationDeadline: toDateInput(p.registrationDeadline),
@@ -107,6 +119,7 @@ const toPayload = (v: TrainingProgramFormValues): CreateTrainingData => ({
   duration: v.duration.trim() || null,
   deliveryMode: v.deliveryMode,
   location: v.location.trim() || null,
+  telegramGroupUrl: v.telegramGroupUrl.trim() || null,
   startDate: v.startDate || null,
   endDate: v.endDate || null,
   registrationDeadline: v.registrationDeadline || null,
@@ -178,6 +191,9 @@ export default function TrainingForm({ program, onClose }: Props) {
 
     if (!form.title.trim()) next.title = "Title is required";
     if (form.price < 0) next.price = "Price cannot be negative";
+    if (form.telegramGroupUrl.trim() && !isValidTelegramGroupUrl(form.telegramGroupUrl.trim())) {
+      next.telegramGroupUrl = "Enter a valid HTTPS Telegram group link (t.me or telegram.me).";
+    }
     if (form.startDate && form.endDate && form.startDate > form.endDate) {
       next.endDate = "End date must be on or after start date";
     }
@@ -379,6 +395,19 @@ export default function TrainingForm({ program, onClose }: Props) {
                 hint="Leave empty for unlimited."
                 integer
               />
+            </div>
+
+            <div>
+              <Field
+                label="Training Telegram group link"
+                value={form.telegramGroupUrl}
+                placeholder="https://t.me/+your-private-invite"
+                error={errors.telegramGroupUrl}
+                onChange={(value) => setField("telegramGroupUrl", value)}
+              />
+              <p className="mt-1.5 text-xs text-slate-500">
+                Students receive this link by email after Paystack confirms payment. Use an HTTPS t.me or telegram.me invite link. Leave blank only while the programme is not accepting paid registrations.
+              </p>
             </div>
           </Section>
 
