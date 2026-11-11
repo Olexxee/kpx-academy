@@ -78,6 +78,9 @@ export default function AdminCreativeWorkspacePage() {
   const [bookingNotes, setBookingNotes] = useState<Record<string, string>>({});
   const [bookingDates, setBookingDates] = useState<Record<string, string>>({});
   const [bookingMessages, setBookingMessages] = useState<Record<string, string>>({});
+  const [proposalPrices, setProposalPrices] = useState<Record<string, string>>({});
+  const [proposalDetails, setProposalDetails] = useState<Record<string, string>>({});
+  const [proposalExpiries, setProposalExpiries] = useState<Record<string, string>>({});
   const [expandedBooking, setExpandedBooking] = useState<string | null>(null);
 
   const offeringsQuery = useQuery({
@@ -143,13 +146,17 @@ export default function AdminCreativeWorkspacePage() {
     onSuccess: invalidateAll,
   });
   const bookingMutation = useMutation({
-    mutationFn: ({ id, status, eventDate, customerMessage, adminNotes }: {
+    mutationFn: ({ id, status, eventDate, customerMessage, proposalPrice, proposalDetails, proposalExpiresAt, adminNotes }: {
       id: string; status: WorkshopBookingStatus; eventDate?: string;
-      customerMessage?: string | null; adminNotes: string;
+      customerMessage?: string | null; proposalPrice?: number; proposalDetails?: string;
+      proposalExpiresAt?: string; adminNotes: string;
     }) => updateAdminWorkshopBooking(id, {
       status,
       ...(eventDate ? { eventDate } : {}),
       ...(customerMessage ? { customerMessage } : {}),
+      ...(proposalPrice != null ? { proposalPrice } : {}),
+      ...(proposalDetails ? { proposalDetails } : {}),
+      ...(proposalExpiresAt ? { proposalExpiresAt } : {}),
       adminNotes: adminNotes || null,
     }),
     onSuccess: invalidateAll,
@@ -290,6 +297,12 @@ export default function AdminCreativeWorkspacePage() {
                   notes={bookingNotes[booking.id] ?? booking.adminNotes ?? ""}
                   eventDate={selectedDate ?? toLocalDateTimeInput(booking.eventDate)}
                   customerMessage={bookingMessages[booking.id] ?? ""}
+                  proposalPrice={proposalPrices[booking.id] ?? (booking.proposalPrice == null ? "" : String(booking.proposalPrice))}
+                  proposalDetails={proposalDetails[booking.id] ?? booking.proposalDetails ?? ""}
+                  proposalExpiresAt={proposalExpiries[booking.id] ?? ""}
+                  onProposalPriceChange={(value) => setProposalPrices({ ...proposalPrices, [booking.id]: value })}
+                  onProposalDetailsChange={(value) => setProposalDetails({ ...proposalDetails, [booking.id]: value })}
+                  onProposalExpiryChange={(value) => setProposalExpiries({ ...proposalExpiries, [booking.id]: value })}
                   onStatusChange={(value) => setBookingDrafts({ ...bookingDrafts, [booking.id]: value })}
                   onNotesChange={(value) => setBookingNotes({ ...bookingNotes, [booking.id]: value })}
                   onEventDateChange={(value) => setBookingDates({ ...bookingDates, [booking.id]: value })}
@@ -299,6 +312,11 @@ export default function AdminCreativeWorkspacePage() {
                     status: selectedStatus,
                     ...(dateChanged ? { eventDate: new Date(selectedDate!).toISOString() } : {}),
                     ...(statusChanged || dateChanged ? { customerMessage: bookingMessages[booking.id] || null } : {}),
+                    ...(selectedStatus === "PROPOSAL_SENT" && statusChanged ? {
+                      proposalPrice: Number(proposalPrices[booking.id]),
+                      proposalDetails: proposalDetails[booking.id],
+                      proposalExpiresAt: new Date(proposalExpiries[booking.id]).toISOString(),
+                    } : {}),
                     adminNotes: bookingNotes[booking.id] ?? booking.adminNotes ?? "",
                   })}
                   saving={bookingMutation.isPending}
@@ -313,11 +331,12 @@ export default function AdminCreativeWorkspacePage() {
   );
 }
 
-function BookingCard({ booking, expanded, onToggle, status, notes, eventDate, customerMessage, onStatusChange, onNotesChange, onEventDateChange, onCustomerMessageChange, onSave, saving }: {
+function BookingCard({ booking, expanded, onToggle, status, notes, eventDate, customerMessage, proposalPrice, proposalDetails, proposalExpiresAt, onStatusChange, onNotesChange, onEventDateChange, onCustomerMessageChange, onProposalPriceChange, onProposalDetailsChange, onProposalExpiryChange, onSave, saving }: {
   booking: AdminWorkshopBooking; expanded: boolean; onToggle: () => void; status: string; notes: string;
-  eventDate: string; customerMessage: string;
+  eventDate: string; customerMessage: string; proposalPrice: string; proposalDetails: string; proposalExpiresAt: string;
   onStatusChange: (value: string) => void; onNotesChange: (value: string) => void;
   onEventDateChange: (value: string) => void; onCustomerMessageChange: (value: string) => void;
+  onProposalPriceChange: (value: string) => void; onProposalDetailsChange: (value: string) => void; onProposalExpiryChange: (value: string) => void;
   onSave: () => void; saving: boolean;
 }) {
   return <article className="rounded-2xl border border-slate-200 bg-white p-5">
@@ -329,6 +348,21 @@ function BookingCard({ booking, expanded, onToggle, status, notes, eventDate, cu
       <div className="space-y-3 text-sm"><Info label="Requested event date" value={new Date(booking.eventDate).toLocaleString()} /><Info label="Venue" value={booking.venueMode.replaceAll("_", " ")} /><Info label="Venue address" value={booking.venueAddress || "Not provided"} /><Info label="City" value={booking.city || "Not provided"} /><Info label="Custom workshop request" value={booking.customWorkshopDescription || "—"} /><Info label="Customer notes" value={booking.customerNotes || "—"} /></div>
       <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
         <Field label="Workflow status"><select value={status} onChange={(e) => onStatusChange(e.target.value)} className={inputClass}>{getAllowedWorkshopBookingStatuses(booking.status).map((item) => <option key={item} value={item}>{item.replaceAll("_", " ")}</option>)}</select></Field>
+        {status === "PROPOSAL_SENT" && booking.status !== "PROPOSAL_SENT" && <>
+          <div className="rounded-xl border border-[#D4A85A]/40 bg-[#F7F5F0] p-4">
+            <p className="text-sm font-semibold text-primary">Customer proposal</p>
+            <p className="mt-1 text-xs leading-5 text-text-muted">Set the final agreed scope, price and response deadline. The customer can accept or decline from their private booking page.</p>
+            <Field label="Final proposed price (NGN)">
+              <input type="number" min="1" step="0.01" required value={proposalPrice} onChange={(e) => onProposalPriceChange(e.target.value)} className={inputClass} />
+            </Field>
+            <Field label="Proposal details and deliverables">
+              <textarea rows={4} minLength={10} maxLength={5000} required value={proposalDetails} onChange={(e) => onProposalDetailsChange(e.target.value)} placeholder="Describe the agreed workshop scope, inclusions and any important conditions…" className={inputClass} />
+            </Field>
+            <Field label="Proposal response deadline">
+              <input type="datetime-local" required min={toLocalDateTimeInput(new Date().toISOString())} value={proposalExpiresAt} onChange={(e) => onProposalExpiryChange(e.target.value)} className={inputClass} />
+            </Field>
+          </div>
+        </>}
         <Field label="Reschedule event date and time">
           <input type="datetime-local" value={eventDate} min={toLocalDateTimeInput(new Date().toISOString())} disabled={["IN_PROGRESS", "COMPLETED", "CANCELLED"].includes(booking.status)} onChange={(e) => onEventDateChange(e.target.value)} className={inputClass} />
         </Field>
