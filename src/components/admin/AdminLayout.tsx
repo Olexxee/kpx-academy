@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X, Building2 } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
 import { useAuthStore } from "../../features/auth/auth.store";
@@ -24,7 +24,6 @@ export default function AdminLayout() {
   const user = useAuthStore((state) => state.user);
   const logout = useLogout();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const location = useLocation();
 
   return (
     <div className="kpx-admin-shell min-h-screen bg-[var(--kpx-warm-white)] text-[var(--kpx-dark-charcoal)]">
