@@ -121,3 +121,12 @@ Admins manage questions and answers in **Admin → FAQs**. New entries are saved
 The public frontend reads `GET /api/site-content/faq`; it never requests the admin list. The backend public query filters to `PUBLISHED` records at the database layer. Admin operations use the authenticated admin routes under `/api/site-content/admin/faq`.
 
 FAQ answers are plain text with line breaks preserved. Do not place HTML in answers; the public page renders answer content as text.
+
+
+## Creative workshop repeat event bookings
+
+The public creative workshop form treats each submission as a separate event request. A customer may submit multiple dates for the same workshop offering and reuse the same participant tier; the resulting requests have separate references and private booking pages.
+
+Participant tiers are shared price options attached to one workshop offering, not event slots. The same participant count can be defined once per offering and reused across bookings. For a one-off negotiated price, the KPX team sets the final price in that booking's proposal rather than creating a duplicate shared tier.
+
+The success screen includes **Request another event**. It starts a new request while retaining the customer's contact details and selected workshop/tier, and clears date- and venue-specific fields. The offering selector displays the configured offering title alongside its category so similarly categorized offerings remain distinguishable.
