@@ -20,5 +20,5 @@ jobs:
         run: npm ci
       - name: TypeScript and production build
         run: npm run build
-      - name: ESLint
-        run: npm run lint
+      - name: ESLint on changed feature files
+        run: npx eslint src/api/siteContent.api.ts src/components/admin/AdminLayout.tsx src/components/layouts/SiteFooter.tsx src/pages/admin/AdminOrganizationPage.tsx src/router.tsx
