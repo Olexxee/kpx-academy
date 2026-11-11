@@ -91,7 +91,7 @@ export const WorkshopGuestAccessPage = () => {
       <h2 className="font-heading text-xl font-bold text-primary">Booking history</h2>
       <p className="mt-1 text-sm text-text-muted">A record of updates made to your request.</p>
       <ol className="mt-5 space-y-5">
-        {[...booking.history].reverse().map((entry, index) => (
+        {[...(booking.history ?? [])].reverse().map((entry, index) => (
           <li key={`${entry.createdAt}-${entry.action}-${index}`} className="relative flex gap-3">
             <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background text-secondary">
               {entry.action === "CREATED" ? <CheckCircle2 size={17} /> : entry.action === "RESCHEDULED" ? <CalendarClock size={17} /> : entry.newStatus === "CANCELLED" ? <XCircle size={17} /> : entry.newStatus === "CONFIRMED" ? <CheckCircle2 size={17} /> : <CircleDot size={17} />}
