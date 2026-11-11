@@ -10,6 +10,7 @@ const exploreLinks = [
   { label: "Creative workshops", to: "/workshops/book" },
   { label: "Souvenir catalogue", to: "/souvenirs" },
   { label: "Certificates", to: "/certificates" },
+  { label: "FAQs", to: "/faq" },
   { label: "Registration", to: "/register" },
 ];
 
