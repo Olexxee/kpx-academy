@@ -55,7 +55,7 @@ export interface GuestWorkshopBooking {
   updatedAt: string;
   offering?: { title: string; slug: string; contactEmail?: string | null; contactWhatsApp?: string | null } | null;
   participantTier?: { label: string; participantCount: number; price: number | string; currency: string } | null;
-  history: WorkshopBookingHistoryEntry[];
+  history?: WorkshopBookingHistoryEntry[];
 }
 
 export interface WorkshopBookingHistoryEntry {
