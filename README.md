@@ -134,3 +134,9 @@ The success screen includes **Request another event**. It starts a new request w
 ## Certificate proof-of-work review
 
 Admins review student submissions in **Admin → Certificates → Proof submissions**. The certificate API returns a signed authenticated Cloudinary `proofAccessUrl` for each submission; the frontend must use that field rather than exposing stored `proofUrl` or `proofPublicId` values. Image proofs (JPEG, PNG, WebP) are previewed inline, while PDFs are opened through the secure proof link. The admin list also displays the original filename and uploaded size. If an image cannot load, the card retains an explicit fallback and the secure original link so the review is still possible.
+
+## Shared frontend upload optimization
+
+All frontend file-upload API paths should pass selected files through `prepareUploadFile` or `prepareUploadFiles` from `src/lib/fileCompression.ts` before creating the multipart request. The utility optimizes supported raster images (JPEG, PNG, WebP) in the browser: it applies EXIF orientation, caps the longest edge at 2,560 px, encodes WebP at progressively lower quality, and keeps the original if encoding fails or does not reduce the file size. It skips small images under 350 KB to avoid needless re-encoding.
+
+GIFs are passed through unchanged to preserve animation. SVG, PDF, video, audio, archives, and other formats are also passed through unchanged because an image codec is not a valid or safe compressor for those formats. The shared helper still handles these uploads consistently; format-specific document/video optimization would require a separate validated pipeline. Upload limits must still be enforced by the UI and backend after preparation.
