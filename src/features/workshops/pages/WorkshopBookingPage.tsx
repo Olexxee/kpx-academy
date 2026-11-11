@@ -76,6 +76,19 @@ export const WorkshopBookingPage = () => {
   const updateField = (key: keyof typeof form, value: string) =>
     setForm((current) => ({ ...current, [key]: value }));
 
+  const startAnotherEvent = () => {
+    setSubmittedBooking(null);
+    bookingMutation.reset();
+    setForm((current) => ({
+      ...current,
+      eventDate: "",
+      venueAddress: "",
+      city: "",
+      customWorkshopDescription: "",
+      customerNotes: "",
+    }));
+  };
+
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedOffering || !selectedTier) return;
@@ -123,7 +136,10 @@ export const WorkshopBookingPage = () => {
                 </div>
               </div>
             )}
-            <Link to="/" className="mt-8 inline-flex min-h-11 items-center justify-center rounded-control bg-secondary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary">Back to homepage</Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button type="button" onClick={startAnotherEvent} className="inline-flex min-h-11 items-center justify-center rounded-control bg-secondary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary">Request another event</button>
+              <Link to="/" className="inline-flex min-h-11 items-center justify-center rounded-control border border-border px-5 py-3 text-sm font-semibold text-primary transition hover:border-secondary hover:text-secondary">Back to homepage</Link>
+            </div>
           </section>
         </Container>
       </div>
@@ -186,12 +202,13 @@ export const WorkshopBookingPage = () => {
                   <label className={labelClass}>Workshop option *
                     <select required value={selectedOffering?.id ?? ""} onChange={(event) => { setOfferingId(event.target.value); setTierId(""); }} className={fieldClass}>
                       <option value="" disabled>Select a workshop</option>
-                      {offerings.map((offering) => <option key={offering.id} value={offering.id}>{workshopLabels[offering.workshopType] ?? offering.title}</option>)}
+                      {offerings.map((offering) => <option key={offering.id} value={offering.id}>{offering.title} · {workshopLabels[offering.workshopType] ?? "Workshop"}</option>)}
                     </select>
                   </label>
 
                   {selectedOffering && <div className="rounded-control bg-background p-4"><p className="font-semibold text-primary">{selectedOffering.title}</p><p className="mt-2 text-sm leading-6 text-text-muted">{selectedOffering.description}</p>{selectedOffering.bookingTerms && <p className="mt-3 whitespace-pre-line text-sm leading-6 text-text-muted">Booking terms: {selectedOffering.bookingTerms}</p>}{(selectedOffering.contactEmail || selectedOffering.contactWhatsApp) && <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-3 text-sm font-semibold text-secondary">{selectedOffering.contactEmail && <a href={`mailto:${selectedOffering.contactEmail}`}>Email about this workshop</a>}{selectedOffering.contactWhatsApp && <a href={`https://wa.me/${selectedOffering.contactWhatsApp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">WhatsApp about this workshop</a>}</div>}</div>}
 
+                  <div className="-mb-2 rounded-control border border-secondary/15 bg-[#F7F5F0] p-3 text-sm leading-6 text-text-muted">Participant tiers are reusable. You can select the same group size again for another event date; each submission creates a separate booking request.</div>
                   <label className={labelClass}>Participant tier *
                     <select required value={selectedTier?.id ?? ""} onChange={(event) => setTierId(event.target.value)} className={fieldClass}>
                       {!selectedOffering?.participantTiers.length && <option value="">No participant tiers available</option>}

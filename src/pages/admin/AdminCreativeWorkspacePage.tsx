@@ -192,7 +192,7 @@ export default function AdminCreativeWorkspacePage() {
           </div>
         </div>
         <div className="grid min-w-[210px] grid-cols-2 gap-3">
-          <Stat label="Workshop types" value={offerings.length} />
+          <Stat label="Workshop offerings" value={offerings.length} />
           <Stat label="Published" value={activeCount} />
         </div>
       </div>
@@ -248,7 +248,7 @@ export default function AdminCreativeWorkspacePage() {
                   </div>
                   {tierOffering?.id === item.id && (
                     <div className="border-t border-slate-100 bg-slate-50/70 p-5">
-                      <div className="mb-4"><h3 className="font-semibold text-slate-900">Participant pricing</h3><p className="mt-1 text-xs text-slate-500">An offering needs one active tier before it can be published.</p></div>
+                      <div className="mb-4"><h3 className="font-semibold text-slate-900">Reusable participant pricing</h3><p className="mt-1 max-w-3xl text-xs leading-5 text-slate-500">Each tier belongs to this workshop offering and can be reused for any number of separate event bookings and dates. Add only one shared tier per participant count here. For a different negotiated price on one event, set the final amount in that booking’s proposal instead of creating a duplicate tier.</p></div>
                       {item.participantTiers.length > 0 && <div className="mb-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{item.participantTiers.map((tier) => <div key={tier.id} className="rounded-xl border border-slate-200 bg-white p-4">
                         {editingTierId === tier.id ? <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); editTierMutation.mutate(); }}>
                           <Field label="Tier label"><input required value={editingTierForm.label} onChange={(e) => setEditingTierForm({ ...editingTierForm, label: e.target.value })} className={inputClass} /></Field>
