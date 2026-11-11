@@ -35,7 +35,7 @@ const emptyOffering: OfferingForm = {
   bookingTerms: "", contactEmail: "", contactWhatsApp: "", featured: false, displayOrder: 0,
 };
 const emptyTier: TierForm = { label: "", participantCount: 1, price: 0, currency: "NGN", displayOrder: 0 };
-const statuses: WorkshopBookingStatus[] = ["NEW", "UNDER_REVIEW", "PROPOSAL_SENT", "ACCEPTED", "CONFIRMED", "IN_PROGRESS", "COMPLETED", "CANCELLED"];
+const statuses: WorkshopBookingStatus[] = ["NEW", "UNDER_REVIEW", "PROPOSAL_SENT", "ACCEPTED", "DECLINED", "CONFIRMED", "IN_PROGRESS", "COMPLETED", "CANCELLED"];
 const statusStyle: Record<WorkshopBookingStatus, string> = {
   NEW: "bg-blue-50 text-blue-700", UNDER_REVIEW: "bg-amber-50 text-amber-700",
   PROPOSAL_SENT: "bg-violet-50 text-violet-700", ACCEPTED: "bg-cyan-50 text-cyan-700",
