@@ -116,7 +116,7 @@ The organization profile is cached by React Query for five minutes. After an adm
 
 ## FAQ management
 
-Admins manage questions and answers in **Admin → FAQs**. New entries are saved as drafts. Admins can edit, publish, unpublish, archive through the API, and delete entries. Published FAQs are displayed on the public **/faq** page and ordered by their configured display order.
+Admins manage questions and answers in **Admin → FAQs**. New entries are saved as drafts. Admins can edit, publish, unpublish, archive, restore, and delete entries. Published FAQs are displayed on the public **/faq** page and ordered by their configured display order.
 
 The public frontend reads `GET /api/site-content/faq`; it never requests the admin list. The backend public query filters to `PUBLISHED` records at the database layer. Admin operations use the authenticated admin routes under `/api/site-content/admin/faq`.
 
