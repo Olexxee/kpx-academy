@@ -21,7 +21,9 @@ interface CertificateApiResult {
   message?: string;
   data?: {
     emailSent?: boolean;
+    emailQueued?: boolean;
     emailError?: string | null;
+    deliveryStatus?: string | null;
   };
 }
 
@@ -56,6 +58,9 @@ interface Certificate {
   revokedAt?: string | null;
   emailSentAt?: string | null;
   lastEmailError?: string | null;
+  emailDeliveryStatus?: "PENDING" | "PROCESSING" | "SENT" | "DEAD" | null;
+  emailDeliveryUpdatedAt?: string | null;
+  emailDeliveryError?: string | null;
 }
 
 interface ListResponse<T> {
@@ -194,6 +199,13 @@ export default function AdminCertificatesPage() {
       return response.data.data.items;
     },
     enabled: view === "certificates",
+    refetchInterval: (query) => {
+      const records = query.state.data;
+      return records?.some((item) =>
+        item.emailDeliveryStatus === "PENDING" ||
+        item.emailDeliveryStatus === "PROCESSING"
+      ) ? 5000 : false;
+    },
   });
 
   const invalidateRecords = async () => {
@@ -243,9 +255,11 @@ export default function AdminCertificatesPage() {
     },
     onSuccess: async (result) => {
       setNotice(
-        result.data?.emailSent === false
-          ? `Certificate issued, but the email was not sent: ${result.data.emailError || "email provider did not accept the message"}`
-          : result.message || "Certificate issued and emailed successfully.",
+        result.data?.emailQueued
+          ? "Certificate issued. One email to the certificate owner has been queued for delivery."
+          : result.data?.emailSent === false
+            ? `Certificate issued, but the email was not sent: ${result.data.emailError || "email provider did not accept the message"}`
+            : result.message || "Certificate issued successfully.",
       );
       await invalidateRecords();
     },
@@ -266,9 +280,11 @@ export default function AdminCertificatesPage() {
     },
     onSuccess: async (result) => {
       setNotice(
-        result.data?.emailSent === false
-          ? `Certificate issued, but the email was not sent: ${result.data.emailError || "email provider did not accept the message"}`
-          : result.message || "Certificate issued and emailed successfully.",
+        result.data?.emailQueued
+          ? "Certificate issued. One email to the certificate owner has been queued for delivery."
+          : result.data?.emailSent === false
+            ? `Certificate issued, but the email was not sent: ${result.data.emailError || "email provider did not accept the message"}`
+            : result.message || "Certificate issued successfully.",
       );
       setStudentName("");
       setStudentEmail("");
@@ -283,22 +299,31 @@ export default function AdminCertificatesPage() {
     mutationFn: async (id: string) => {
       const response = await registrationApi.post<CertificateApiResult>(
         `/certificates/admin/${encodeURIComponent(id)}/resend`,
+        undefined,
+        { headers: { "Idempotency-Key": globalThis.crypto.randomUUID() } },
       );
-      if (response.data?.success === false || response.data?.data?.emailSent === false) {
+      if (
+        response.data?.success === false ||
+        (!response.data?.data?.emailQueued && !response.data?.data?.emailSent)
+      ) {
         throw new Error(
           response.data.message ||
             response.data.data?.emailError ||
-            "The backend reported that the certificate email was not sent.",
+            "The backend did not queue the certificate email.",
         );
       }
       return response.data;
     },
     onSuccess: async (result) => {
-      setNotice(result.message || "Certificate email accepted by the provider.");
+      setNotice(
+        result.data?.emailQueued
+          ? "Certificate resend queued for the certificate owner."
+          : result.message || "Certificate email was already accepted by the provider.",
+      );
       await invalidateRecords();
     },
     onError: (error) =>
-      setNotice(getApiErrorMessage(error, "Certificate email could not be resent.")),
+      setNotice(getApiErrorMessage(error, "Certificate email could not be queued.")),
   });
   const revoke = useMutation({
     mutationFn: async ({ id, reason }: { id: string; reason: string }) =>
@@ -646,7 +671,7 @@ export default function AdminCertificatesPage() {
                         }}
                       >
                         <Award size={14} />
-                        {issueSubmission.isPending
+                        {issueSubmission.isPending && issueSubmission.variables === item.id
                           ? "Issuing…"
                           : "Issue certificate"}
                       </ActionButton>
@@ -684,17 +709,31 @@ export default function AdminCertificatesPage() {
                       </p>
 
                       <div className="mt-2 text-xs text-gray-500">
-                        {item.emailSentAt ? (
+                        {item.emailDeliveryStatus && (
                           <p>
-                            Email accepted{" "}
+                            Latest delivery: {{
+                              PENDING: "Queued",
+                              PROCESSING: "Sending",
+                              SENT: "Accepted by email provider",
+                              DEAD: "Failed — retry required",
+                            }[item.emailDeliveryStatus]}
+                            {item.emailDeliveryUpdatedAt
+                              ? ` · Updated ${new Date(item.emailDeliveryUpdatedAt).toLocaleString()}`
+                              : ""}
+                          </p>
+                        )}
+                        {item.emailSentAt && (
+                          <p>
+                            Last email accepted{" "}
                             {new Date(item.emailSentAt).toLocaleString()}
                           </p>
-                        ) : (
+                        )}
+                        {!item.emailSentAt && !item.emailDeliveryStatus && (
                           <p>Email acceptance time not recorded</p>
                         )}
-                        {item.lastEmailError && (
+                        {(item.emailDeliveryError || item.lastEmailError) && (
                           <p className="mt-1 break-words text-amber-700">
-                            Email note: {item.lastEmailError}
+                            Email note: {item.emailDeliveryError || item.lastEmailError}
                           </p>
                         )}
                       </div>
@@ -713,16 +752,25 @@ export default function AdminCertificatesPage() {
 
                     <div className="flex flex-wrap gap-2">
                       <ActionButton
-                        disabled={item.status === "REVOKED"}
+                        disabled={
+                          item.status === "REVOKED" ||
+                          resend.isPending ||
+                          item.emailDeliveryStatus === "PENDING" ||
+                          item.emailDeliveryStatus === "PROCESSING"
+                        }
                         onClick={() => {
                           setNotice("");
                           resend.mutate(item.id);
                         }}
                       >
                         <Mail size={14} />
-                        {resend.isPending && resend.variables === item.id
-                          ? "Sending…"
-                          : "Resend email"}
+                        {item.emailDeliveryStatus === "PENDING"
+                          ? "Queued"
+                          : item.emailDeliveryStatus === "PROCESSING"
+                            ? "Sending…"
+                            : resend.isPending && resend.variables === item.id
+                              ? "Queuing…"
+                              : "Resend email"}
                       </ActionButton>
 
                       {item.status !== "REVOKED" && (
