@@ -55,6 +55,17 @@ export interface GuestWorkshopBooking {
   updatedAt: string;
   offering?: { title: string; slug: string; contactEmail?: string | null; contactWhatsApp?: string | null } | null;
   participantTier?: { label: string; participantCount: number; price: number | string; currency: string } | null;
+  history?: WorkshopBookingHistoryEntry[];
+}
+
+export interface WorkshopBookingHistoryEntry {
+  action: "CREATED" | "STATUS_CHANGED" | "RESCHEDULED" | "UPDATED";
+  previousStatus: string | null;
+  newStatus: string | null;
+  previousEventDate: string | null;
+  newEventDate: string | null;
+  customerMessage: string | null;
+  createdAt: string;
 }
 
 export interface CreateWorkshopBookingPayload {
