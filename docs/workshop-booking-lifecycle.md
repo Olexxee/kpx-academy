@@ -22,3 +22,8 @@ The admin booking editor supports changing the event date/time before a booking 
 When moving a booking from `UNDER_REVIEW` to `PROPOSAL_SENT`, an admin must provide a final price, proposal scope/details, and a future expiry date. The final price is separate from the indicative participant-tier price. The customer receives these terms by email and can accept or decline on the private booking page.
 
 The guest decision endpoint requires the original private access token, checks that the proposal is still pending and unexpired, and conditionally records the decision with its history entry in one transaction. The admin API cannot impersonate a customer decision. `ACCEPTED` and `DECLINED` are customer-only outcomes; `DECLINED` is terminal. Payment and final confirmation are not triggered by acceptance.
+
+
+## Customer proposal decisions
+
+The admin booking editor requires a final price, proposal scope/details and expiry before sending a proposal. The customer can accept or decline the proposal through the existing private booking page. The response is single-use, token-protected and expires with the proposal. Accepted proposals move to the accepted state; declined proposals become terminal. Payment is not collected as part of proposal acceptance.
