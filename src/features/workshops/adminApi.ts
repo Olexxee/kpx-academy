@@ -106,3 +106,17 @@ export const getAdminWorkshopBookings = async (params: { page: number; limit: nu
 
 export const updateAdminWorkshopBooking = (id: string, payload: { status?: WorkshopBookingStatus; adminNotes?: string | null }) =>
   unwrap(registrationApi.patch<Envelope<AdminWorkshopBooking>>(`/workshops/admin/bookings/${encodeURIComponent(id)}`, payload));
+
+export const WORKSHOP_BOOKING_TRANSITIONS: Record<WorkshopBookingStatus, WorkshopBookingStatus[]> = {
+  NEW: ["UNDER_REVIEW", "CANCELLED"],
+  UNDER_REVIEW: ["PROPOSAL_SENT", "ACCEPTED", "CANCELLED"],
+  PROPOSAL_SENT: ["ACCEPTED", "CANCELLED"],
+  ACCEPTED: ["CONFIRMED", "CANCELLED"],
+  CONFIRMED: ["IN_PROGRESS", "CANCELLED"],
+  IN_PROGRESS: ["COMPLETED"],
+  COMPLETED: [],
+  CANCELLED: [],
+};
+
+export const getAllowedWorkshopBookingStatuses = (current: WorkshopBookingStatus) =>
+  [current, ...WORKSHOP_BOOKING_TRANSITIONS[current]];

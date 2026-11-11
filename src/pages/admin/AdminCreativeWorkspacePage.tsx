@@ -10,6 +10,7 @@ import {
   createAdminWorkshopTier,
   getAdminWorkshopBookings,
   getAdminWorkshopOfferings,
+  getAllowedWorkshopBookingStatuses,
   setAdminWorkshopOfferingActive,
   setAdminWorkshopTierActive,
   updateAdminWorkshopBooking,
@@ -288,7 +289,7 @@ function BookingCard({ booking, expanded, onToggle, status, notes, onStatusChang
     {expanded && <div className="mt-5 grid gap-4 border-t border-slate-100 pt-5 md:grid-cols-2">
       <div className="space-y-3 text-sm"><Info label="Requested event date" value={new Date(booking.eventDate).toLocaleString()} /><Info label="Venue" value={booking.venueMode.replaceAll("_", " ")} /><Info label="Venue address" value={booking.venueAddress || "Not provided"} /><Info label="City" value={booking.city || "Not provided"} /><Info label="Custom workshop request" value={booking.customWorkshopDescription || "—"} /><Info label="Customer notes" value={booking.customerNotes || "—"} /></div>
       <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
-        <Field label="Workflow status"><select value={status} onChange={(e) => onStatusChange(e.target.value)} className={inputClass}>{statuses.map((item) => <option key={item} value={item}>{item.replaceAll("_", " ")}</option>)}</select></Field>
+        <Field label="Workflow status"><select value={status} onChange={(e) => onStatusChange(e.target.value)} className={inputClass}>{getAllowedWorkshopBookingStatuses(booking.status).map((item) => <option key={item} value={item}>{item.replaceAll("_", " ")}</option>)}</select></Field>
         <Field label="Internal admin notes"><textarea rows={5} maxLength={5000} value={notes} onChange={(e) => onNotesChange(e.target.value)} placeholder="Record proposal, call outcome, or follow-up…" className={inputClass} /></Field>
         <button disabled={saving} className="inline-flex items-center gap-2 rounded-xl bg-[#8B1E5A] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><Save size={15} /> Save booking update</button>
       </form>
