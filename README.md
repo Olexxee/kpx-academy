@@ -130,3 +130,7 @@ The public creative workshop form treats each submission as a separate event req
 Participant tiers are shared price options attached to one workshop offering, not event slots. The same participant count can be defined once per offering and reused across bookings. For a one-off negotiated price, the KPX team sets the final price in that booking's proposal rather than creating a duplicate shared tier.
 
 The success screen includes **Request another event**. It starts a new request while retaining the customer's contact details and selected workshop/tier, and clears date- and venue-specific fields. The offering selector displays the configured offering title alongside its category so similarly categorized offerings remain distinguishable.
+
+## Certificate proof-of-work review
+
+Admins review student submissions in **Admin → Certificates → Proof submissions**. The certificate API returns a signed authenticated Cloudinary `proofAccessUrl` for each submission; the frontend must use that field rather than exposing stored `proofUrl` or `proofPublicId` values. Image proofs (JPEG, PNG, WebP) are previewed inline, while PDFs are opened through the secure proof link. The admin list also displays the original filename and uploaded size. If an image cannot load, the card retains an explicit fallback and the secure original link so the review is still possible.
