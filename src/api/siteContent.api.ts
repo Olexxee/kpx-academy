@@ -57,7 +57,7 @@ export const deleteResource = async (id: string) => registrationApi.delete(`/sit
 
 const uploadAsset = async (endpoint: string, file: File): Promise<UploadedAsset> => {
   const form = new FormData();
-  const uploadFile = endpoint.endsWith("/resource-pdf") ? file : await prepareUploadFile(file);
+  const uploadFile = await prepareUploadFile(file);
   form.append("file", uploadFile);
   return unwrap(await registrationApi.post<Envelope<UploadedAsset>>(endpoint, form));
 };
