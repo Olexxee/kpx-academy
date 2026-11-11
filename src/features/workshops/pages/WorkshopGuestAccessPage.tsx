@@ -99,7 +99,8 @@ export const WorkshopGuestAccessPage = () => {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-primary">{historyLabel(entry)}</p>
               <p className="mt-1 flex items-center gap-1 text-xs text-text-muted"><Clock3 size={13} />{dateTime(entry.createdAt)}</p>
-              {entry.action === "RESCHEDULED" && entry.previousEventDate && entry.newEventDate && <p className="mt-2 text-sm text-text-muted">Date changed from {dateTime(entry.previousEventDate)} to {dateTime(entry.newEventDate)}.</p>}
+              {entry.previousStatus && entry.newStatus && entry.previousStatus !== entry.newStatus && <p className="mt-2 text-sm text-text-muted">Status changed from {statusDetails[entry.previousStatus]?.title ?? entry.previousStatus.replaceAll("_", " ")} to {statusDetails[entry.newStatus]?.title ?? entry.newStatus.replaceAll("_", " ")}.</p>}
+              {entry.previousEventDate && entry.newEventDate && new Date(entry.previousEventDate).getTime() !== new Date(entry.newEventDate).getTime() && <p className="mt-2 text-sm text-text-muted">Date changed from {dateTime(entry.previousEventDate)} to {dateTime(entry.newEventDate)}.</p>}
               {entry.customerMessage && <p className="mt-2 whitespace-pre-line text-sm leading-6 text-text-muted">{entry.customerMessage}</p>}
             </div>
           </li>
