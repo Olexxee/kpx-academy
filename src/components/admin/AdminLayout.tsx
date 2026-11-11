@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X, Building2 } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
@@ -25,7 +25,6 @@ export default function AdminLayout() {
   const logout = useLogout();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const location = useLocation();
-  useEffect(() => setMobileNavOpen(false), [location.pathname]);
 
   return (
     <div className="kpx-admin-shell min-h-screen bg-[var(--kpx-warm-white)] text-[var(--kpx-dark-charcoal)]">
