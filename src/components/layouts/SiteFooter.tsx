@@ -46,7 +46,7 @@ export const SiteFooter = () => {
             <p className="mt-3 max-w-md text-sm leading-7 text-white/75">
               {profile?.description || "Practical training and detailed knowledge to help learners develop useful skills and put what they learn into practice."}
             </p>
-            {socialLinks.some(([_, key]) => profile?.[key]) && (
+            {socialLinks.some(([, key]) => profile?.[key]) && (
               <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
                 {socialLinks.map(([label, key]) => profile?.[key] ? <a key={key} href={profile[key] ?? undefined} target="_blank" rel="noreferrer noopener" className={footerLinkClass}>{label}</a> : null)}
               </div>
