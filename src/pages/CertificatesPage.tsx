@@ -5,6 +5,7 @@ import { Container } from "../components/ui/Container";
 import { SiteImage } from "../components/ui/SiteImage";
 import { siteImages } from "../config/siteImages";
 import { registrationApi } from "../lib/registrationApi";
+import { prepareUploadFile } from "../lib/fileCompression";
 import { useTrainingPrograms } from "../features/training/hooks/useTrainingPrograms";
 
 type CertificateVerification = {
@@ -107,8 +108,9 @@ export default function CertificatesPage() {
       setSubmissionError("Upload a PDF, JPEG, PNG, or WebP file.");
       return;
     }
-    if (proof.size > 10 * 1024 * 1024) {
-      setSubmissionError("The proof file must not exceed 10 MB.");
+    const uploadProof = await prepareUploadFile(proof);
+    if (uploadProof.size > 10 * 1024 * 1024) {
+      setSubmissionError("The proof file must not exceed 10 MB after image optimization.");
       return;
     }
 
@@ -119,7 +121,7 @@ export default function CertificatesPage() {
       formData.append("studentEmail", studentEmail.trim());
       formData.append("trainingProgramId", trainingProgramId);
       if (notes.trim()) formData.append("notes", notes.trim());
-      formData.append("proof", proof);
+      formData.append("proof", uploadProof);
 
       const response = await registrationApi.post<ApiEnvelope<{ studentName: string }>>(
         "/certificates/submissions",
