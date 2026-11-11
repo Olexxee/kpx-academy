@@ -33,6 +33,28 @@ export interface WorkshopBookingResult {
   eventDate: string;
   contactEmail?: string | null;
   contactWhatsApp?: string | null;
+  accessToken: string;
+  accessUrlPath: string;
+}
+
+export interface GuestWorkshopBooking {
+  publicReference: string;
+  status: string;
+  workshopTitle: string;
+  workshopType: WorkshopType;
+  participantCount: number;
+  price: number | string | null;
+  currency: string;
+  eventDate: string;
+  venueMode: WorkshopVenueMode;
+  venueAddress?: string | null;
+  city?: string | null;
+  customWorkshopDescription?: string | null;
+  customerNotes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  offering?: { title: string; slug: string; contactEmail?: string | null; contactWhatsApp?: string | null } | null;
+  participantTier?: { label: string; participantCount: number; price: number | string; currency: string } | null;
 }
 
 export interface CreateWorkshopBookingPayload {

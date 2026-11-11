@@ -109,6 +109,8 @@ export const WorkshopBookingPage = () => {
             <div className="mt-7 rounded-control bg-background p-5">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">Booking reference</p>
               <p className="mt-2 font-heading text-2xl font-bold text-primary">{submittedBooking.publicReference}</p>
+              <p className="mt-3 text-sm leading-6 text-text-muted">Use the private link below to check your booking status later. Anyone with this link can view the booking, so keep it private.</p>
+              <Link to={`/workshops/access/${encodeURIComponent(submittedBooking.publicReference)}/${encodeURIComponent(submittedBooking.accessToken)}`} className="mt-4 inline-flex min-h-11 items-center justify-center rounded-control border border-secondary px-4 py-2 text-sm font-semibold text-secondary hover:bg-secondary hover:text-white">View booking status</Link>
               <p className="mt-4 text-sm text-text-muted">{submittedBooking.workshopTitle} · {submittedBooking.participantCount} participants</p>
               {submittedBooking.price != null && <p className="mt-2 font-semibold text-primary">{formatPrice(submittedBooking.price, submittedBooking.currency)} <span className="font-normal text-text-muted">indicative tier price</span></p>}
             </div>
