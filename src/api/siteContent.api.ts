@@ -115,3 +115,30 @@ export const getOrganizationProfile = async () =>
 
 export const updateOrganizationProfile = async (data: Partial<OrganizationProfile>) =>
   unwrap(await registrationApi.patch<Envelope<OrganizationProfile>>("/site-content/admin/organization", data));
+
+ 
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  status: ContentStatus;
+  displayOrder: number;
+  publishedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const getPublicFaqs = async () =>
+  unwrap(await registrationApi.get<Envelope<FaqItem[]>>("/site-content/faq"));
+
+export const getAdminFaqs = async () =>
+  unwrap(await registrationApi.get<Envelope<FaqItem[]>>("/site-content/admin/faq"));
+
+export const createFaq = async (data: Pick<FaqItem, "question" | "answer"> & Partial<Pick<FaqItem, "displayOrder">>) =>
+  unwrap(await registrationApi.post<Envelope<FaqItem>>("/site-content/admin/faq", data));
+
+export const updateFaq = async (id: string, data: Partial<Pick<FaqItem, "question" | "answer" | "status" | "displayOrder">>) =>
+  unwrap(await registrationApi.patch<Envelope<FaqItem>>(`/site-content/admin/faq/${id}`, data));
+
+export const deleteFaq = async (id: string) =>
+  registrationApi.delete(`/site-content/admin/faq/${id}`);
