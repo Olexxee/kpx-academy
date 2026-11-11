@@ -37,7 +37,7 @@ export async function prepareUploadFile(file: File): Promise<File> {
     let best: Blob | null = null;
     for (const quality of [0.84, 0.76, 0.68]) {
       const candidate = await toBlob(canvas, quality);
-      if (!candidate) continue;
+      if (!candidate || candidate.type !== "image/webp") continue;
       if (!best || candidate.size < best.size) best = candidate;
       if (candidate.size <= TARGET_IMAGE_BYTES) break;
     }
