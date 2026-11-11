@@ -23,7 +23,7 @@ const venueLabel: Record<string, string> = {
 const statusDetails: Record<string, { title: string; description: string }> = {
   NEW: { title: "Request received", description: "Your request has reached KPX Academy and is waiting for review." },
   UNDER_REVIEW: { title: "Under review", description: "The team is reviewing your requirements, preferred date and arrangements." },
-  PROPOSAL_SENT: { title: "Proposal sent", description: "KPX Academy has prepared a proposal. Check your email for the proposal details and next steps." },
+  PROPOSAL_SENT: { title: "Proposal sent", description: "KPX Academy has prepared a proposal and will contact you with the details and next steps." },
   ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. The team will complete the confirmation process." },
   CONFIRMED: { title: "Booking confirmed", description: "Your workshop booking is confirmed. Keep this page to review any future updates." },
   IN_PROGRESS: { title: "Workshop in progress", description: "Your workshop has started." },
