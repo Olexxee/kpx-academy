@@ -199,6 +199,13 @@ export default function AdminCertificatesPage() {
       return response.data.data.items;
     },
     enabled: view === "certificates",
+    refetchInterval: (query) => {
+      const records = query.state.data;
+      return records?.some((item) =>
+        item.emailDeliveryStatus === "PENDING" ||
+        item.emailDeliveryStatus === "PROCESSING"
+      ) ? 5000 : false;
+    },
   });
 
   const invalidateRecords = async () => {
