@@ -745,14 +745,25 @@ export default function AdminCertificatesPage() {
 
                     <div className="flex flex-wrap gap-2">
                       <ActionButton
-                        disabled={item.status === "REVOKED" || resend.isPending}
+                        disabled={
+                          item.status === "REVOKED" ||
+                          resend.isPending ||
+                          item.emailDeliveryStatus === "PENDING" ||
+                          item.emailDeliveryStatus === "PROCESSING"
+                        }
                         onClick={() => {
                           setNotice("");
                           resend.mutate(item.id);
                         }}
                       >
                         <Mail size={14} />
-                        {resend.isPending && resend.variables === item.id ? "Sending…" : "Resend email"}
+                        {item.emailDeliveryStatus === "PENDING"
+                          ? "Queued"
+                          : item.emailDeliveryStatus === "PROCESSING"
+                            ? "Sending…"
+                            : resend.isPending && resend.variables === item.id
+                              ? "Queuing…"
+                              : "Resend email"}
                       </ActionButton>
 
                       {item.status !== "REVOKED" && (
