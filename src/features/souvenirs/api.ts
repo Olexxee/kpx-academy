@@ -1,4 +1,5 @@
 import { registrationApi } from "../../lib/registrationApi";
+import { prepareUploadFiles } from "../../lib/fileCompression";
 import type { SouvenirEnquiryResult, SouvenirGuestEnquiry, SouvenirGuestOrder, SouvenirOrderResult, SouvenirProduct } from "./types";
 
 interface Envelope<T> { success: boolean; message?: string; data: T; }
@@ -26,7 +27,8 @@ export const createSouvenirEnquiry = async (payload: {
   if (payload.productId) form.append("productId", payload.productId);
   if (payload.requestedQuantity) form.append("requestedQuantity", String(payload.requestedQuantity));
   form.append("designDescription", payload.designDescription);
-  payload.media.forEach((file) => form.append("media", file));
+  const media = await prepareUploadFiles(payload.media);
+  media.forEach((file) => form.append("media", file));
   return (await registrationApi.post<Envelope<SouvenirEnquiryResult>>("/souvenirs/enquiries", form)).data.data;
 };
 
@@ -69,7 +71,8 @@ export const setAdminSouvenirPriceTierActive = async (tierId: string, active: bo
 
 export const uploadAdminSouvenirProductMedia = async (productId: string, files: File[]) => {
   const form = new FormData();
-  files.forEach((file) => form.append("media", file));
+  const optimizedFiles = await prepareUploadFiles(files);
+  optimizedFiles.forEach((file) => form.append("media", file));
   const path = "/souvenirs/admin/products/" + encodeURIComponent(productId) + "/media/upload";
   const response = await registrationApi.post<Envelope<SouvenirProduct["media"]>>(path, form);
   return response.data.data;
