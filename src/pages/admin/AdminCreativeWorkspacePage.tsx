@@ -39,6 +39,7 @@ const statuses: WorkshopBookingStatus[] = ["NEW", "UNDER_REVIEW", "PROPOSAL_SENT
 const statusStyle: Record<WorkshopBookingStatus, string> = {
   NEW: "bg-blue-50 text-blue-700", UNDER_REVIEW: "bg-amber-50 text-amber-700",
   PROPOSAL_SENT: "bg-violet-50 text-violet-700", ACCEPTED: "bg-cyan-50 text-cyan-700",
+  DECLINED: "bg-rose-50 text-rose-700",
   CONFIRMED: "bg-emerald-50 text-emerald-700", IN_PROGRESS: "bg-indigo-50 text-indigo-700",
   COMPLETED: "bg-green-50 text-green-700", CANCELLED: "bg-slate-100 text-slate-600",
 };
@@ -345,7 +346,7 @@ function BookingCard({ booking, expanded, onToggle, status, notes, eventDate, cu
       <button onClick={onToggle} className="shrink-0 rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700">{expanded ? "Hide details" : "Review request"}</button>
     </div>
     {expanded && <div className="mt-5 grid gap-4 border-t border-slate-100 pt-5 md:grid-cols-2">
-      <div className="space-y-3 text-sm"><Info label="Requested event date" value={new Date(booking.eventDate).toLocaleString()} /><Info label="Venue" value={booking.venueMode.replaceAll("_", " ")} /><Info label="Venue address" value={booking.venueAddress || "Not provided"} /><Info label="City" value={booking.city || "Not provided"} /><Info label="Custom workshop request" value={booking.customWorkshopDescription || "—"} /><Info label="Customer notes" value={booking.customerNotes || "—"} /></div>
+      <div className="space-y-3 text-sm"><Info label="Requested event date" value={new Date(booking.eventDate).toLocaleString()} /><Info label="Venue" value={booking.venueMode.replaceAll("_", " ")} /><Info label="Venue address" value={booking.venueAddress || "Not provided"} /><Info label="City" value={booking.city || "Not provided"} /><Info label="Custom workshop request" value={booking.customWorkshopDescription || "—"} /><Info label="Customer notes" value={booking.customerNotes || "—"} />{booking.proposalPrice != null && <><Info label="Proposed final price" value={money(booking.proposalPrice, booking.currency)} /><Info label="Proposal details" value={booking.proposalDetails || "—"} /><Info label="Proposal expiry" value={booking.proposalExpiresAt ? new Date(booking.proposalExpiresAt).toLocaleString() : "—"} /></>}</div>
       <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
         <Field label="Workflow status"><select value={status} onChange={(e) => onStatusChange(e.target.value)} className={inputClass}>{getAllowedWorkshopBookingStatuses(booking.status).map((item) => <option key={item} value={item}>{item.replaceAll("_", " ")}</option>)}</select></Field>
         {status === "PROPOSAL_SENT" && booking.status !== "PROPOSAL_SENT" && <>
