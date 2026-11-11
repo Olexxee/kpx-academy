@@ -6,6 +6,7 @@ export type WorkshopBookingStatus =
   | "UNDER_REVIEW"
   | "PROPOSAL_SENT"
   | "ACCEPTED"
+  | "DECLINED"
   | "CONFIRMED"
   | "IN_PROGRESS"
   | "COMPLETED"
@@ -59,6 +60,11 @@ export interface AdminWorkshopBooking {
   customerNotes?: string | null;
   adminNotes?: string | null;
   status: WorkshopBookingStatus;
+  proposalPrice?: number | string | null;
+  proposalDetails?: string | null;
+  proposalExpiresAt?: string | null;
+  proposalSentAt?: string | null;
+  proposalRespondedAt?: string | null;
   createdAt: string;
   offering?: { title: string; slug: string };
   participantTier?: { label: string; participantCount: number; price: number | string; currency: string };
@@ -108,18 +114,22 @@ export const updateAdminWorkshopBooking = (id: string, payload: {
   status?: WorkshopBookingStatus;
   eventDate?: string;
   customerMessage?: string | null;
+  proposalPrice?: number;
+  proposalDetails?: string;
+  proposalExpiresAt?: string;
   adminNotes?: string | null;
 }) =>
   unwrap(registrationApi.patch<Envelope<AdminWorkshopBooking>>(`/workshops/admin/bookings/${encodeURIComponent(id)}`, payload));
 
 export const WORKSHOP_BOOKING_TRANSITIONS: Record<WorkshopBookingStatus, WorkshopBookingStatus[]> = {
   NEW: ["UNDER_REVIEW", "CANCELLED"],
-  UNDER_REVIEW: ["PROPOSAL_SENT", "ACCEPTED", "CANCELLED"],
-  PROPOSAL_SENT: ["ACCEPTED", "CANCELLED"],
+  UNDER_REVIEW: ["PROPOSAL_SENT", "CANCELLED"],
+  PROPOSAL_SENT: ["CANCELLED"],
   ACCEPTED: ["CONFIRMED", "CANCELLED"],
   CONFIRMED: ["IN_PROGRESS", "CANCELLED"],
   IN_PROGRESS: ["COMPLETED"],
   COMPLETED: [],
+  DECLINED: [],
   CANCELLED: [],
 };
 
