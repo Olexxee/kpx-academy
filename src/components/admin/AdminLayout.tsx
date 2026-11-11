@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { NavLink, Outlet } from "react-router-dom";
+import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X, Building2 } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
 import { useAuthStore } from "../../features/auth/auth.store";
 
@@ -13,6 +13,7 @@ const links = [
   { to: "/admin/certificates", label: "Certificates", icon: Award },
   { to: "/admin/content", label: "Homepage hero", icon: PanelsTopLeft },
   { to: "/admin/logo", label: "Site logo", icon: Image },
+  { to: "/admin/organization", label: "Organization info", icon: Building2 },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/resources", label: "Resources", icon: FileText },
   { to: "/admin/souvenirs", label: "Souvenirs", icon: Package },
@@ -23,8 +24,6 @@ export default function AdminLayout() {
   const user = useAuthStore((state) => state.user);
   const logout = useLogout();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const location = useLocation();
-  useEffect(() => setMobileNavOpen(false), [location.pathname]);
 
   return (
     <div className="kpx-admin-shell min-h-screen bg-[var(--kpx-warm-white)] text-[var(--kpx-dark-charcoal)]">

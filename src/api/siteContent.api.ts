@@ -89,3 +89,29 @@ export interface SiteBranding {
 export const getSiteBranding = async () => unwrap(await registrationApi.get<Envelope<SiteBranding>>("/site-content/branding"));
 export const updateSiteBranding = async (data: Partial<SiteBranding>) => unwrap(await registrationApi.patch<Envelope<SiteBranding>>("/site-content/admin/branding", data));
 export const uploadSiteLogo = (file: File) => uploadAsset("/site-content/admin/uploads/logo", file);
+
+
+export interface OrganizationProfile {
+  id: string;
+  organizationName: string;
+  tagline?: string | null;
+  description?: string | null;
+  contactEmail?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  address?: string | null;
+  operatingHours?: string | null;
+  instagramUrl?: string | null;
+  facebookUrl?: string | null;
+  linkedinUrl?: string | null;
+  tiktokUrl?: string | null;
+  youtubeUrl?: string | null;
+  copyrightText?: string | null;
+  updatedAt?: string;
+}
+
+export const getOrganizationProfile = async () =>
+  unwrap(await registrationApi.get<Envelope<OrganizationProfile>>("/site-content/organization"));
+
+export const updateOrganizationProfile = async (data: Partial<OrganizationProfile>) =>
+  unwrap(await registrationApi.patch<Envelope<OrganizationProfile>>("/site-content/admin/organization", data));

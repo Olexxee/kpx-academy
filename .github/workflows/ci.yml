@@ -1,0 +1,24 @@
+name: Frontend CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: TypeScript and production build
+        run: npm run build
+      - name: ESLint on changed feature files
+        run: npx eslint src/api/siteContent.api.ts src/components/admin/AdminLayout.tsx src/components/layouts/SiteFooter.tsx src/pages/admin/AdminOrganizationPage.tsx src/router.tsx
