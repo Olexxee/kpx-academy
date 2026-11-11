@@ -1,8 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarClock, CheckCircle2, CircleDot, Clock3, XCircle } from "lucide-react";
 import { Container } from "../../../components/ui/Container";
-import { getGuestWorkshopBooking, respondToWorkshopProposal } from "../api";
+import { getGuestWorkshopBooking, initializeWorkshopPayment, respondToWorkshopProposal } from "../api";
+import { verifyPayment } from "../../payment/payments.api";
 
 const money = (amount: number | string | null, currency = "NGN") => {
   if (amount == null) return "To be confirmed";
@@ -25,7 +27,7 @@ const statusDetails: Record<string, { title: string; description: string }> = {
   NEW: { title: "Request received", description: "Your request has reached KPX Academy and is waiting for review." },
   UNDER_REVIEW: { title: "Under review", description: "The team is reviewing your requirements, preferred date and arrangements." },
   PROPOSAL_SENT: { title: "Proposal sent", description: "KPX Academy has prepared a proposal and will contact you with the details and next steps." },
-  ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. KPX Academy will follow up with the next steps." },
+  ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. Complete payment to confirm your workshop booking." },
   DECLINED: { title: "Proposal declined", description: "You declined this proposal. Contact KPX Academy if you would like to discuss a revised proposal." },
   CONFIRMED: { title: "Booking confirmed", description: "Your workshop booking is confirmed. Keep this page to review any future updates." },
   IN_PROGRESS: { title: "Workshop in progress", description: "Your workshop has started." },
@@ -43,6 +45,8 @@ const historyLabel = (entry: { action: string; previousStatus: string | null; ne
 
 export const WorkshopGuestAccessPage = () => {
   const { reference = "", token = "" } = useParams();
+  const [searchParams] = useSearchParams();
+  const paymentReference = searchParams.get("payment_reference") || searchParams.get("reference") || searchParams.get("trxref");
   const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["workshops", "guest-booking", reference, token],
@@ -56,6 +60,23 @@ export const WorkshopGuestAccessPage = () => {
       await queryClient.invalidateQueries({ queryKey: ["workshops", "guest-booking", reference, token] });
     },
   });
+  const paymentMutation = useMutation({
+    mutationFn: () => initializeWorkshopPayment(reference, token),
+    onSuccess: (payment) => window.location.assign(payment.authorizationUrl),
+  });
+  const paymentQuery = useQuery({
+    queryKey: ["payments", "verify", paymentReference],
+    queryFn: () => verifyPayment(paymentReference as string),
+    enabled: Boolean(paymentReference),
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (paymentQuery.data?.status === "SUCCESS") {
+      queryClient.invalidateQueries({ queryKey: ["workshops", "guest-booking", reference, token] });
+    }
+  }, [paymentQuery.data?.status, queryClient, reference, token]);
 
   if (query.isLoading) {
     return <section className="py-24"><Container><p className="text-text-muted">Loading your private booking…</p></Container></section>;
@@ -108,8 +129,29 @@ export const WorkshopGuestAccessPage = () => {
         <button type="button" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate("DECLINE")} className="rounded-xl border border-[#8B1E5A] px-4 py-3 text-sm font-semibold text-[#8B1E5A] disabled:opacity-50">Decline proposal</button>
       </div>}
       {proposalExpired && booking.status === "PROPOSAL_SENT" && <p className="mt-4 text-sm font-semibold text-[#8B1E5A]">This proposal has expired. Contact KPX Academy to request an updated proposal.</p>}
-      {booking.status === "ACCEPTED" && <p className="mt-4 text-sm font-semibold text-[#2A7F7F]">You accepted this proposal.</p>}
+      {booking.status === "ACCEPTED" && <div className="mt-5 rounded-xl border border-[#2A7F7F]/30 bg-white p-4">
+        <p className="text-sm font-semibold text-primary">You accepted this proposal. Full payment is now required to confirm the booking.</p>
+        <p className="mt-2 text-lg font-bold text-primary">{money(booking.proposal.price, booking.proposal.currency)}</p>
+        <button type="button" disabled={paymentMutation.isPending} onClick={() => paymentMutation.mutate()} className="mt-4 w-full rounded-xl bg-[#17324D] px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">
+          {paymentMutation.isPending ? "Preparing secure checkout…" : "Proceed to secure payment"}
+        </button>
+        {paymentMutation.isError && <p role="alert" className="mt-3 text-sm text-red-700">{paymentMutation.error instanceof Error ? paymentMutation.error.message : "We could not start checkout. Please try again."}</p>}
+      </div>}
+      {booking.status === "CONFIRMED" && <p className="mt-4 text-sm font-semibold text-[#2A7F7F]">Your payment has been verified and your workshop booking is confirmed.</p>}
       {booking.status === "DECLINED" && <p className="mt-4 text-sm font-semibold text-[#8B1E5A]">You declined this proposal.</p>}
+      {paymentReference && <div className="mt-4 rounded-xl bg-white p-4">
+        {paymentQuery.isLoading && <p className="text-sm text-text-muted">Verifying your payment with Paystack…</p>}
+        {paymentQuery.data?.status === "SUCCESS" && !paymentQuery.data.workshopPaymentNeedsReview && <p className="text-sm font-semibold text-[#2A7F7F]">Payment verified successfully. Refreshing your booking status…</p>}
+        {paymentQuery.data?.workshopPaymentNeedsReview && <p role="alert" className="text-sm font-semibold text-amber-700">Your payment was received, but the booking needs manual review. Please contact KPX Academy and quote your booking reference.</p>}
+        {paymentQuery.data && paymentQuery.data.status !== "SUCCESS" && <div>
+          <p className="text-sm text-text-muted">Payment status: {paymentQuery.data.status.replaceAll("_", " ").toLowerCase()}.</p>
+          <button type="button" onClick={() => paymentQuery.refetch()} className="mt-2 text-sm font-semibold text-secondary underline">Check payment again</button>
+        </div>}
+        {paymentQuery.isError && <div>
+          <p role="alert" className="text-sm text-red-700">We could not verify this payment yet.</p>
+          <button type="button" onClick={() => paymentQuery.refetch()} className="mt-2 text-sm font-semibold text-secondary underline">Retry verification</button>
+        </div>}
+      </div>}
       {responseMutation.isError && <p role="alert" className="mt-3 text-sm text-red-700">{responseMutation.error instanceof Error ? responseMutation.error.message : "We could not record your response. Refresh and try again."}</p>}
     </section>}
 

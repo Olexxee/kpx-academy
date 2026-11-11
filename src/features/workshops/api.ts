@@ -32,3 +32,22 @@ export const respondToWorkshopProposal = async (
     `/workshops/bookings/access/${encodeURIComponent(reference)}/${encodeURIComponent(token)}/respond`,
     { decision },
   )).data.data;
+
+
+export interface InitializeWorkshopPaymentResponse {
+  paymentId: string;
+  reference: string;
+  authorizationUrl: string;
+  accessCode: string;
+  amount: string | number;
+  currency: string;
+}
+
+export const initializeWorkshopPayment = async (
+  reference: string,
+  token: string,
+): Promise<InitializeWorkshopPaymentResponse> =>
+  (await registrationApi.post<Envelope<InitializeWorkshopPaymentResponse>>(
+    "/payments/workshops/initialize",
+    { reference, token },
+  )).data.data;

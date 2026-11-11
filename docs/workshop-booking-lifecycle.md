@@ -1,6 +1,6 @@
 # Workshop booking lifecycle
 
-The admin workspace only offers status transitions accepted by the backend state machine. A booking can be moved through review, proposal, acceptance, confirmation, delivery, and completion. Cancellation is available only before work is completed. Completed and cancelled bookings are terminal.
+The admin workspace only offers status transitions accepted by the backend state machine. A booking moves through review, proposal, customer acceptance, payment confirmation, delivery, and completion. Admins cannot manually mark an accepted booking confirmed; only server-side payment verification can do that. Cancellation is available only before work is completed. Completed and cancelled bookings are terminal.
 
 The backend remains authoritative: it validates every transition and performs a conditional update against the previously read status. The frontend restrictions are usability guidance, not a security boundary.
 
@@ -21,9 +21,13 @@ The admin booking editor supports changing the event date/time before a booking 
 
 When moving a booking from `UNDER_REVIEW` to `PROPOSAL_SENT`, an admin must provide a final price, proposal scope/details, and a future expiry date. The final price is separate from the indicative participant-tier price. The customer receives these terms by email and can accept or decline on the private booking page.
 
-The guest decision endpoint requires the original private access token, checks that the proposal is still pending and unexpired, and conditionally records the decision with its history entry in one transaction. The admin API cannot impersonate a customer decision. `ACCEPTED` and `DECLINED` are customer-only outcomes; `DECLINED` is terminal. Payment and final confirmation are not triggered by acceptance.
+The guest decision endpoint requires the original private access token, checks that the proposal is still pending and unexpired, and conditionally records the decision with its history entry in one transaction. The admin API cannot impersonate a customer decision. `ACCEPTED` and `DECLINED` are customer-only outcomes; `DECLINED` is terminal. Acceptance does not confirm the booking or trigger payment automatically; it unlocks the private payment action.
 
 
-## Customer proposal decisions
+## Workshop payment and confirmation
 
-The admin booking editor requires a final price, proposal scope/details and expiry before sending a proposal. The customer can accept or decline the proposal through the existing private booking page. The response is single-use, token-protected and expires with the proposal. Accepted proposals move to the accepted state; declined proposals become terminal. Payment is not collected as part of proposal acceptance.
+After accepting a proposal, the customer can start Paystack checkout from the same private booking page. The backend requires the booking reference and private access token, loads the stored accepted proposal price, and creates the Paystack transaction in NGN. The browser never supplies the amount.
+
+The return page verifies the transaction against Paystack through the backend. The signed webhook uses the same verification and settlement path. Only a verified successful payment changes `ACCEPTED` to `CONFIRMED`; the booking history and customer confirmation email are queued atomically with the payment update. Failed, abandoned or unverified payments do not confirm the booking. Deposits and instalments are not supported in this phase.
+
+A repeated checkout request reuses the existing pending payment attempt. Reversals move a confirmed booking back to `ACCEPTED` where safe; if the booking has moved into another operational state, the payment is flagged for manual review.
