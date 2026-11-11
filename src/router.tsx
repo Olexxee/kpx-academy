@@ -30,6 +30,8 @@ import AdminOrganizationPage from "./pages/admin/AdminOrganizationPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import ResourceReaderPage from "./pages/ResourceReaderPage";
 import GalleryPage from "./pages/GalleryPage";
+import FaqPage from "./pages/FaqPage";
+import AdminFaqPage from "./pages/admin/AdminFaqPage";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +47,7 @@ export const router = createBrowserRouter([
       { path: "/resources", element: <ResourcesPage /> },
       { path: "/resources/:slug", element: <ResourceReaderPage /> },
       { path: "/gallery", element: <GalleryPage /> },
+      { path: "/faq", element: <FaqPage /> },
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
       { path: "/workshops/book", element: <WorkshopBookingPage /> },
@@ -70,6 +73,7 @@ export const router = createBrowserRouter([
           { path: "/admin/content", element: <AdminSiteContentPage mode="hero" /> },
           { path: "/admin/logo", element: <AdminLogoPage /> },
           { path: "/admin/organization", element: <AdminOrganizationPage /> },
+          { path: "/admin/faq", element: <AdminFaqPage /> },
           { path: "/admin/gallery", element: <AdminSiteContentPage mode="gallery" /> },
           { path: "/admin/resources", element: <AdminSiteContentPage mode="resources" /> },
           { path: "/admin/souvenirs", element: <AdminSouvenirsPage /> },

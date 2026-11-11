@@ -112,3 +112,12 @@ The footer keeps its internal navigation routes in frontend code. The Site Brand
 **Email identity is intentionally separated:** the public contact email configured here is a website contact detail. It does not change `TRANSACTIONAL_FROM_EMAIL`, `CERTIFICATE_FROM_EMAIL`, or any Resend sender configuration.
 
 The organization profile is cached by React Query for five minutes. After an admin saves changes, the admin query is invalidated; public visitors receive the updated profile when their cached data refreshes.
+
+
+## FAQ management
+
+Admins manage questions and answers in **Admin → FAQs**. New entries are saved as drafts. Admins can edit, publish, unpublish, archive through the API, and delete entries. Published FAQs are displayed on the public **/faq** page and ordered by their configured display order.
+
+The public frontend reads `GET /api/site-content/faq`; it never requests the admin list. The backend public query filters to `PUBLISHED` records at the database layer. Admin operations use the authenticated admin routes under `/api/site-content/admin/faq`.
+
+FAQ answers are plain text with line breaks preserved. Do not place HTML in answers; the public page renders answer content as text.
