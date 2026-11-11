@@ -5,4 +5,7 @@ export const siteImages = {
   resources: "/resourcepage.jpg",
   creativeWorkshop: "/creativeworkshop.jpg",
   certificates: "/certificate.jpg",
+  about: "/about.jpg.jpg",
+  gallery: "/gallery.jpg",
+  souvenirs: "/sourvenir.jpg",
 } as const;
