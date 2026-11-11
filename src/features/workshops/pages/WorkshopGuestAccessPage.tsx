@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CalendarClock, CheckCircle2, CircleDot, Clock3, XCircle } from "lucide-react";
 import { Container } from "../../../components/ui/Container";
-import { getGuestWorkshopBooking } from "../api";
+import { getGuestWorkshopBooking, respondToWorkshopProposal } from "../api";
 
 const money = (amount: number | string | null, currency = "NGN") => {
   if (amount == null) return "To be confirmed";
@@ -24,7 +24,8 @@ const statusDetails: Record<string, { title: string; description: string }> = {
   NEW: { title: "Request received", description: "Your request has reached KPX Academy and is waiting for review." },
   UNDER_REVIEW: { title: "Under review", description: "The team is reviewing your requirements, preferred date and arrangements." },
   PROPOSAL_SENT: { title: "Proposal sent", description: "KPX Academy has prepared a proposal and will contact you with the details and next steps." },
-  ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. The team will complete the confirmation process." },
+  ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. KPX Academy will follow up with the next steps." },
+  DECLINED: { title: "Proposal declined", description: "You declined this proposal. Contact KPX Academy if you would like to discuss a revised proposal." },
   CONFIRMED: { title: "Booking confirmed", description: "Your workshop booking is confirmed. Keep this page to review any future updates." },
   IN_PROGRESS: { title: "Workshop in progress", description: "Your workshop has started." },
   COMPLETED: { title: "Workshop completed", description: "This workshop booking has been marked as completed." },
@@ -41,11 +42,18 @@ const historyLabel = (entry: { action: string; previousStatus: string | null; ne
 
 export const WorkshopGuestAccessPage = () => {
   const { reference = "", token = "" } = useParams();
+  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["workshops", "guest-booking", reference, token],
     queryFn: () => getGuestWorkshopBooking(reference, token),
     enabled: Boolean(reference && token),
     retry: false,
+  });
+  const responseMutation = useMutation({
+    mutationFn: (decision: "ACCEPT" | "DECLINE") => respondToWorkshopProposal(reference, token, decision),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["workshops", "guest-booking", reference, token] });
+    },
   });
 
   if (query.isLoading) {
@@ -57,6 +65,8 @@ export const WorkshopGuestAccessPage = () => {
   }
 
   const booking = query.data;
+  const proposalExpired = Boolean(booking.proposal?.expiresAt && new Date(booking.proposal.expiresAt) <= new Date());
+  const canRespondToProposal = booking.status === "PROPOSAL_SENT" && Boolean(booking.proposal) && !proposalExpired;
   const currentStatus = statusDetails[booking.status] ?? {
     title: booking.status.replaceAll("_", " "),
     description: "Your booking status has been updated. Check the history below for the latest details.",
@@ -83,6 +93,24 @@ export const WorkshopGuestAccessPage = () => {
     </div>
 
     <dl className="mt-5 divide-y divide-border">{rows.map(([label, value]) => <div key={label} className="flex justify-between gap-5 py-4 text-sm"><dt className="text-text-muted">{label}</dt><dd className="max-w-[65%] text-right font-semibold text-primary">{value}</dd></div>)}</dl>
+
+    {booking.proposal && <section className="mt-7 rounded-control border border-[#D4A85A]/40 bg-[#F7F5F0] p-5">
+      <h2 className="font-heading text-xl font-bold text-primary">KPX Academy proposal</h2>
+      <div className="mt-4 flex items-baseline justify-between gap-4">
+        <span className="text-sm text-text-muted">Final proposed price</span>
+        <strong className="text-xl text-primary">{money(booking.proposal.price, booking.proposal.currency)}</strong>
+      </div>
+      <div className="mt-4"><h3 className="text-sm font-semibold text-primary">Scope and deliverables</h3><p className="mt-2 whitespace-pre-line text-sm leading-7 text-text-muted">{booking.proposal.details}</p></div>
+      {booking.proposal.expiresAt && <p className="mt-4 text-xs text-text-muted">Respond by {dateTime(booking.proposal.expiresAt)} (West Africa Time).</p>}
+      {canRespondToProposal && <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+        <button type="button" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate("ACCEPT")} className="rounded-xl bg-[#2A7F7F] px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">{responseMutation.isPending ? "Submitting…" : "Accept proposal"}</button>
+        <button type="button" disabled={responseMutation.isPending} onClick={() => responseMutation.mutate("DECLINE")} className="rounded-xl border border-[#8B1E5A] px-4 py-3 text-sm font-semibold text-[#8B1E5A] disabled:opacity-50">Decline proposal</button>
+      </div>}
+      {proposalExpired && booking.status === "PROPOSAL_SENT" && <p className="mt-4 text-sm font-semibold text-[#8B1E5A]">This proposal has expired. Contact KPX Academy to request an updated proposal.</p>}
+      {booking.status === "ACCEPTED" && <p className="mt-4 text-sm font-semibold text-[#2A7F7F]">You accepted this proposal.</p>}
+      {booking.status === "DECLINED" && <p className="mt-4 text-sm font-semibold text-[#8B1E5A]">You declined this proposal.</p>}
+      {responseMutation.isError && <p role="alert" className="mt-3 text-sm text-red-700">{responseMutation.error instanceof Error ? responseMutation.error.message : "We could not record your response. Refresh and try again."}</p>}
+    </section>}
 
     {booking.customWorkshopDescription && <div className="mt-5"><h2 className="font-semibold text-primary">Custom workshop brief</h2><p className="mt-2 whitespace-pre-line text-sm leading-7 text-text-muted">{booking.customWorkshopDescription}</p></div>}
     {booking.customerNotes && <div className="mt-5"><h2 className="font-semibold text-primary">Additional notes</h2><p className="mt-2 whitespace-pre-line text-sm leading-7 text-text-muted">{booking.customerNotes}</p></div>}
