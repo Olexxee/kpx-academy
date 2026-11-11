@@ -45,6 +45,10 @@ type Submission = {
   status: SubmissionStatus;
   createdAt: string;
   notes?: string | null;
+  proofAccessUrl?: string | null;
+  proofOriginalName?: string | null;
+  proofMimeType?: string | null;
+  proofBytes?: number | null;
 };
 
 interface Certificate {
@@ -71,6 +75,73 @@ interface ListResponse<T> {
 
 interface NoticeProps {
   message: string;
+}
+
+
+function ProofAttachment({ submission }: { submission: Submission }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const url = submission.proofAccessUrl;
+  const isImage = submission.proofMimeType?.startsWith("image/") ?? false;
+  const fileName = submission.proofOriginalName || "Submitted proof";
+
+  if (!url) {
+    return (
+      <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+        The proof attachment URL was not returned. Refresh the submission or check the certificate API.
+      </div>
+    );
+  }
+
+  return (
+    <section className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Submitted proof</p>
+          <p className="mt-1 break-all text-sm font-medium text-gray-800">{fileName}</p>
+          {typeof submission.proofBytes === "number" && (
+            <p className="mt-1 text-xs text-gray-500">
+              {(submission.proofBytes / (1024 * 1024)).toFixed(2)} MB
+            </p>
+          )}
+        </div>
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-[var(--kpx-royal-blue)] hover:bg-blue-50"
+        >
+          <FileCheck2 size={14} />
+          {isImage ? "Open original" : "Open proof"}
+        </a>
+      </div>
+
+      {isImage && (
+        <div className="mt-3 overflow-hidden rounded-lg border border-gray-200 bg-white">
+          {imageFailed ? (
+            <div className="p-5 text-sm text-amber-800">
+              The image preview could not be loaded. Use “Open original” to view the submitted file.
+            </div>
+          ) : (
+            <img
+              src={url}
+              alt={`Proof of work submitted by ${submission.studentName}`}
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              onError={() => setImageFailed(true)}
+              className="max-h-[520px] w-full object-contain"
+            />
+          )}
+        </div>
+      )}
+
+      {!isImage && submission.proofMimeType === "application/pdf" && (
+        <p className="mt-3 text-xs text-gray-500">
+          PDF document · Open the secure link above to review the full document.
+        </p>
+      )}
+    </section>
+  );
 }
 
 function Notice({ message }: NoticeProps) {
@@ -606,6 +677,8 @@ export default function AdminCertificatesPage() {
 
                     <StatusBadge status={item.status} />
                   </div>
+
+                  <ProofAttachment submission={item} />
 
                   {item.status === "PENDING" && (
                     <div className="mt-4 border-t border-gray-100 pt-4">
