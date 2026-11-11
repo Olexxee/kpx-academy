@@ -120,17 +120,3 @@ export const WORKSHOP_BOOKING_TRANSITIONS: Record<WorkshopBookingStatus, Worksho
 
 export const getAllowedWorkshopBookingStatuses = (current: WorkshopBookingStatus) =>
   [current, ...WORKSHOP_BOOKING_TRANSITIONS[current]];
-
-export const WORKSHOP_BOOKING_TRANSITIONS: Record<WorkshopBookingStatus, WorkshopBookingStatus[]> = {
-  NEW: ["UNDER_REVIEW", "CANCELLED"],
-  UNDER_REVIEW: ["PROPOSAL_SENT", "ACCEPTED", "CANCELLED"],
-  PROPOSAL_SENT: ["ACCEPTED", "CANCELLED"],
-  ACCEPTED: ["CONFIRMED", "CANCELLED"],
-  CONFIRMED: ["IN_PROGRESS", "CANCELLED"],
-  IN_PROGRESS: ["COMPLETED"],
-  COMPLETED: [],
-  CANCELLED: [],
-};
-
-export const getAllowedWorkshopBookingStatuses = (current: WorkshopBookingStatus) =>
-  [current, ...WORKSHOP_BOOKING_TRANSITIONS[current]];
