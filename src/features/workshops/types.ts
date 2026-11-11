@@ -55,6 +55,14 @@ export interface GuestWorkshopBooking {
   updatedAt: string;
   offering?: { title: string; slug: string; contactEmail?: string | null; contactWhatsApp?: string | null } | null;
   participantTier?: { label: string; participantCount: number; price: number | string; currency: string } | null;
+  proposal?: {
+    price: number | string;
+    currency: string;
+    details: string | null;
+    expiresAt: string | null;
+    sentAt: string | null;
+    respondedAt: string | null;
+  } | null;
   history?: WorkshopBookingHistoryEntry[];
 }
 

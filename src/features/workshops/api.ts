@@ -22,3 +22,13 @@ export const getGuestWorkshopBooking = async (
   (await registrationApi.get<Envelope<GuestWorkshopBooking>>(
     `/workshops/bookings/access/${encodeURIComponent(reference)}/${encodeURIComponent(token)}`,
   )).data.data;
+
+export const respondToWorkshopProposal = async (
+  reference: string,
+  token: string,
+  decision: "ACCEPT" | "DECLINE",
+): Promise<{ publicReference: string; status: string; proposalRespondedAt: string }> =>
+  (await registrationApi.post<Envelope<{ publicReference: string; status: string; proposalRespondedAt: string }>>(
+    `/workshops/bookings/access/${encodeURIComponent(reference)}/${encodeURIComponent(token)}/respond`,
+    { decision },
+  )).data.data;
