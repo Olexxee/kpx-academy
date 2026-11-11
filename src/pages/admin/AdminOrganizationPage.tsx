@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getOrganizationProfile, updateOrganizationProfile } from "../../api/siteContent.api";
+import { getOrganizationProfile, updateOrganizationProfile, type OrganizationProfile } from "../../api/siteContent.api";
 
 const fields = [
   { name: "organizationName", label: "Organization name", required: true, maxLength: 160 },
@@ -37,11 +37,10 @@ export default function AdminOrganizationPage() {
     event.preventDefault();
     setMessage("");
     const form = new FormData(event.currentTarget);
-    const payload: Record<string, string> = {};
-    for (const field of fields) {
+    const payload = Object.fromEntries(fields.map((field) => {
       const value = String(form.get(field.name) ?? "").trim();
-      payload[field.name] = value;
-    }
+      return [field.name, value || (field.name === "organizationName" ? "" : null)];
+    })) as Partial<OrganizationProfile>;
     save.mutate(payload);
   };
 
