@@ -10,3 +10,8 @@ The backend remains authoritative: it validates every transition and performs a 
 The private guest booking page now displays a chronological history of customer-visible changes. It explains the current lifecycle state, records the original submission, and shows later status changes and reschedules. Internal admin notes and admin identities are never returned by the guest API.
 
 The API records history and inserts notification outbox jobs atomically with the booking update. Customers receive email when a proposal is sent, a booking is confirmed or cancelled, or the event date changes. Email content directs customers back to their original private status link; the access token is never stored in the outbox or reissued.
+
+
+## Admin rescheduling and customer messages
+
+The admin booking editor supports changing the event date/time before a booking enters `IN_PROGRESS` or a terminal state. A customer-facing message can accompany a status change or reschedule; it appears in the private guest history and in the relevant transactional email. Internal admin notes remain separate and private.

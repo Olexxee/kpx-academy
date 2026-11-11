@@ -76,6 +76,8 @@ export default function AdminCreativeWorkspacePage() {
   const [bookingPage, setBookingPage] = useState(1);
   const [bookingDrafts, setBookingDrafts] = useState<Record<string, string>>({});
   const [bookingNotes, setBookingNotes] = useState<Record<string, string>>({});
+  const [bookingDates, setBookingDates] = useState<Record<string, string>>({});
+  const [bookingMessages, setBookingMessages] = useState<Record<string, string>>({});
   const [expandedBooking, setExpandedBooking] = useState<string | null>(null);
 
   const offeringsQuery = useQuery({
@@ -141,8 +143,15 @@ export default function AdminCreativeWorkspacePage() {
     onSuccess: invalidateAll,
   });
   const bookingMutation = useMutation({
-    mutationFn: ({ id, status, adminNotes }: { id: string; status: WorkshopBookingStatus; adminNotes: string }) =>
-      updateAdminWorkshopBooking(id, { status, adminNotes: adminNotes || null }),
+    mutationFn: ({ id, status, eventDate, customerMessage, adminNotes }: {
+      id: string; status: WorkshopBookingStatus; eventDate?: string;
+      customerMessage?: string | null; adminNotes: string;
+    }) => updateAdminWorkshopBooking(id, {
+      status,
+      ...(eventDate ? { eventDate } : {}),
+      ...(customerMessage ? { customerMessage } : {}),
+      adminNotes: adminNotes || null,
+    }),
     onSuccess: invalidateAll,
   });
 
@@ -267,7 +276,34 @@ export default function AdminCreativeWorkspacePage() {
           </div>
           {bookingsQuery.isLoading ? <Loading label="Loading booking requests…" /> : (bookingData?.items.length ?? 0) === 0 ? <Empty title="No booking requests found" description="New creative workshop requests will appear here." /> : (
             <div className="space-y-3">
-              {bookingData?.items.map((booking) => <BookingCard key={booking.id} booking={booking} expanded={expandedBooking === booking.id} onToggle={() => setExpandedBooking(expandedBooking === booking.id ? null : booking.id)} status={bookingDrafts[booking.id] ?? booking.status} notes={bookingNotes[booking.id] ?? booking.adminNotes ?? ""} onStatusChange={(value) => setBookingDrafts({ ...bookingDrafts, [booking.id]: value })} onNotesChange={(value) => setBookingNotes({ ...bookingNotes, [booking.id]: value })} onSave={() => bookingMutation.mutate({ id: booking.id, status: (bookingDrafts[booking.id] ?? booking.status) as WorkshopBookingStatus, adminNotes: bookingNotes[booking.id] ?? booking.adminNotes ?? "" })} saving={bookingMutation.isPending} />)}
+              {bookingData?.items.map((booking) => {
+                const selectedStatus = (bookingDrafts[booking.id] ?? booking.status) as WorkshopBookingStatus;
+                const selectedDate = bookingDates[booking.id];
+                const dateChanged = Boolean(selectedDate && new Date(selectedDate).getTime() !== new Date(booking.eventDate).getTime());
+                const statusChanged = selectedStatus !== booking.status;
+                return <BookingCard
+                  key={booking.id}
+                  booking={booking}
+                  expanded={expandedBooking === booking.id}
+                  onToggle={() => setExpandedBooking(expandedBooking === booking.id ? null : booking.id)}
+                  status={selectedStatus}
+                  notes={bookingNotes[booking.id] ?? booking.adminNotes ?? ""}
+                  eventDate={selectedDate ?? toLocalDateTimeInput(booking.eventDate)}
+                  customerMessage={bookingMessages[booking.id] ?? ""}
+                  onStatusChange={(value) => setBookingDrafts({ ...bookingDrafts, [booking.id]: value })}
+                  onNotesChange={(value) => setBookingNotes({ ...bookingNotes, [booking.id]: value })}
+                  onEventDateChange={(value) => setBookingDates({ ...bookingDates, [booking.id]: value })}
+                  onCustomerMessageChange={(value) => setBookingMessages({ ...bookingMessages, [booking.id]: value })}
+                  onSave={() => bookingMutation.mutate({
+                    id: booking.id,
+                    status: selectedStatus,
+                    ...(dateChanged ? { eventDate: new Date(selectedDate!).toISOString() } : {}),
+                    ...(statusChanged || dateChanged ? { customerMessage: bookingMessages[booking.id] || null } : {}),
+                    adminNotes: bookingNotes[booking.id] ?? booking.adminNotes ?? "",
+                  })}
+                  saving={bookingMutation.isPending}
+                />;
+              })}
               <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"><span className="text-slate-500">Page {bookingPage} of {bookingPages} · {bookingTotal} requests</span><div className="flex gap-2"><button disabled={bookingPage <= 1} onClick={() => setBookingPage((p) => p - 1)} className="rounded-lg border border-slate-200 p-2 disabled:opacity-40"><ChevronLeft size={16} /></button><button disabled={bookingPage >= bookingPages} onClick={() => setBookingPage((p) => p + 1)} className="rounded-lg border border-slate-200 p-2 disabled:opacity-40"><ChevronRight size={16} /></button></div></div>
             </div>
           )}
@@ -277,9 +313,12 @@ export default function AdminCreativeWorkspacePage() {
   );
 }
 
-function BookingCard({ booking, expanded, onToggle, status, notes, onStatusChange, onNotesChange, onSave, saving }: {
+function BookingCard({ booking, expanded, onToggle, status, notes, eventDate, customerMessage, onStatusChange, onNotesChange, onEventDateChange, onCustomerMessageChange, onSave, saving }: {
   booking: AdminWorkshopBooking; expanded: boolean; onToggle: () => void; status: string; notes: string;
-  onStatusChange: (value: string) => void; onNotesChange: (value: string) => void; onSave: () => void; saving: boolean;
+  eventDate: string; customerMessage: string;
+  onStatusChange: (value: string) => void; onNotesChange: (value: string) => void;
+  onEventDateChange: (value: string) => void; onCustomerMessageChange: (value: string) => void;
+  onSave: () => void; saving: boolean;
 }) {
   return <article className="rounded-2xl border border-slate-200 bg-white p-5">
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -290,12 +329,22 @@ function BookingCard({ booking, expanded, onToggle, status, notes, onStatusChang
       <div className="space-y-3 text-sm"><Info label="Requested event date" value={new Date(booking.eventDate).toLocaleString()} /><Info label="Venue" value={booking.venueMode.replaceAll("_", " ")} /><Info label="Venue address" value={booking.venueAddress || "Not provided"} /><Info label="City" value={booking.city || "Not provided"} /><Info label="Custom workshop request" value={booking.customWorkshopDescription || "—"} /><Info label="Customer notes" value={booking.customerNotes || "—"} /></div>
       <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
         <Field label="Workflow status"><select value={status} onChange={(e) => onStatusChange(e.target.value)} className={inputClass}>{getAllowedWorkshopBookingStatuses(booking.status).map((item) => <option key={item} value={item}>{item.replaceAll("_", " ")}</option>)}</select></Field>
-        <Field label="Internal admin notes"><textarea rows={5} maxLength={5000} value={notes} onChange={(e) => onNotesChange(e.target.value)} placeholder="Record proposal, call outcome, or follow-up…" className={inputClass} /></Field>
+        <Field label="Reschedule event date and time">
+          <input type="datetime-local" value={eventDate} min={toLocalDateTimeInput(new Date().toISOString())} disabled={["IN_PROGRESS", "COMPLETED", "CANCELLED"].includes(booking.status)} onChange={(e) => onEventDateChange(e.target.value)} className={inputClass} />
+        </Field>
+        <Field label="Message for the customer (optional)"><textarea rows={3} maxLength={1500} value={customerMessage} onChange={(e) => onCustomerMessageChange(e.target.value)} placeholder="This message appears in the customer's booking history and relevant notification email…" className={inputClass} /></Field>
+        <Field label="Internal admin notes"><textarea rows={4} maxLength={5000} value={notes} onChange={(e) => onNotesChange(e.target.value)} placeholder="Private notes for the KPX team…" className={inputClass} /></Field>
         <button disabled={saving} className="inline-flex items-center gap-2 rounded-xl bg-[#8B1E5A] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><Save size={15} /> Save booking update</button>
       </form>
     </div>}
   </article>;
 }
+
+const toLocalDateTimeInput = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
+};
 
 const inputClass = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#8B1E5A] focus:ring-2 focus:ring-[#8B1E5A]/10";
 function Field({ label, children }: { label: string; children: React.ReactNode }) { return <label className="block text-xs font-semibold text-slate-600">{label}{children}</label>; }

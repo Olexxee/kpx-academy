@@ -104,7 +104,12 @@ export const getAdminWorkshopBookings = async (params: { page: number; limit: nu
   return response.data.data;
 };
 
-export const updateAdminWorkshopBooking = (id: string, payload: { status?: WorkshopBookingStatus; adminNotes?: string | null }) =>
+export const updateAdminWorkshopBooking = (id: string, payload: {
+  status?: WorkshopBookingStatus;
+  eventDate?: string;
+  customerMessage?: string | null;
+  adminNotes?: string | null;
+}) =>
   unwrap(registrationApi.patch<Envelope<AdminWorkshopBooking>>(`/workshops/admin/bookings/${encodeURIComponent(id)}`, payload));
 
 export const WORKSHOP_BOOKING_TRANSITIONS: Record<WorkshopBookingStatus, WorkshopBookingStatus[]> = {
