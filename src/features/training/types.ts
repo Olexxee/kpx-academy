@@ -49,6 +49,8 @@ export interface TrainingProgram {
 
   deliveryMode: DeliveryMode;
   location?: string | null;
+  /** Private admin-managed Telegram invite link; omitted from public API responses. */
+  telegramGroupUrl?: string | null;
 
   startDate?: string | null;
   endDate?: string | null;
@@ -89,6 +91,7 @@ export interface CreateTrainingData {
 
   deliveryMode?: DeliveryMode;
   location?: string | null;
+  telegramGroupUrl?: string | null;
 
   startDate?: string | null;
   endDate?: string | null;
