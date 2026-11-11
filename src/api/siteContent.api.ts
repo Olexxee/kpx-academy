@@ -1,4 +1,5 @@
 import { registrationApi } from "../lib/registrationApi";
+import { prepareUploadFile } from "../lib/fileCompression";
 
 export type ContentStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 export interface HomepageHero {
@@ -55,7 +56,9 @@ export const updateResource = async (id: string, data: Partial<Resource>) => unw
 export const deleteResource = async (id: string) => registrationApi.delete(`/site-content/admin/resources/${id}`);
 
 const uploadAsset = async (endpoint: string, file: File): Promise<UploadedAsset> => {
-  const form = new FormData(); form.append("file", file);
+  const form = new FormData();
+  const uploadFile = endpoint.endsWith("/resource-pdf") ? file : await prepareUploadFile(file);
+  form.append("file", uploadFile);
   return unwrap(await registrationApi.post<Envelope<UploadedAsset>>(endpoint, form));
 };
 export const uploadHeroImage = (file: File) => uploadAsset("/site-content/admin/uploads/hero-image", file);
