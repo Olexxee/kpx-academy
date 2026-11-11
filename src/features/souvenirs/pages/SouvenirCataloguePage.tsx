@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
+import { SiteImage } from "../../../components/ui/SiteImage";
+import { siteImages } from "../../../config/siteImages";
 import { getSouvenirProducts } from "../api";
 import type { SouvenirProduct } from "../types";
 
@@ -17,7 +19,10 @@ export const SouvenirCataloguePage = () => {
   });
 
   return <div className="min-h-screen bg-background">
-    <section className="bg-primary py-16 text-white sm:py-20 lg:py-28">
+    <section className="relative isolate overflow-hidden bg-primary py-16 text-white sm:py-20 lg:py-28">
+      <link rel="preload" as="image" href={siteImages.souvenirs} fetchPriority="high" />
+      <SiteImage src={siteImages.souvenirs} alt="" aria-hidden="true" loading="eager" fetchPriority="high" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/90 via-[#17324D]/75 to-[#17324D]/45" />
       <Container>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70 sm:text-sm">KPX Academy · Custom and ready-made</p>
         <h1 className="mt-5 max-w-3xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">Souvenirs made for <span className="text-[#F4DCD6]">your moment.</span></h1>

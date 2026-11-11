@@ -4,6 +4,8 @@ import { ArrowDownRight, ArrowRight, Check, Compass, Lightbulb } from "lucide-re
 import { Link } from "react-router-dom";
 import { getFounderProfile } from "../api/siteContent.api";
 import { Container } from "../components/ui/Container";
+import { SiteImage } from "../components/ui/SiteImage";
+import { siteImages } from "../config/siteImages";
 
 const values = [
   { number: "01", title: "Practical by design", description: "Training should move beyond theory. We help learners understand the process, practise with purpose, and build skills they can use." },
@@ -29,6 +31,9 @@ export default function AboutPage() {
   return (
     <main className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
       <section className="relative isolate overflow-hidden bg-[#212529] text-white">
+        <link rel="preload" as="image" href={siteImages.about} fetchPriority="high" />
+        <SiteImage src={siteImages.about} alt="" aria-hidden="true" loading="eager" fetchPriority="high" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[#111827]/80" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-24 h-[26rem] w-[26rem] rounded-full border border-white/10 sm:h-[38rem] sm:w-[38rem]" />
         <div aria-hidden="true" className="pointer-events-none absolute right-8 top-24 h-56 w-56 rounded-full border border-[#1D4ED8]/50 sm:right-24 sm:top-28 sm:h-80 sm:w-80" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 left-[35%] h-64 w-64 rounded-full bg-[#1D4ED8]/15 blur-3xl" />

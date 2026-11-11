@@ -88,3 +88,16 @@ Admins can create, edit, activate, and deactivate product colour options. Custom
 Admins manage each programme's private Telegram group invite link from **Admin → Training programs → Create/Edit program**. The field accepts HTTPS links hosted on `t.me` or `telegram.me`, including private invite links. The frontend sends the value as `telegramGroupUrl` through the existing training create/update endpoints. Leave it blank only while a programme is not accepting paid registrations; the backend blocks payment initialization when the programme has no configured link.
 
 The backend intentionally omits this private invite URL from public programme responses. Students receive it in the payment-confirmation email after Paystack verification; it is not displayed on public programme pages or sent before payment confirmation.
+
+
+## Static page hero backgrounds
+
+The About, Gallery, Resources, and Souvenirs page hero backgrounds are intentionally hardcoded frontend assets stored in `public/`. They are separate from Admin → Site Settings / Site Content, whose managed images remain unchanged.
+
+The paths are centralized in `src/config/siteImages.ts`:
+- About: `/about.jpg.jpg`
+- Gallery: `/gallery.jpg`
+- Resources: `/resourcepage.jpg`
+- Souvenirs: `/sourvenir.jpg` (the existing filename is intentionally preserved)
+
+Each page preloads only its own hero image and renders it with eager loading and high fetch priority. Do not fetch these backgrounds from the API or make page rendering wait for Site Settings. If an asset is renamed or replaced, update the corresponding path in `siteImages.ts` and this documentation together.

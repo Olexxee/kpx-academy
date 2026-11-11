@@ -12,7 +12,8 @@ export default function ResourcesPage() {
   const resources = query.data ?? [];
   return <div className="min-h-[70vh] bg-[#FAF8F5]">
     <section className="relative isolate overflow-hidden bg-[#07152F] px-5 py-16 text-white sm:px-8 sm:py-20">
-      <SiteImage src={siteImages.resources} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
+      <link rel="preload" as="image" href={siteImages.resources} fetchPriority="high" />
+      <SiteImage src={siteImages.resources} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" loading="eager" fetchPriority="high" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/90 via-[#07152F]/75 to-[#07152F]/45" />
       <div className="relative z-10 mx-auto max-w-6xl">
         <p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">KPX learning library</p>
