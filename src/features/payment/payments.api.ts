@@ -25,7 +25,10 @@ export interface InitializePaymentResponse {
 export interface VerifyPaymentResponse {
   reference: string;
   status: "PENDING" | "SUCCESS" | "FAILED" | "ABANDONED" | "REVERSED";
-  registrationStatus: "PENDING" | "PAID" | "CANCELLED" | "EXPIRED";
+  registrationStatus?: "PENDING" | "PAID" | "CANCELLED" | "EXPIRED" | null;
+  souvenirOrderStatus?: string | null;
+  workshopBookingStatus?: string | null;
+  workshopPaymentNeedsReview?: boolean;
   alreadyProcessed: boolean;
 }
 
