@@ -12,6 +12,7 @@ const money = (amount: number | string | null, currency = "NGN") => {
 const dateTime = (value: string) => new Date(value).toLocaleString("en-NG", {
   dateStyle: "long",
   timeStyle: "short",
+  timeZone: "Africa/Lagos",
 });
 
 const venueLabel: Record<string, string> = {
