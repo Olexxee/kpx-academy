@@ -27,7 +27,7 @@ const statusDetails: Record<string, { title: string; description: string }> = {
   NEW: { title: "Request received", description: "Your request has reached KPX Academy and is waiting for review." },
   UNDER_REVIEW: { title: "Under review", description: "The team is reviewing your requirements, preferred date and arrangements." },
   PROPOSAL_SENT: { title: "Proposal sent", description: "KPX Academy has prepared a proposal and will contact you with the details and next steps." },
-  ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. KPX Academy will follow up with the next steps." },
+  ACCEPTED: { title: "Proposal accepted", description: "Your acceptance has been recorded. Complete payment to confirm your workshop booking." },
   DECLINED: { title: "Proposal declined", description: "You declined this proposal. Contact KPX Academy if you would like to discuss a revised proposal." },
   CONFIRMED: { title: "Booking confirmed", description: "Your workshop booking is confirmed. Keep this page to review any future updates." },
   IN_PROGRESS: { title: "Workshop in progress", description: "Your workshop has started." },
@@ -141,7 +141,8 @@ export const WorkshopGuestAccessPage = () => {
       {booking.status === "DECLINED" && <p className="mt-4 text-sm font-semibold text-[#8B1E5A]">You declined this proposal.</p>}
       {paymentReference && <div className="mt-4 rounded-xl bg-white p-4">
         {paymentQuery.isLoading && <p className="text-sm text-text-muted">Verifying your payment with Paystack…</p>}
-        {paymentQuery.data?.status === "SUCCESS" && <p className="text-sm font-semibold text-[#2A7F7F]">Payment verified successfully. Refreshing your booking status…</p>}
+        {paymentQuery.data?.status === "SUCCESS" && !paymentQuery.data.workshopPaymentNeedsReview && <p className="text-sm font-semibold text-[#2A7F7F]">Payment verified successfully. Refreshing your booking status…</p>}
+        {paymentQuery.data?.workshopPaymentNeedsReview && <p role="alert" className="text-sm font-semibold text-amber-700">Your payment was received, but the booking needs manual review. Please contact KPX Academy and quote your booking reference.</p>}
         {paymentQuery.data && paymentQuery.data.status !== "SUCCESS" && <div>
           <p className="text-sm text-text-muted">Payment status: {paymentQuery.data.status.replaceAll("_", " ").toLowerCase()}.</p>
           <button type="button" onClick={() => paymentQuery.refetch()} className="mt-2 text-sm font-semibold text-secondary underline">Check payment again</button>
