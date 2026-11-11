@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X, Building2 } from "lucide-react";
+import { Award, BookOpen, ClipboardList, FileText, GraduationCap, Images, LayoutDashboard, LogOut, MessageSquareQuote, PanelsTopLeft, Package, UserRound, Image, Menu, X, Building2, CircleHelp } from "lucide-react";
 import { useLogout } from "../../features/auth/auth.mutations";
 import { useAuthStore } from "../../features/auth/auth.store";
 
@@ -14,6 +14,7 @@ const links = [
   { to: "/admin/content", label: "Homepage hero", icon: PanelsTopLeft },
   { to: "/admin/logo", label: "Site logo", icon: Image },
   { to: "/admin/organization", label: "Organization info", icon: Building2 },
+  { to: "/admin/faq", label: "FAQs", icon: CircleHelp },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/resources", label: "Resources", icon: FileText },
   { to: "/admin/souvenirs", label: "Souvenirs", icon: Package },
