@@ -103,8 +103,9 @@ export default function AdminFaqPage() {
                 {item.status === "PUBLISHED" ? (
                   <button type="button" disabled={changeStatus.isPending} onClick={() => changeStatus.mutate({ id: item.id, status: "DRAFT" })} className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">Unpublish</button>
                 ) : (
-                  <button type="button" disabled={changeStatus.isPending} onClick={() => changeStatus.mutate({ id: item.id, status: "PUBLISHED" })} className="rounded-lg bg-[#2A7F7F] px-3 py-2 text-xs font-semibold text-white hover:bg-[#236b6b]">Publish</button>
+                  <button type="button" disabled={changeStatus.isPending} onClick={() => changeStatus.mutate({ id: item.id, status: "PUBLISHED" })} className="rounded-lg bg-[#2A7F7F] px-3 py-2 text-xs font-semibold text-white hover:bg-[#236b6b]">{item.status === "ARCHIVED" ? "Restore & publish" : "Publish"}</button>
                 )}
+                {item.status !== "ARCHIVED" && <button type="button" disabled={changeStatus.isPending} onClick={() => changeStatus.mutate({ id: item.id, status: "ARCHIVED" })} className="rounded-lg border border-amber-200 px-3 py-2 text-xs font-semibold text-amber-800 hover:bg-amber-50">Archive</button>}
                 <button type="button" disabled={remove.isPending} onClick={() => { if (window.confirm("Delete this FAQ permanently?")) remove.mutate(item.id); }} className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50">Delete</button>
               </div>
             </div>
