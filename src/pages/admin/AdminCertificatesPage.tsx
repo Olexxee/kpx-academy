@@ -720,7 +720,7 @@ export default function AdminCertificatesPage() {
                         }}
                       >
                         <Mail size={14} />
-                        {resend.isPending ? "Sending…" : "Resend email"}
+                        {resend.isPending && resend.variables === item.id ? "Sending…" : "Resend email"}
                       </ActionButton>
 
                       {item.status !== "REVOKED" && (
