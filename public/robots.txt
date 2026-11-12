@@ -1,9 +1,10 @@
 User-agent: *
 Allow: /
 
+# Admin routes are excluded from crawling. Authentication remains the access-control boundary.
 Disallow: /admin/
-Disallow: /payment/
-Disallow: /workshops/access/
-Disallow: /souvenirs/*/access/
+
+# Payment and tokenized guest-access pages must remain crawlable so search engines
+# can read their page-level "noindex, nofollow" directives.
 
 Sitemap: https://kpxacademy.com.ng/sitemap.xml
