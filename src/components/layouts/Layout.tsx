@@ -45,10 +45,19 @@ const pageMetadata: Record<string, { title: string; description: string }> = {
     title: "Book a Creative Workshop | KPX Academy",
     description: "Request a practical creative workshop with KPX Academy for your group, organisation, or event.",
   },
+  "/register": {
+    title: "Register for Training | KPX Academy",
+    description: "Choose a KPX Academy training programme and continue to secure registration and payment.",
+  },
+  "/souvenirs/enquire": {
+    title: "Request a Custom Souvenir | KPX Academy",
+    description: "Tell KPX Academy about your custom souvenir idea, quantity, and event requirements.",
+  },
 };
 
 const noIndexPrefixes = [
   "/admin",
+  "/register",
   "/payment/",
   "/workshops/access/",
 ];
