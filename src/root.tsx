@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import {
   Links,
   Meta,
@@ -23,6 +24,20 @@ export function meta() {
 }
 
 export function Layout({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    const controller = new AbortController();
+    const apiBase = (import.meta.env.VITE_API_URL || "https://keplex-registration-backend.onrender.com/api").replace(/\/+$/, "");
+    fetch(`${apiBase}/site-content/branding`, { headers: { Accept: "application/json" }, signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((payload) => {
+        const logoUrl = payload?.success === true ? payload.data?.logoUrl : null;
+        if (!logoUrl) return;
+        const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+        if (icon) icon.href = logoUrl;
+      })
+      .catch((error) => { if (error?.name !== "AbortError") console.warn("[Branding] Could not load browser icon:", error); });
+    return () => controller.abort();
+  }, []);
   return (
     <html lang="en">
       <head>
