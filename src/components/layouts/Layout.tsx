@@ -60,6 +60,8 @@ const noIndexPrefixes = [
   "/register",
   "/payment/",
   "/workshops/access/",
+  "/workshops/book",
+  "/souvenirs/enquire",
 ];
 
 function resolveMetadata(pathname: string) {
