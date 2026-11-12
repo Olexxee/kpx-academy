@@ -39,6 +39,14 @@ const staticMetadata: Record<string, { title: string; description: string }> = {
     title: "Custom Souvenirs & Gifts | KPX Academy",
     description: "Explore KPX Academy's custom souvenir catalogue and enquire about personalised products and bulk orders.",
   },
+  "/workshops/book": {
+    title: "Book a Creative Workshop | KPX Academy",
+    description: "Request a practical creative workshop with KPX Academy for your group, organisation, or event.",
+  },
+  "/souvenirs/enquire": {
+    title: "Request a Custom Souvenir | KPX Academy",
+    description: "Tell KPX Academy about your custom souvenir idea, quantity, and event requirements.",
+  },
 };
 
 const apiBase = () =>
@@ -208,10 +216,14 @@ export function meta({ data, location }: Route.MetaArgs) {
     pathname.startsWith("/payment/") ||
     pathname.startsWith("/workshops/access/") ||
     pathname.includes("/access/");
+  const isUnreviewedFormPath =
+    pathname === "/workshops/book" || pathname === "/souvenirs/enquire";
 
-  if (isPrivatePath) {
+  if (isPrivatePath || isUnreviewedFormPath) {
+    const fallback = staticMetadata[pathname];
     return [
-      { name: "robots", content: "noindex, nofollow" },
+      ...(fallback ? [{ title: fallback.title }, { name: "description", content: fallback.description }] : []),
+      { name: "robots", content: isPrivatePath ? "noindex, nofollow" : "noindex, follow" },
       {
         tagName: "link",
         rel: "canonical",
