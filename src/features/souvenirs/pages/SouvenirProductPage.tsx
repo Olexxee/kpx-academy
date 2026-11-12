@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
 import { createSouvenirOrder, getSouvenirProduct } from "../api";
 import { SOUVENIR_COLOR_PALETTE, type SouvenirOrderResult, type SouvenirPriceTier, type SouvenirPaletteColor } from "../types";
+import { updatePageMetadata } from "../../../lib/seo";
 
 const money = (amount: number | string, currency = "NGN") => {
   const value = Number(amount);
@@ -16,6 +17,24 @@ const matches = (tier: SouvenirPriceTier, quantity: number) => quantity >= tier.
 export const SouvenirProductPage = () => {
   const { slug = "" } = useParams();
   const { data: product, isLoading, isError, refetch } = useQuery({ queryKey: ["souvenirs", "product", slug], queryFn: () => getSouvenirProduct(slug), enabled: Boolean(slug) });
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (isError || !product) {
+      updatePageMetadata({
+        title: "Souvenir Package Not Found | KPX Academy",
+        description: "This KPX Academy souvenir package is unavailable. Browse the current souvenir catalogue.",
+        canonicalPath: `/souvenirs/${encodeURIComponent(slug)}`,
+        robots: "noindex, follow",
+      });
+      return;
+    }
+    updatePageMetadata({
+      title: `${product.name} | Custom Souvenir Package | KPX Academy`,
+      description: product.description || `Explore the ${product.name} souvenir package from KPX Academy and enquire about quantities, colours, and custom requirements.`,
+      canonicalPath: `/souvenirs/${encodeURIComponent(product.slug)}`,
+    });
+  }, [isError, isLoading, product, slug]);
   const [quantity, setQuantity] = useState(1);
   const [colors, setColors] = useState<SouvenirPaletteColor[]>([]);
   const [name, setName] = useState("");
