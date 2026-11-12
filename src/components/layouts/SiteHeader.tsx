@@ -9,6 +9,7 @@ const navigation = [
   { label: "About", to: "/about" },
   { label: "Programmes", to: "/programs" },
   { label: "Creative Workshops", to: "/workshops/book" },
+  { label: "Track Booking", to: "/workshops/track-booking" },
   { label: "Souvenirs", to: "/souvenirs" },
   { label: "Gallery", to: "/gallery" },
   { label: "Resources", to: "/resources" },
