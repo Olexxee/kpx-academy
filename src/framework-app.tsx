@@ -52,22 +52,86 @@ const staticMetadata: Record<string, { title: string; description: string }> = {
 const apiBase = () =>
   (import.meta.env.VITE_API_URL || DEFAULT_API_BASE).replace(/[/]+$/, "");
 
+// Prerender runs many route loaders concurrently. Reuse in-flight/successful
+// responses and cap backend concurrency to avoid exhausting API rate limits.
+const publicDataCache = new Map<string, Promise<unknown>>();
+const MAX_CONCURRENT_PUBLIC_REQUESTS = 2;
+let activePublicRequests = 0;
+const publicRequestQueue: Array<() => void> = [];
+
+async function acquirePublicRequestSlot() {
+  if (activePublicRequests >= MAX_CONCURRENT_PUBLIC_REQUESTS) {
+    await new Promise<void>((resolve) => publicRequestQueue.push(resolve));
+  }
+  activePublicRequests += 1;
+}
+
+function releasePublicRequestSlot() {
+  activePublicRequests -= 1;
+  publicRequestQueue.shift()?.();
+}
+
+const wait = (milliseconds: number) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+async function requestPublicData(path: string): Promise<unknown> {
+  await acquirePublicRequestSlot();
+
+  try {
+    let response: Response | undefined;
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      response = await fetch(`${apiBase()}${path}`, {
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(60000),
+      });
+
+      if (response.status !== 429 || attempt === 4) break;
+
+      const retryAfter = response.headers.get("Retry-After");
+      const retryAfterSeconds = retryAfter ? Number(retryAfter) : NaN;
+      const retryAt = retryAfter && Number.isNaN(retryAfterSeconds)
+        ? Date.parse(retryAfter) - Date.now()
+        : retryAfterSeconds * 1000;
+      const backoff = Number.isFinite(retryAt) && retryAt > 0
+        ? retryAt
+        : 1000 * 2 ** attempt;
+
+      await wait(Math.min(backoff, 15000));
+    }
+
+    if (!response?.ok) {
+      throw new Error(
+        `Public prerender request GET ${path} failed with HTTP ${response?.status ?? "no response"}`,
+      );
+    }
+
+    const payload = await response.json();
+    if (payload?.success !== true || !("data" in payload)) {
+      throw new Error(`Public prerender request GET ${path} returned an invalid API envelope`);
+    }
+
+    return payload.data;
+  } finally {
+    releasePublicRequestSlot();
+  }
+}
+
 async function fetchPublicData<T>(path: string): Promise<T> {
-  const response = await fetch(`${apiBase()}${path}`, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(60000),
-  });
+  const cacheKey = `${apiBase()}${path}`;
+  let request = publicDataCache.get(cacheKey);
 
-  if (!response.ok) {
-    throw new Error(`Public prerender request GET ${path} failed with HTTP ${response.status}`);
+  if (!request) {
+    request = requestPublicData(path);
+    publicDataCache.set(cacheKey, request);
   }
 
-  const payload = await response.json();
-  if (payload?.success !== true || !("data" in payload)) {
-    throw new Error(`Public prerender request GET ${path} returned an invalid API envelope`);
+  try {
+    return (await request) as T;
+  } catch (error) {
+    publicDataCache.delete(cacheKey);
+    throw error;
   }
-
-  return payload.data as T;
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
