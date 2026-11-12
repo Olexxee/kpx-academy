@@ -42,7 +42,7 @@ const staticMetadata: Record<string, { title: string; description: string }> = {
 };
 
 const apiBase = () =>
-  (process.env.VITE_API_URL || DEFAULT_API_BASE).replace(/[/]+$/, "");
+  (import.meta.env.VITE_API_URL || DEFAULT_API_BASE).replace(/[/]+$/, "");
 
 async function fetchPublicData<T>(path: string): Promise<T> {
   const response = await fetch(`${apiBase()}${path}`, {
@@ -200,26 +200,60 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { dehydratedState: dehydrate(queryClient), seo };
 }
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, location }: Route.MetaArgs) {
+  const pathname = location.pathname;
+  const isPrivatePath =
+    pathname.startsWith("/admin") ||
+    pathname === "/register" ||
+    pathname.startsWith("/payment/") ||
+    pathname.startsWith("/workshops/access/") ||
+    pathname.includes("/access/");
+
+  if (isPrivatePath) {
+    return [
+      { name: "robots", content: "noindex, nofollow" },
+      {
+        tagName: "link",
+        rel: "canonical",
+        href: new URL(pathname, SITE_URL).toString(),
+      },
+    ];
+  }
+
   const seo = (data as {
     seo?: { title: string; description: string; canonical: string };
   } | undefined)?.seo;
-
-  if (!seo) return [];
+  const fallback = staticMetadata[pathname];
+  const title =
+    seo?.title ||
+    fallback?.title ||
+    (pathname.startsWith("/programs/")
+      ? "Training Programme Details | KPX Academy"
+      : pathname.startsWith("/resources/")
+        ? "Training Resource | KPX Academy"
+        : "KPX Academy | Practical Skills Training & Creative Learning");
+  const description =
+    seo?.description ||
+    fallback?.description ||
+    "Explore practical skills training, creative learning, and resources from KPX Academy.";
+  const canonical =
+    pathname === "/courses"
+      ? new URL("/programs", SITE_URL).toString()
+      : seo?.canonical || new URL(pathname, SITE_URL).toString();
 
   return [
-    { title: seo.title },
-    { name: "description", content: seo.description },
+    { title },
+    { name: "description", content: description },
     { name: "robots", content: "index, follow" },
     { property: "og:type", content: "website" },
     { property: "og:site_name", content: "KPX Academy" },
-    { property: "og:title", content: seo.title },
-    { property: "og:description", content: seo.description },
-    { property: "og:url", content: seo.canonical },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:url", content: canonical },
     { name: "twitter:card", content: "summary" },
-    { name: "twitter:title", content: seo.title },
-    { name: "twitter:description", content: seo.description },
-    { tagName: "link", rel: "canonical", href: seo.canonical },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+    { tagName: "link", rel: "canonical", href: canonical },
   ];
 }
 
