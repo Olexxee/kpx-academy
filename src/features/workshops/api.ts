@@ -51,3 +51,18 @@ export const initializeWorkshopPayment = async (
     "/payments/workshops/initialize",
     { reference, token },
   )).data.data;
+
+export interface WorkshopGuestAccessChallenge {
+  challengeToken: string;
+  expiresInSeconds: number;
+  message: string;
+}
+export interface WorkshopGuestAccessSession {
+  accessToken: string;
+  expiresAt: string;
+  accessUrlPath: string;
+}
+export const requestGuestWorkshopAccessCode = async (reference: string): Promise<WorkshopGuestAccessChallenge> =>
+  (await registrationApi.post<Envelope<WorkshopGuestAccessChallenge>>("/workshops/bookings/track/request", { reference: reference.trim().toUpperCase() })).data.data;
+export const verifyGuestWorkshopAccessCode = async (payload: { reference: string; challengeToken: string; code: string }): Promise<WorkshopGuestAccessSession> =>
+  (await registrationApi.post<Envelope<WorkshopGuestAccessSession>>("/workshops/bookings/track/verify", { ...payload, reference: payload.reference.trim().toUpperCase() })).data.data;
