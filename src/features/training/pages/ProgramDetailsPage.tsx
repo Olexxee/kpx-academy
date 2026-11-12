@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
 import { useTrainingProgram } from "../hooks/useTrainingPrograms";
@@ -81,6 +81,12 @@ export const ProgramDetailsPage = () => {
   const { data: fetchedMedia, isError: isMediaError } = useTrainingMedia(
     program?.id,
   );
+
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentTime(Date.now());
+  }, []);
 
   useEffect(() => {
     if (isLoading) return;
@@ -179,7 +185,8 @@ export const ProgramDetailsPage = () => {
   const isRegistrationOpen =
     program.active &&
     (!program.registrationDeadline ||
-      new Date(program.registrationDeadline).getTime() >= Date.now());
+      (currentTime !== null &&
+        new Date(program.registrationDeadline).getTime() >= currentTime));
 
   return (
     <div className="min-h-screen bg-background">
