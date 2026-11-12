@@ -24,6 +24,19 @@ Keep these out of prerendering:
 
 Review `/workshops/book` and `/souvenirs/enquire` separately before including them in the indexable route set. Their presence in the current sitemap does not automatically make them suitable prerender targets.
 
+## Implementation status on `seo/prerendering-framework-adoption`
+
+Implemented in the current branch:
+
+- React Router framework route module and Vite integration; runtime SSR remains disabled.
+- A shared public-route manifest now drives both sitemap generation and React Router prerender path discovery.
+- The manifest includes the eight approved static public routes plus active programme, published resource, and active non-archived souvenir detail paths.
+- Build-time route loaders prefetch public data into the existing React Query keys for the shared header/footer and each public page. The application hydrates that cache before the public components render.
+- Route-specific title, description, canonical, Open Graph, Twitter, and robots metadata are emitted by the framework route module. Private/admin/payment/tokenized paths receive noindex metadata and are not included in the prerender manifest.
+- Vercel's SPA rewrite now targets React Router's `__spa-fallback.html`, while filesystem precedence preserves generated route HTML.
+
+The implementation is not considered complete until a clean production build confirms route HTML output and generated files are inspected for real headings/content, metadata, and absence of loading placeholders. The backend API must be reachable during the build. The manifest uses `VITE_API_URL` when provided and otherwise falls back to the public Render API base URL.
+
 ## Implementation sequence
 
 1. Convert the existing `createBrowserRouter` route tree to React Router framework route modules. Preserve all current paths and route behavior, including admin protection and aliases.
