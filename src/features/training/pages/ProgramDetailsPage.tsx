@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
 import { useTrainingProgram } from "../hooks/useTrainingPrograms";
 import { useTrainingMedia } from "../hooks/useTrainingMedia";
 import type { ProgramMedia } from "../types";
+import { updatePageMetadata } from "../../../lib/seo";
 
 const formatPrice = (value: number | string, currency = "NGN") => {
   const amount = Number(value);
@@ -79,6 +81,24 @@ export const ProgramDetailsPage = () => {
   const { data: fetchedMedia, isError: isMediaError } = useTrainingMedia(
     program?.id,
   );
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (isError || !program) {
+      updatePageMetadata({
+        title: "Programme Not Found | KPX Academy",
+        description: "This KPX Academy training programme is unavailable. Browse the current programme catalogue.",
+        canonicalPath: `/programs/${encodeURIComponent(slug)}`,
+        robots: "noindex, follow",
+      });
+      return;
+    }
+    updatePageMetadata({
+      title: `${program.title} | Training Programme | KPX Academy`,
+      description: program.shortDescription || program.description || `Explore ${program.title}, a practical training programme from KPX Academy. View the learning details and registration information.`,
+      canonicalPath: `/programs/${encodeURIComponent(program.slug)}`,
+    });
+  }, [isLoading, isError, program, slug]);
 
   if (isLoading) {
     return (
