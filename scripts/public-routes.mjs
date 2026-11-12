@@ -16,14 +16,42 @@ export const STATIC_PUBLIC_PATHS = [
 const getApiBase = (override) =>
   (override || process.env.VITE_API_URL || DEFAULT_API_BASE).replace(/[/]+$/, "");
 
-const fetchPublicCollection = async (apiBase, path) => {
-  const response = await fetch(`${apiBase}${path}`, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(60000),
-  });
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-  if (!response.ok) {
-    throw new Error(`GET ${path} returned HTTP ${response.status}`);
+const fetchPublicCollection = async (apiBase, path) => {
+  let response;
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    try {
+      response = await fetch(`${apiBase}${path}`, {
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(60000),
+      });
+    } catch (error) {
+      if (attempt === 5) throw error;
+      await wait(1000 * 2 ** attempt);
+      continue;
+    }
+
+    if (response.ok) break;
+    const retryable = [429, 502, 503, 504].includes(response.status);
+    if (!retryable || attempt === 5) {
+      throw new Error(`GET ${path} returned HTTP ${response.status}`);
+    }
+
+    const retryAfter = response.headers.get("Retry-After");
+    const retryAfterSeconds = retryAfter ? Number(retryAfter) : NaN;
+    const retryAt = retryAfter && Number.isNaN(retryAfterSeconds)
+      ? Date.parse(retryAfter) - Date.now()
+      : retryAfterSeconds * 1000;
+    const backoff = Number.isFinite(retryAt) && retryAt > 0
+      ? retryAt
+      : 1000 * 2 ** attempt;
+    await wait(Math.min(backoff, 30000));
+  }
+
+  if (!response?.ok) {
+    throw new Error(`GET ${path} returned HTTP ${response?.status ?? "no response"}`);
   }
 
   const payload = await response.json();
@@ -36,11 +64,10 @@ const fetchPublicCollection = async (apiBase, path) => {
 
 export const getPublicRouteManifest = async (apiBaseOverride) => {
   const apiBase = getApiBase(apiBaseOverride);
-  const [programmes, resources, souvenirs] = await Promise.all([
-    fetchPublicCollection(apiBase, "/training"),
-    fetchPublicCollection(apiBase, "/site-content/resources"),
-    fetchPublicCollection(apiBase, "/souvenirs"),
-  ]);
+  // Keep requests sequential to avoid bursts against the API's global rate limiter.
+  const programmes = await fetchPublicCollection(apiBase, "/training");
+  const resources = await fetchPublicCollection(apiBase, "/site-content/resources");
+  const souvenirs = await fetchPublicCollection(apiBase, "/souvenirs");
 
   const dynamicPaths = [
     ...programmes
