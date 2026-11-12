@@ -51,7 +51,6 @@ const noIndexPrefixes = [
   "/admin",
   "/payment/",
   "/workshops/access/",
-  "/souvenirs/",
 ];
 
 function resolveMetadata(pathname: string) {
@@ -99,7 +98,7 @@ function RouteMetadata({ pathname }: { pathname: string }) {
   useEffect(() => {
     const metadata = resolveMetadata(pathname);
     const canonicalUrl = new URL(metadata.canonicalPath, SITE_URL).toString();
-    const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix));
+    const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix)) || /\\/access\\//.test(pathname);
 
     document.title = metadata.title;
     updateMeta("description", metadata.description);
