@@ -138,6 +138,7 @@ export const WorkshopBookingPage = () => {
             )}
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button type="button" onClick={startAnotherEvent} className="inline-flex min-h-11 items-center justify-center rounded-control bg-secondary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary">Request another event</button>
+              <Link to="/workshops/track-booking" className="inline-flex min-h-11 items-center justify-center rounded-control border border-border px-5 py-3 text-sm font-semibold text-primary transition hover:border-secondary hover:text-secondary">Track booking</Link>
               <Link to="/" className="inline-flex min-h-11 items-center justify-center rounded-control border border-border px-5 py-3 text-sm font-semibold text-primary transition hover:border-secondary hover:text-secondary">Back to homepage</Link>
             </div>
           </section>
@@ -170,6 +171,7 @@ export const WorkshopBookingPage = () => {
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
             <aside>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-secondary">Plan an event</p>
+              <Link to="/workshops/track-booking" className="mt-3 inline-flex text-sm font-semibold text-secondary underline underline-offset-4">Already booked? Track your booking</Link>
               <h2 className="mt-3 font-heading text-3xl font-bold text-primary sm:text-4xl">A creative session made for your group.</h2>
               <p className="mt-5 leading-7 text-text-muted">Choose a workshop, select a participant tier, and share the date and venue details. Your request is reviewed by the KPX team before the event is confirmed.</p>
               <div className="mt-8 space-y-4 border-t border-border pt-6">
