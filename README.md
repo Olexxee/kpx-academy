@@ -140,3 +140,12 @@ Admins review student submissions in **Admin → Certificates → Proof submissi
 All frontend file-upload API paths should pass selected files through `prepareUploadFile` or `prepareUploadFiles` from `src/lib/fileCompression.ts` before creating the multipart request. The utility optimizes supported raster images (JPEG, PNG, WebP) in the browser: it applies EXIF orientation, caps the longest edge at 2,560 px, encodes WebP at progressively lower quality, and keeps the original if encoding fails or does not reduce the file size. It skips small images under 350 KB to avoid needless re-encoding.
 
 GIFs are passed through unchanged to preserve animation. SVG, PDF, video, audio, archives, and other formats are also passed through unchanged because an image codec is not a valid or safe compressor for those formats. The shared helper still handles these uploads consistently; format-specific document/video optimization would require a separate validated pipeline. Upload limits must still be enforced by the UI and backend after preparation.
+
+
+## Technical SEO foundation
+
+The public application sets route-aware document titles, meta descriptions, canonical URLs, robots directives, Open Graph metadata, and Twitter summary metadata through the shared public layout. The `/courses` alias canonicalizes to `/programs`. Admin, payment-result, and tokenized guest-access routes are marked noindex and excluded from the sitemap. The root HTML provides crawlable default metadata and EducationalOrganization JSON-LD; route-specific metadata is updated during client-side navigation.
+
+The static sitemap intentionally lists only stable public routes. Dynamic programme and resource detail pages should be added through a generated sitemap once their published slugs can be sourced reliably. Do not add private guest-access URLs, admin pages, payment pages, or query-string variants.
+
+After deployment, verify `/robots.txt` and `/sitemap.xml` return HTTP 200 with the correct content type, then submit the sitemap in Google Search Console. Client-side route metadata improves browser and crawler state after JavaScript execution but does not provide server-rendered HTML; prerendering/SSR remains a separate follow-up if indexing tests show a need.
