@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const siteUrl = "https://kpxacademy.com.ng";
-const apiBase = process.env.VITE_API_URL?.replace(/\\/+$/, "");
+const apiBase = process.env.VITE_API_URL?.replace(/\/+$/, "");
 
 const staticPaths = [
   "/",
@@ -65,7 +65,7 @@ try {
     ...paths.map((path) => `  <url><loc>${siteUrl}${path}</loc></url>`),
     "</urlset>",
     "",
-  ].join("\\n");
+  ].join("\n");
 
   await writeFile(resolve("public/sitemap.xml"), xml, "utf8");
   console.info(`[sitemap] Generated ${paths.length} public URLs.`);
