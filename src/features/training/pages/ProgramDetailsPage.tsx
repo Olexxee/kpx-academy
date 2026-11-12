@@ -82,11 +82,18 @@ export const ProgramDetailsPage = () => {
     program?.id,
   );
 
-  const [currentTime, setCurrentTime] = useState<number | null>(null);
+  const [isDeadlineOpen, setIsDeadlineOpen] = useState(false);
 
   useEffect(() => {
-    setCurrentTime(Date.now());
-  }, []);
+    const timeoutId = window.setTimeout(() => {
+      setIsDeadlineOpen(
+        !program?.registrationDeadline ||
+          new Date(program.registrationDeadline).getTime() >= Date.now(),
+      );
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [program?.registrationDeadline]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -184,9 +191,7 @@ export const ProgramDetailsPage = () => {
   const registrationUrl = `/register?program=${encodeURIComponent(program.id)}`;
   const isRegistrationOpen =
     program.active &&
-    (!program.registrationDeadline ||
-      (currentTime !== null &&
-        new Date(program.registrationDeadline).getTime() >= currentTime));
+    isDeadlineOpen;
 
   return (
     <div className="min-h-screen bg-background">
