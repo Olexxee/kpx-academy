@@ -34,8 +34,10 @@ Implemented in the current branch:
 - Build-time route loaders prefetch public data into the existing React Query keys for the shared header/footer and each public page. The application hydrates that cache before the public components render.
 - Route-specific title, description, canonical, Open Graph, Twitter, and robots metadata are emitted by the framework route module. Private/admin/payment/tokenized paths receive noindex metadata and are not included in the prerender manifest.
 - Vercel's SPA rewrite now targets React Router's `__spa-fallback.html`, while filesystem precedence preserves generated route HTML.
+- A Vercel preview build reached READY on commit `cf21567312d0448934f18f91e53b5c589aa8a9b4`; the build log confirms 21 HTML prerender outputs and the SPA fallback.
+- The local `.env` file was removed from version control; `.env.example` documents local-only API URLs and `.env*` is ignored. Vercel preview and production API URLs must remain configured in the matching Vercel environments.
 
-The implementation is not considered complete until a clean production build confirms route HTML output and generated files are inspected for real headings/content, metadata, and absence of loading placeholders. The backend API must be reachable during the build. The manifest uses `VITE_API_URL` when provided and otherwise falls back to the public Render API base URL.
+A clean Vercel preview build completed successfully. Its build log confirms 21 generated public HTML routes plus React Router's SPA fallback, and the sitemap generator reported 21 public URLs. The deployment reached READY. The build requires the backend API to be reachable; the manifest uses `VITE_API_URL` when provided and otherwise falls back to the public Render API base URL. Direct HTTP response checks and inspection of the deployed HTML for headings, metadata, and loading placeholders remain release acceptance checks.
 
 ## Implementation sequence
 
