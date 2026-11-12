@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  HydrationBoundary,
+  QueryClient,
+  QueryClientProvider,
+  type DehydratedState,
+} from "@tanstack/react-query";
 import { AppRoutes } from "./router";
 import { AuthBootstrap } from "./components/auth/AuthBootstrap";
 
-function App() {
+function App({ dehydratedState }: { dehydratedState?: DehydratedState }) {
   const [queryClient] = useState(() => new QueryClient());
   const [clientReady, setClientReady] = useState(false);
 
@@ -13,13 +18,13 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {clientReady ? (
-        <AuthBootstrap>
+      <HydrationBoundary state={dehydratedState}>
+        {clientReady ? (
+          <AuthBootstrap><AppRoutes /></AuthBootstrap>
+        ) : (
           <AppRoutes />
-        </AuthBootstrap>
-      ) : (
-        <AppRoutes />
-      )}
+        )}
+      </HydrationBoundary>
     </QueryClientProvider>
   );
 }
