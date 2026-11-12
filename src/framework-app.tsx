@@ -134,7 +134,7 @@ async function fetchPublicData<T>(path: string): Promise<T> {
   }
 }
 
-export async function loader({ request }: Route.LoaderArgs) {
+async function loadFrameworkRouteData(request: Request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const queryClient = new QueryClient({
@@ -270,6 +270,21 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 
   return { dehydratedState: dehydrate(queryClient), seo };
+}
+
+/**
+ * In SPA + prerender mode, only generated public paths have build-time loader
+ * data. Every other URL is served through Vercel's SPA fallback, where there is
+ * no runtime server loader. Use the same data pipeline in the browser so
+ * client-only routes (admin, workshop booking, guest access, etc.) can hydrate
+ * and refresh without requesting a nonexistent server data response.
+ */
+export function loader({ request }: Route.LoaderArgs) {
+  return loadFrameworkRouteData(request);
+}
+
+export function clientLoader({ request }: Route.ClientLoaderArgs) {
+  return loadFrameworkRouteData(request);
 }
 
 export function meta({ data, location }: Route.MetaArgs) {
