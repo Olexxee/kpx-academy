@@ -1,11 +1,31 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Download, FileText } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { getPublicResource, getResourceDownloadUrl, getResourceViewUrl } from "../api/siteContent.api";
+import { updatePageMetadata } from "../lib/seo";
 
 export default function ResourceReaderPage() {
   const { slug = "" } = useParams();
   const query = useQuery({ queryKey: ["site-content", "resource", slug], queryFn: () => getPublicResource(slug), enabled: Boolean(slug) });
+
+  useEffect(() => {
+    if (query.isLoading) return;
+    if (query.isError || !query.data) {
+      updatePageMetadata({
+        title: "Resource Not Found | KPX Academy",
+        description: "This KPX Academy learning resource is unavailable. Browse the current resource library.",
+        canonicalPath: `/resources/${encodeURIComponent(slug)}`,
+        robots: "noindex, follow",
+      });
+      return;
+    }
+    updatePageMetadata({
+      title: `${query.data.title} | KPX Academy Learning Resource`,
+      description: query.data.description || `Read or download ${query.data.title}, a practical learning resource from KPX Academy.`,
+      canonicalPath: `/resources/${encodeURIComponent(query.data.slug)}`,
+    });
+  }, [query.data, query.isError, query.isLoading, slug]);
   if (query.isLoading) return <div className="mx-auto max-w-6xl px-5 py-16 text-sm text-slate-500">Loading resource…</div>;
   if (query.isError || !query.data) return <div className="mx-auto max-w-3xl px-5 py-20 text-center"><FileText size={36} className="mx-auto text-[#8B1E5A]"/><h1 className="mt-4 text-2xl font-bold">Resource not found</h1><p className="mt-2 text-sm text-slate-500">This resource may have been unpublished or moved.</p><Link to="/resources" className="mt-6 inline-flex rounded-full bg-[#8B1E5A] px-5 py-3 text-sm font-semibold text-white">Back to resources</Link></div>;
   const resource = query.data;
