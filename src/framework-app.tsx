@@ -39,6 +39,7 @@ const staticMetadata: Record<string, { title: string; description: string }> = {
     title: "Custom Souvenirs & Gifts | KPX Academy",
     description: "Explore KPX Academy's custom souvenir catalogue and enquire about personalised products and bulk orders.",
   },
+  "/workshops/track-booking": { title: "Track a Workshop Booking | KPX Academy", description: "Securely check the status and updates for your KPX Academy creative workshop booking." },
   "/workshops/book": {
     title: "Book a Creative Workshop | KPX Academy",
     description: "Request a practical creative workshop with KPX Academy for your group, organisation, or event.",
@@ -294,6 +295,7 @@ export function meta({ data, location }: Route.MetaArgs) {
     pathname === "/register" ||
     pathname.startsWith("/payment/") ||
     pathname.startsWith("/workshops/access/") ||
+    pathname === "/workshops/track-booking" ||
     pathname.includes("/access/");
   const isUnreviewedFormPath =
     pathname === "/workshops/book" || pathname === "/souvenirs/enquire";
