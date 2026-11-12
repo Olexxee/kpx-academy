@@ -1,7 +1,8 @@
 import type { Config } from "@react-router/dev/config";
 
 export default {
+  appDirectory: "src",
   ssr: false,
-  // The public route list will be enabled after route loaders and data
-  // dependencies are migrated to build-time-safe implementations.
+  // Prerender paths will be enabled after public route data is safe to load
+  // during the build.
 } satisfies Config;
