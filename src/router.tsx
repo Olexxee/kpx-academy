@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 import { Layout } from "./components/layouts/Layout";
 import { HomePage } from "./pages/HomePage";
 import RegistrationPage from "./pages/RegistrationPage";
@@ -34,7 +34,7 @@ import GalleryPage from "./pages/GalleryPage";
 import FaqPage from "./pages/FaqPage";
 import AdminFaqPage from "./pages/admin/AdminFaqPage";
 
-export const router = createBrowserRouter([
+const routeDefinitions = [
   {
     element: <Layout />,
     children: [
@@ -84,4 +84,8 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+];
+
+export function AppRoutes() {
+  return useRoutes(routeDefinitions);
+}
