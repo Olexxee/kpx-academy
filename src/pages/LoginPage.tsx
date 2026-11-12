@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, BookOpen, LoaderCircle } from "lucide-react";
 import { useLogin } from "../features/auth/auth.mutations";
@@ -7,6 +7,15 @@ interface LocationState { from?: { pathname?: string } }
 interface ApiError { response?: { data?: { message?: string } } }
 
 export default function LoginPage() {
+  useEffect(() => {
+    let robots = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement("meta");
+      robots.name = "robots";
+      document.head.appendChild(robots);
+    }
+    robots.content = "noindex, nofollow";
+  }, []);
   const navigate = useNavigate();
   const location = useLocation();
   const login = useLogin();
