@@ -13,6 +13,7 @@ import { SouvenirProductPage } from "./features/souvenirs/pages/SouvenirProductP
 import { SouvenirEnquiryPage } from "./features/souvenirs/pages/SouvenirEnquiryPage";
 import { SouvenirGuestAccessPage } from "./features/souvenirs/pages/SouvenirGuestAccessPage";
 import { WorkshopBookingPage } from "./features/workshops/pages/WorkshopBookingPage";
+import { WorkshopBookingTrackerPage } from "./features/workshops/pages/WorkshopBookingTrackerPage";
 import { WorkshopGuestAccessPage } from "./features/workshops/pages/WorkshopGuestAccessPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -52,6 +53,7 @@ const routeDefinitions = [
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
       { path: "/workshops/book", element: <WorkshopBookingPage /> },
+      { path: "/workshops/track-booking", element: <WorkshopBookingTrackerPage /> },
       { path: "/workshops/access/:reference/:token", element: <WorkshopGuestAccessPage /> },
       { path: "/souvenirs", element: <SouvenirCataloguePage /> },
       { path: "/souvenirs/enquire", element: <SouvenirEnquiryPage /> },
