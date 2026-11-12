@@ -1,15 +1,35 @@
-import { RouterProvider } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { router } from "./router";
+import { useEffect, useState } from "react";
+import {
+  HydrationBoundary,
+  QueryClient,
+  QueryClientProvider,
+  type DehydratedState,
+} from "@tanstack/react-query";
+import { AppRoutes } from "./router";
 import { AuthBootstrap } from "./components/auth/AuthBootstrap";
 
-// Create a client instance outside the component
-const queryClient = new QueryClient();
+function App({ dehydratedState }: { dehydratedState?: DehydratedState }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { staleTime: 60 * 60 * 1000 } },
+      }),
+  );
+  const [clientReady, setClientReady] = useState(false);
 
-function App() {
+  useEffect(() => {
+    setClientReady(true);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthBootstrap><RouterProvider router={router} /></AuthBootstrap>
+      <HydrationBoundary state={dehydratedState}>
+        {clientReady ? (
+          <AuthBootstrap><AppRoutes /></AuthBootstrap>
+        ) : (
+          <AppRoutes />
+        )}
+      </HydrationBoundary>
     </QueryClientProvider>
   );
 }
