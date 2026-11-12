@@ -19,7 +19,7 @@ const getApiBase = (override) =>
 const fetchPublicCollection = async (apiBase, path) => {
   const response = await fetch(\`\${apiBase}\${path}\`, {
     headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(20000),
+    signal: AbortSignal.timeout(60000),
   });
 
   if (!response.ok) {
