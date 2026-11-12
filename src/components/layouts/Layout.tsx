@@ -105,6 +105,15 @@ function updateMeta(name: string, content: string, attribute: "name" | "property
 
 function RouteMetadata({ pathname }: { pathname: string }) {
   useEffect(() => {
+    const ownsContentMetadata =
+      pathname.startsWith("/programs/") ||
+      pathname.startsWith("/resources/") ||
+      (pathname.startsWith("/souvenirs/") && pathname !== "/souvenirs/enquire");
+
+    // Detail pages apply metadata after their public API record is available.
+    // Tokenized access pages are excluded from this early return so noindex remains authoritative.
+    if (ownsContentMetadata && !pathname.includes("/access/")) return;
+
     const metadata = resolveMetadata(pathname);
     const canonicalUrl = new URL(metadata.canonicalPath, SITE_URL).toString();
     const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix)) || pathname.includes("/access/");
