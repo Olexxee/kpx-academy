@@ -144,7 +144,7 @@ GIFs are passed through unchanged to preserve animation. SVG, PDF, video, audio,
 
 ## Technical SEO foundation
 
-The public application sets route-aware document titles, meta descriptions, canonical URLs, robots directives, Open Graph metadata, and Twitter summary metadata through the shared public layout. The `/courses` alias canonicalizes to `/programs`. Admin, payment-result, and tokenized guest-access routes are marked noindex and excluded from the sitemap. The root HTML provides crawlable default metadata and EducationalOrganization JSON-LD; route-specific metadata is updated during client-side navigation.
+The public application sets route-aware document titles, meta descriptions, canonical URLs, robots directives, Open Graph metadata, and Twitter summary metadata through the shared public layout. The `/courses` alias canonicalizes to `/programs`. Payment-result and tokenized guest-access routes are marked `noindex, nofollow` and excluded from the sitemap. Their paths remain crawlable in `robots.txt` so search engines can read those directives. Admin paths remain disallowed from crawling; authentication, not `robots.txt`, is the access-control boundary. The root HTML provides crawlable default metadata and EducationalOrganization JSON-LD; route-specific metadata is updated during client-side navigation.
 
 The static sitemap intentionally lists only stable public routes. Dynamic programme and resource detail pages should be added through a generated sitemap once their published slugs can be sourced reliably. Do not add private guest-access URLs, admin pages, payment pages, or query-string variants.
 
