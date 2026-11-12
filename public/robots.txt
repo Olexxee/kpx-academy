@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /payment/
+Disallow: /workshops/access/
+Disallow: /souvenirs/*/access/
+
+Sitemap: https://kpxacademy.com.ng/sitemap.xml
