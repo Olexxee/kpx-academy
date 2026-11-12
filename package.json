@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "react-router dev",
     "prebuild": "node scripts/generate-sitemap.mjs",
-    "build": "tsc -b && vite build",
+    "build": "react-router typegen && tsc -b && react-router build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --outDir build/client"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.2",
