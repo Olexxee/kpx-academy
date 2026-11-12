@@ -10,17 +10,19 @@ import { Container } from "../../ui/Container";
 export const FeaturedProgrammes = () => {
   const { data: programmes, isLoading, isError } = useTrainingPrograms();
 
-  const featured = useMemo(() => {
-    const active = (programmes ?? []).filter((program) => program.active);
-    // Shuffle a copy so each loaded homepage gets a varied selection without
-    // mutating cached query data or changing cards on every render.
-    const shuffled = [...active];
-    for (let index = shuffled.length - 1; index > 0; index -= 1) {
-      const swapIndex = Math.floor(Math.random() * (index + 1));
-      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
-    }
-    return shuffled.slice(0, 4);
-  }, [programmes]);
+  const featured = useMemo(
+    () =>
+      (programmes ?? [])
+        .filter((program) => program.active)
+        .sort(
+          (a, b) =>
+            Number(b.featured) - Number(a.featured) ||
+            a.displayOrder - b.displayOrder ||
+            a.title.localeCompare(b.title),
+        )
+        .slice(0, 4),
+    [programmes],
+  );
 
   return (
     <section
