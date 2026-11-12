@@ -10,7 +10,7 @@ const SITE_URL = "https://kpxacademy.com.ng";
 const cleanDescription = (value: string) =>
   value
     .replace(/<[^>]*>/g, " ")
-    .replace(/\\s+/g, " ")
+    .replace(/\s+/g, " ")
     .trim()
     .slice(0, 160);
 
