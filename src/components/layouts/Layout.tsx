@@ -98,7 +98,7 @@ function RouteMetadata({ pathname }: { pathname: string }) {
   useEffect(() => {
     const metadata = resolveMetadata(pathname);
     const canonicalUrl = new URL(metadata.canonicalPath, SITE_URL).toString();
-    const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix)) || /\\/access\\//.test(pathname);
+    const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix)) || pathname.includes("/access/");
 
     document.title = metadata.title;
     updateMeta("description", metadata.description);
