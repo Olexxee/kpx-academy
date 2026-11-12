@@ -9,7 +9,12 @@ import { AppRoutes } from "./router";
 import { AuthBootstrap } from "./components/auth/AuthBootstrap";
 
 function App({ dehydratedState }: { dehydratedState?: DehydratedState }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { staleTime: 60 * 60 * 1000 } },
+      }),
+  );
   const [clientReady, setClientReady] = useState(false);
 
   useEffect(() => {
