@@ -37,6 +37,23 @@ Review `/workshops/book` and `/souvenirs/enquire` separately before including th
 
 ## Audit findings and risks
 
+### Confirmed framework prerequisites
+
+- React Router's official framework adoption guide requires Node.js 22.22.0+ and Vite 7+ or Vite 8+. The repository already uses Vite 8, but its CI workflow previously selected the moving `22` Node line without documenting the minimum patch.
+- The branch now declares `engines.node >=22.22.0`, pins `.nvmrc` to `22.22.0`, and tests CI on Node 22.22.0. This makes the runtime requirement explicit before introducing the framework plugin.
+- The migration must follow the official RouterProvider adoption sequence: convert route definitions to route modules, move providers into the framework root, replace `createRoot` with `HydratedRouter`, and only then enable prerendering. The plugin cannot be mounted around the existing `RouterProvider`.
+
+### Data hydration strategy
+
+- The shared public shell uses React Query for the site logo and organization profile. The homepage additionally uses training catalogue data and gallery categories. The certificates page uses the training catalogue. Public detail/list pages use programme, resource, and souvenir queries.
+- The public pages can retain their existing React Query hooks if route loaders prefetch the same query keys and the root route wraps the outlet in a React Query `HydrationBoundary` using the loader's dehydrated cache. This avoids a risky wholesale rewrite of existing page components while still rendering API-backed content into build-time HTML.
+- Build-time prefetch must use an unauthenticated, server-safe API client with an explicit `VITE_API_URL`; it must not reuse browser cookie state or call `/auth/me`. Admin routes and tokenized access routes must never be part of the prerender path list.
+- The homepage currently loads data through multiple independent components. The loader cache must include `["training", "list"]`, `["site-content", "gallery", "categories"]`, `["site-content", "branding"]`, and `["site-content", "organization"]` so those components render meaningful content without waiting for browser requests.
+- Programme detail pages additionally use `["training", "detail", slug]` and `["training", "media", programId]`; resources use the existing public resource query keys; souvenirs use `["souvenirs", "catalogue"]` and `["souvenirs", "product", slug]`. Exact query keys must be checked against the current hooks before implementation.
+- The shared auth bootstrap currently invokes `useCurrentUser` globally. It must be made client-only or excluded from the static root loader; a build-time request must never be made to an authenticated current-user endpoint.
+- The public footer/header React Query calls should use the same hydrated cache, rather than issuing duplicate requests during initial hydration.
+
+
 - `src/router.tsx` currently creates a browser router and `src/main.tsx` uses `createRoot`; framework mode requires a framework root and hydrated client entry.
 - Public listing/detail pages use React Query hooks, so data must be moved into build-time route loaders or safely hydrated from loader data.
 - The homepage featured-programme component uses `Math.random()` during render. This is nondeterministic and must be replaced with a stable selection before static generation to avoid build instability and hydration mismatches.
