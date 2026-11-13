@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Pause, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getPublicHeroSlides } from "../../api/siteContent.api";
@@ -59,6 +59,7 @@ const heroSlides: HeroSlide[] = [
 
 export const BoldAspirationalHomePage = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const heroQuery = useQuery({ queryKey: ["site-content", "hero", "slides"], queryFn: getPublicHeroSlides, retry: 1 });
   const publishedHeroes = heroQuery.data ?? [];
   const slides: HeroSlide[] = publishedHeroes.length ? publishedHeroes.map((hero, index) => ({
@@ -73,11 +74,17 @@ export const BoldAspirationalHomePage = () => {
 
   useEffect(() => {
     setActiveSlide((current) => current % Math.max(slides.length, 1));
+  }, [slides.length]);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (isPaused || reducedMotion.matches || slides.length < 2) return;
+
     const intervalId = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % Math.max(slides.length, 1));
+      setActiveSlide((current) => (current + 1) % slides.length);
     }, 6500);
     return () => window.clearInterval(intervalId);
-  }, [slides.length]);
+  }, [slides.length, isPaused]);
 
   const showPreviousSlide = () => {
     setActiveSlide((current) => (current - 1 + slides.length) % slides.length);
@@ -93,7 +100,7 @@ export const BoldAspirationalHomePage = () => {
         Practical Skills. More Possibilities. <span className="mx-2 text-[#F4DCD6]">·</span> Your next chapter starts here.
       </div>
 
-      <section aria-label="Discover KPX Academy training" className="relative isolate min-h-[650px] overflow-hidden bg-[#07152F] text-white sm:min-h-[690px] lg:min-h-[720px]">
+      <section aria-label="Discover KPX Academy training" aria-roledescription="carousel" onFocusCapture={() => setIsPaused(true)} onMouseEnter={() => setIsPaused(true)} className="relative isolate min-h-[650px] overflow-hidden bg-[#07152F] text-white sm:min-h-[690px] lg:min-h-[720px]">
         <div className="absolute inset-0 -z-20">
           {slides.map((item, index) => (
             <img
@@ -117,7 +124,7 @@ export const BoldAspirationalHomePage = () => {
               {slide.eyebrow}
             </div>
             <p className="mb-4 text-xs font-bold uppercase tracking-[.24em] text-[#F4DCD6] sm:text-sm">KPX Academy · Practical skills. Real opportunities.</p>
-            <h1 aria-live="polite" className="max-w-4xl whitespace-pre-line font-[Sora] text-[clamp(2.8rem,7.4vw,6.6rem)] font-extrabold leading-[.99] tracking-[-.065em]">
+            <h1 aria-live="off" className="max-w-4xl whitespace-pre-line font-[Sora] text-[clamp(2.8rem,7.4vw,6.6rem)] font-extrabold leading-[.99] tracking-[-.065em]">
               {slide.title.split("\n").map((line, index) => (
                 <span key={line} className="block">{index === 0 ? <span className="text-[#D94A91]">{line}</span> : index === 1 ? <span className="text-[#F4DCD6]">{line}</span> : line}</span>
               ))}
@@ -155,9 +162,13 @@ export const BoldAspirationalHomePage = () => {
             </div>
             <div className="flex items-center justify-between gap-5 sm:justify-end">
               <p className="min-w-[100px] text-xs font-medium text-white/70"><span className="font-bold text-white">0{activeSlide + 1}</span> <span className="mx-1">/</span> 0{slides.length} <span className="hidden lg:inline">· Discover more</span></p>
-              <div className="flex gap-2">
-                <button type="button" onClick={showPreviousSlide} aria-label="Previous training image" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"><ArrowLeft size={18} /></button>
-                <button type="button" onClick={showNextSlide} aria-label="Next training image" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"><ArrowRight size={18} /></button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={() => setIsPaused((paused) => !paused)} aria-pressed={isPaused} aria-label={isPaused ? "Resume automatic slide rotation" : "Pause automatic slide rotation"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/35 bg-white/10 px-4 text-xs font-semibold text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white">
+                  {isPaused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}
+                  {isPaused ? "Play" : "Pause"}
+                </button>
+                <button type="button" onClick={showPreviousSlide} aria-label="Previous training image" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"><ArrowLeft size={18} aria-hidden="true" /></button>
+                <button type="button" onClick={showNextSlide} aria-label="Next training image" className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/10 transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"><ArrowRight size={18} aria-hidden="true" /></button>
               </div>
             </div>
           </div>
