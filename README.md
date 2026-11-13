@@ -320,3 +320,16 @@ These are calculated flat-colour values, not a full rendered-page certification.
 - The FAQ disclosure controls use native `<details>/<summary>`, preserving keyboard-operable disclosure behavior.
 
 This is a source-level remediation. Verify the actual route tree and keyboard focus order in a browser before treating the landmark audit as closed. Login and admin layouts are separate route surfaces and are not part of the public shared-layout correction.
+
+
+#### Public form validation and submission feedback — source remediation
+
+The public-form source review identified and corrected these issues:
+
+- Training registration now associates its form with the page heading, marks the three required controls with native `required` semantics while retaining the existing custom validation flow, announces the presence/count of validation errors, and exposes the pending state through `aria-busy`. Existing per-field `aria-invalid` and `aria-describedby` relationships remain in place.
+- Certificate-number verification now requires a value, exposes its pending state, and announces the returned verification result through a polite status region.
+- Proof-of-work submission now includes file preparation inside the guarded submission lifecycle. Preparation failures are caught and shown through the existing error announcement; the form exposes its pending state. The post-optimization 10 MB limit remains enforced.
+
+Workshop booking already uses native required-field validation, labelled controls, a grouped venue radio set, an `aria-busy` form state, and an assertive submission error region. Its dynamic venue/custom-workshop requirements remain conditional on the selected options.
+
+**Verification boundary:** These are source-level checks and targeted code corrections. No browser-driven keyboard/screen-reader session, live API submission, production build, lint run, or CI result has been established by this review. Those remain explicit Phase 5 tasks.
