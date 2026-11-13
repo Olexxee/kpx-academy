@@ -34,7 +34,7 @@ const errorMessage = (error: unknown, fallback: string) => {
 };
 
 const inputClass =
-  "mt-2 w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-text outline-none transition placeholder:text-text-muted/70 focus:border-primary focus:ring-2 focus:ring-primary/15";
+  "mt-2 w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-text outline-none transition placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/15";
 
 const labelClass = "block text-sm font-semibold text-primary";
 
