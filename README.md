@@ -563,3 +563,31 @@ Verified from the deployed preview using HTTP fetch:
 **Limitations:** This is build and static-response verification, not interactive browser testing. It does not prove client-side route transitions, admin login/session behavior, certificate proof upload, or real user performance. Those require browser/network testing and a fresh PageSpeed run after merge/deployment. The Vercel build emitted a non-blocking warning that `vercelPreset()` was not detected; it did not prevent the build from completing.
 
 **Phase 7B status:** implementation and preview build/static checks complete; interactive regression checks and production PageSpeed comparison remain outstanding. No merge or production promotion performed.
+
+## SEO metadata search-intent alignment
+
+This phase centralises the site's page metadata and aligns prerendered metadata with client-side route metadata.
+
+### Changes
+
+- Added `src/lib/pageMetadata.ts` as the single source for static page titles and descriptions.
+- Updated the homepage, About, Programmes, Certificates, Resources, Gallery, FAQ, and Souvenirs metadata to describe each page's actual search intent without repeating broad keywords indiscriminately.
+- Added shared metadata builders for programme, resource, and souvenir detail pages. The prerender loader and each hydrated detail page now use the same title, description fallback, and canonical path logic.
+- Programme titles include a practical-training qualifier only when the programme's actual title does not already contain the word "training".
+- Centralised description normalisation so prerendered and client-updated descriptions both strip markup, collapse whitespace, and respect the 160-character limit.
+- Removed the duplicate static metadata map from `Layout.tsx`; the layout and framework route now consume the shared definitions.
+- Preserved private/transactional route noindex handling and the `/courses` canonical mapping to `/programs`.
+
+### Search-intent decisions
+
+The programme index targets practical skills training courses. Individual programme pages use their real catalogue title and description; no delivery mode, qualification, accreditation, or outcome is invented. Resource pages are labelled as learning resources, and souvenir pages retain their commercial/custom-order intent.
+
+These are relevance-led editorial titles, not claims about keyword search volume. Search Console query, impression, and CTR data should guide any later wording changes.
+
+### Verification still required
+
+- Run `npx react-router typegen` to generate the local `./+types/framework-app` module, then run `npm run build` (which already performs type generation, TypeScript build, and React Router production build).
+- Confirm generated prerendered HTML for the homepage, programme index, one programme detail, one resource detail, and one souvenir detail has the expected title, description, and canonical URL.
+- Confirm hydrated navigation produces the same metadata as the prerendered HTML.
+- Confirm private and transactional routes retain their existing noindex behavior.
+- No build, CI, deployed HTML, or Search Console query analysis is claimed by this source update.

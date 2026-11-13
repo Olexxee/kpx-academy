@@ -2,59 +2,13 @@ import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
+import {
+  DEFAULT_PAGE_METADATA,
+  STATIC_PAGE_METADATA,
+  cleanPageDescription,
+} from "../../lib/pageMetadata";
 
 const SITE_URL = "https://kpxacademy.com.ng";
-const DEFAULT_TITLE = "KPX Academy | Practical Skills Training & Creative Learning";
-const DEFAULT_DESCRIPTION =
-  "Learn practical, skill-based techniques with KPX Academy. Explore detailed training, creative workshops, beauty and product formulation, and resources.";
-
-const pageMetadata: Record<string, { title: string; description: string }> = {
-  "/": {
-    title: DEFAULT_TITLE,
-    description: DEFAULT_DESCRIPTION,
-  },
-  "/about": {
-    title: "About KPX Academy | Our Story & Learning Philosophy",
-    description: "Discover KPX Academy's commitment to practical knowledge, detailed training, and real value across creative skills, beauty, product development, and entrepreneurship.",
-  },
-  "/programs": {
-    title: "Training Programmes | KPX Academy",
-    description: "Explore practical training programmes from KPX Academy. Find skill-focused learning designed to help you practise, create, and grow.",
-  },
-  "/certificates": {
-    title: "Certificate Verification & Proof of Work | KPX Academy",
-    description: "Verify a KPX Academy certificate or submit proof of work for review by the academy.",
-  },
-  "/resources": {
-    title: "Learning Resources & Training Guides | KPX Academy",
-    description: "Explore KPX Academy training manuals, practical guides, and learning resources. Read online or download materials for offline use.",
-  },
-  "/gallery": {
-    title: "Student Projects & Training Gallery | KPX Academy",
-    description: "Explore practical projects, creative work, and training activities from KPX Academy.",
-  },
-  "/faq": {
-    title: "Frequently Asked Questions | KPX Academy",
-    description: "Find answers about KPX Academy programmes, registration, payments, workshops, certificates, and learning.",
-  },
-  "/souvenirs": {
-    title: "Custom Souvenirs & Gifts | KPX Academy",
-    description: "Explore KPX Academy's custom souvenir catalogue and enquire about personalised products and bulk orders.",
-  },
-  "/workshops/track-booking": { title: "Track a Workshop Booking | KPX Academy", description: "Securely check the status and updates for your KPX Academy creative workshop booking." },
-  "/workshops/book": {
-    title: "Book a Creative Workshop | KPX Academy",
-    description: "Request a practical creative workshop with KPX Academy for your group, organisation, or event.",
-  },
-  "/register": {
-    title: "Register for Training | KPX Academy",
-    description: "Choose a KPX Academy training programme and continue to secure registration and payment.",
-  },
-  "/souvenirs/enquire": {
-    title: "Request a Custom Souvenir | KPX Academy",
-    description: "Tell KPX Academy about your custom souvenir idea, quantity, and event requirements.",
-  },
-};
 
 const noIndexPrefixes = [
   "/admin",
@@ -68,10 +22,10 @@ const noIndexPrefixes = [
 
 function resolveMetadata(pathname: string) {
   if (pathname === "/courses") {
-    return { ...pageMetadata["/programs"], canonicalPath: "/programs" };
+    return { ...STATIC_PAGE_METADATA["/programs"], canonicalPath: "/programs" };
   }
 
-  const exact = pageMetadata[pathname];
+  const exact = STATIC_PAGE_METADATA[pathname];
   if (exact) return { ...exact, canonicalPath: pathname };
 
   if (pathname.startsWith("/programs/")) {
@@ -91,8 +45,8 @@ function resolveMetadata(pathname: string) {
   }
 
   return {
-    title: DEFAULT_TITLE,
-    description: DEFAULT_DESCRIPTION,
+    title: DEFAULT_PAGE_METADATA.title,
+    description: DEFAULT_PAGE_METADATA.description,
     canonicalPath: pathname,
   };
 }
@@ -119,20 +73,21 @@ function RouteMetadata({ pathname }: { pathname: string }) {
     if (ownsContentMetadata && !pathname.includes("/access/")) return;
 
     const metadata = resolveMetadata(pathname);
+    const description = cleanPageDescription(metadata.description);
     const canonicalUrl = new URL(metadata.canonicalPath, SITE_URL).toString();
     const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix)) || pathname.includes("/access/");
 
     document.title = metadata.title;
-    updateMeta("description", metadata.description);
+    updateMeta("description", description);
     updateMeta("robots", noIndex ? "noindex, nofollow" : "index, follow");
     updateMeta("og:type", "website", "property");
     updateMeta("og:site_name", "KPX Academy", "property");
     updateMeta("og:title", metadata.title, "property");
-    updateMeta("og:description", metadata.description, "property");
+    updateMeta("og:description", description, "property");
     updateMeta("og:url", canonicalUrl, "property");
     updateMeta("twitter:card", "summary");
     updateMeta("twitter:title", metadata.title);
-    updateMeta("twitter:description", metadata.description);
+    updateMeta("twitter:description", description);
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {

@@ -5,6 +5,7 @@ import { useTrainingProgram } from "../hooks/useTrainingPrograms";
 import { useTrainingMedia } from "../hooks/useTrainingMedia";
 import type { ProgramMedia } from "../types";
 import { updatePageMetadata } from "../../../lib/seo";
+import { getProgrammeMetadata } from "../../../lib/pageMetadata";
 
 const formatPrice = (value: number | string, currency = "NGN") => {
   const amount = Number(value);
@@ -106,11 +107,13 @@ export const ProgramDetailsPage = () => {
       });
       return;
     }
-    updatePageMetadata({
-      title: `${program.title} | Training Programme | KPX Academy`,
-      description: program.shortDescription || program.description || `Explore ${program.title}, a practical training programme from KPX Academy. View the learning details and registration information.`,
-      canonicalPath: `/programs/${encodeURIComponent(program.slug)}`,
-    });
+    updatePageMetadata(
+      getProgrammeMetadata(
+        program.title,
+        program.shortDescription || program.description,
+        program.slug,
+      ),
+    );
   }, [isLoading, isError, program, slug]);
 
   if (isLoading) {
