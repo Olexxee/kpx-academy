@@ -153,7 +153,7 @@ export const BoldAspirationalHomePage = () => {
                     type="button"
                     onClick={() => setActiveSlide(index)}
                     aria-pressed={activeSlide === index}
-                    className={`rounded-full border px-4 py-2.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#07152F] sm:text-sm ${activeSlide === index ? "border-[#F4DCD6] bg-[#F4DCD6] text-[#212529]" : "border-white/30 bg-white/5 text-white hover:border-white/70 hover:bg-white/15"}`}
+                    className={`rounded-full border px-4 py-2.5 text-xs font-semibold transition focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#07152F] sm:text-sm ${activeSlide === index ? "border-[#F4DCD6] bg-[#F4DCD6] text-[#212529]" : "border-white/50 bg-white/5 text-white hover:border-white/70 hover:bg-white/15"}`}
                   >
                     {item.category}
                   </button>
@@ -163,7 +163,7 @@ export const BoldAspirationalHomePage = () => {
             <div className="flex items-center justify-between gap-5 sm:justify-end">
               <p className="min-w-[100px] text-xs font-medium text-white/70"><span className="font-bold text-white">0{activeSlide + 1}</span> <span className="mx-1">/</span> 0{slides.length} <span className="hidden lg:inline">· Discover more</span></p>
               <div className="flex flex-wrap items-center gap-2">
-                <button type="button" onClick={() => setIsPaused((paused) => !paused)} aria-pressed={isPaused} aria-label={isPaused ? "Resume automatic slide rotation" : "Pause automatic slide rotation"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/35 bg-white/10 px-4 text-xs font-semibold text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white">
+                <button type="button" onClick={() => setIsPaused((paused) => !paused)} aria-pressed={isPaused} aria-label={isPaused ? "Resume automatic slide rotation" : "Pause automatic slide rotation"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/50 bg-white/10 px-4 text-xs font-semibold text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white">
                   {isPaused ? <Play size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}
                   {isPaused ? "Play" : "Pause"}
                 </button>
