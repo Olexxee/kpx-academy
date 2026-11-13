@@ -52,7 +52,7 @@ export const FinalCTA = () => {
 
               <Link
                 to="/about"
-                className="inline-flex min-h-12 items-center justify-center rounded-control border border-white/50 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A8D8D3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1D4ED8]"
+                className="inline-flex min-h-12 items-center justify-center rounded-control border border-[#F4DCD6] px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A8D8D3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1D4ED8]"
               >
                 Discover KPX Academy
               </Link>
