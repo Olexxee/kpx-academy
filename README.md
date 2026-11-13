@@ -251,13 +251,19 @@ The FAQ double-gutter issue is confirmed in source: its hero section applies hor
 **Exit criteria:** One documented source of truth for public design tokens, with contrast values verified for intended text/background pairings. This phase remains in progress until all in-scope page usages are mapped and the typography scale is standardised.
 
 #### Phase 2 — Shared public-page hero structure
-- [ ] Introduce a reusable public-page hero component with explicit variants for solid, image-backed, and split layouts.
-- [ ] Standardise content width, horizontal gutters, vertical spacing, eyebrow placement, H1 scale, description width, and CTA spacing.
-- [ ] Keep page-specific content, imagery, and visual identity configurable; do not force every page into an identical composition.
-- [ ] Ensure mobile layouts stack predictably, avoid clipped text, and retain readable spacing.
-- [ ] Preserve existing hero image loading behaviour unless measured evidence supports a change.
+- [x] Introduce a reusable public-page hero component with solid and image-backed variants.
+- [x] Standardise content width, responsive horizontal gutters, vertical spacing, eyebrow placement, H1 scale, description width, and optional icon/search content.
+- [x] Keep page-specific copy, imagery, and search controls configurable.
+- [x] Add a restrained entrance animation that respects `prefers-reduced-motion`.
+- [x] Use icons as visual signposts where they clarify the page purpose; decorative icons are hidden from assistive technology and controls retain text labels.
+- [ ] Add and validate the split-layout variant for pages that need a side-by-side hero composition.
+- [ ] Inspect hero alignment and text/image contrast at mobile, tablet, and desktop breakpoints.
 
-**Exit criteria:** Shared structural rules are used by the in-scope public pages, with no unintended visual regressions at mobile and desktop breakpoints.
+**Phase 2 progress:** `src/components/ui/PublicPageHero.tsx` is implemented with solid and image-backed variants. FAQ, Gallery, and Resources now use the shared component. The FAQ search control remains functional and the redundant nested Container gutters have been removed. Hero content has a short opacity/vertical entrance transition; the transition is disabled when the user requests reduced motion. No animation is required to reveal information or operate controls. About and Certificates retain their existing bespoke compositions pending the split/action variant and route-by-route migration.
+
+**Animation and icon rules:** Motion is progressive enhancement only. Respect `prefers-reduced-motion`, avoid parallax and continuously moving decorative elements, and do not animate essential content in a way that delays access. Icons should reinforce a visible text label, not replace it; decorative icons must be `aria-hidden`, and icon-only buttons require accessible names.
+
+**Exit criteria:** Shared structural rules are used by all in-scope public pages, with no unintended visual regressions at mobile and desktop breakpoints. This phase remains in progress until the split variant, remaining page migrations, and rendered responsive review are complete.
 
 #### Phase 3 — Public-page migration
 - [ ] Migrate the homepage and each public informational/catalogue page to the shared hero structure where appropriate.
