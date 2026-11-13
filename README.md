@@ -305,6 +305,7 @@ The mobile PageSpeed capture recorded FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052
 
 #### Initial source audit and targeted optimisations
 
+- The document root previously fetched site branding separately just to update the browser favicon, even though the public header already fetches/caches the same branding record. The duplicate request has been removed; the header now updates the favicon from its existing React Query data.
 - The brand fonts were loaded through CSS `@import`. This has been removed; Google Fonts stylesheet loading now lives in the document head, with preconnect hints for `fonts.googleapis.com` and `fonts.gstatic.com`. This removes the CSS import chain and allows the browser to establish font connections earlier. It does not guarantee that font loading is no longer render-blocking; verify the waterfall and fallback-font behaviour.
 - The homepage hero previously rendered every carousel image at once. It now renders only the active slide and its next slide, assigning high fetch priority to the active image and low priority to the next. This reduces the initial hero image request set from all slides to at most two, while keeping the next slide ready for the carousel transition.
 - The five hardcoded Unsplash fallback hero images have been reduced from 2,200 px at quality 85 to 1,600 px at quality 75. Confirm actual transferred formats and byte sizes in the browser; uploaded admin-managed hero images are not transformed by this change.
