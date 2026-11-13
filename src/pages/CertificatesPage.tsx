@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import { Link, useSearchParams } from "react-router-dom";
 import { Award, BadgeCheck, FileCheck2, Search, ShieldCheck, UploadCloud } from "lucide-react";
 import { PublicPageHero } from "../components/ui/PublicPageHero";
+import { siteImages } from "../config/siteImages";
 import { registrationApi } from "../lib/registrationApi";
 import { prepareUploadFile } from "../lib/fileCompression";
 import { useTrainingPrograms } from "../features/training/hooks/useTrainingPrograms";
