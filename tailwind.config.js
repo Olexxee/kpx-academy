@@ -17,6 +17,18 @@ module.exports = {
         success: "#237a52",
         warning: "#946200",
         error: "#b42318",
+        kpx: {
+          navy: "#17324d",
+          teal: "#2a7f7f",
+          "teal-text": "#287979",
+          magenta: "#d94a91",
+          "deep-magenta": "#8b1e5a",
+          "warm-white": "#faf8f5",
+          "soft-blush": "#f4dcd6",
+          charcoal: "#212529",
+          "muted-text": "#6b7280",
+          border: "#e5e2dc",
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
