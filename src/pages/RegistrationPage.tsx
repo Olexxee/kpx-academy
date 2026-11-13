@@ -201,7 +201,7 @@ export default function RegistrationForm() {
               KPX Academy
             </p>
 
-            <h1 className="mt-4 font-heading text-4xl font-bold leading-tight text-primary sm:text-5xl">
+            <h1 id="registration-form-title" className="mt-4 font-heading text-4xl font-bold leading-tight text-primary sm:text-5xl">
               Start your learning journey.
             </h1>
 
@@ -210,7 +210,12 @@ export default function RegistrationForm() {
               to secure checkout.
             </p>
 
-            <form onSubmit={handleSubmit} noValidate className="mt-9 space-y-6">
+            <form aria-labelledby="registration-form-title" aria-busy={isSubmitting} onSubmit={handleSubmit} noValidate className="mt-9 space-y-6">
+              {Object.keys(errors).length > 0 && (
+                <div role="alert" className="rounded-control border border-error/20 bg-error/5 p-4 text-sm text-error">
+                  Please correct the {Object.keys(errors).length} highlighted {Object.keys(errors).length === 1 ? "field" : "fields"} before continuing.
+                </div>
+              )}
               <div>
                 <label
                   htmlFor="trainingProgramId"
@@ -222,6 +227,7 @@ export default function RegistrationForm() {
                 <select
                   id="trainingProgramId"
                   name="trainingProgramId"
+                  required
                   value={form.trainingProgramId}
                   onChange={handleChange}
                   disabled={isSubmitting}
@@ -270,6 +276,7 @@ export default function RegistrationForm() {
                   <input
                     id="fullName"
                     name="fullName"
+                    required
                     type="text"
                     autoComplete="name"
                     value={form.fullName}
@@ -308,6 +315,7 @@ export default function RegistrationForm() {
                   <input
                     id="email"
                     name="email"
+                    required
                     type="email"
                     autoComplete="email"
                     value={form.email}
