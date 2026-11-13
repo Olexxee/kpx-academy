@@ -335,3 +335,19 @@ Workshop booking already uses native required-field validation, labelled control
 **Verification boundary:** These are source-level checks and targeted code corrections. No browser-driven keyboard/screen-reader session, live API submission, production build, lint run, or CI result has been established by this review. Those remain explicit Phase 5 tasks.
 
 - Workshop booking's successful-request state now exposes its confirmation message as a polite status announcement, complementing the existing assertive submission-error feedback.
+
+
+#### Phase 4 — Interaction, focus, and status-message audit (source pass)
+
+The next source review found several gaps in the public experience and applied targeted fixes:
+
+- Two public forms (training registration and certificate verification/proof submission) used 70%-opacity muted placeholders. On white, the effective colour was approximately `#979CA6`, giving about **2.76:1** contrast. Both now use the full muted-text colour (`#6B7280`), approximately **4.83:1** on white.
+- Several controls used low-opacity focus rings (`/15`, `/20`, or `/30`) while also resetting the native outline. The public layout now supplies a high-visibility, 3 px deep-magenta outline with a white separation halo. The selector is scoped to `.public-site-shell` so the separate admin workspace is not changed by this public-site remediation.
+- Client-side route changes now move keyboard focus to the shared main-content landmark. This prevents focus from remaining on a navigation link that no longer represents the newly rendered page, including when a mobile menu closes after navigation.
+- Payment verification state changes now have a polite status announcement, and the result panel exposes its busy state.
+- Workshop booking tracking now exposes pending states and the verification-code transition to assistive technology, and its forms expose `aria-busy`.
+- Successful souvenir enquiry submission now announces the confirmation state.
+
+**Contrast notes:** The flat colour pairs `#8B1E5A` on white and warm-white backgrounds are approximately 8.64:1 and 8.15:1. The public muted-text token `#6B7280` is approximately 4.83:1 on white and 4.56:1 on `#FAF8F5`. The bright teal `#2A7F7F` remains below normal-text AA on warm-white at approximately 4.46:1; do not use it for normal-sized text on that surface. These calculations do not certify translucent, photographic, gradient, hover, or disabled states.
+
+**Still requiring browser verification:** Test route-change focus, skip-link operation, the new dual focus indicator against light and dark components, mobile menu keyboard behavior, all form error/success announcements, zoom/reflow, and reduced-motion behavior. A source edit is not proof that a screen reader/browser combination announces content correctly. No browser-driven keyboard or screen-reader session has been completed yet.
