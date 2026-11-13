@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
@@ -148,10 +148,18 @@ function RouteMetadata({ pathname }: { pathname: string }) {
 
 export const Layout = () => {
   const location = useLocation();
+  const mainContentRef = useRef<HTMLElement>(null);
+  const previousPathnameRef = useRef(location.pathname);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    if (previousPathnameRef.current === location.pathname) return;
+    previousPathnameRef.current = location.pathname;
+    mainContentRef.current?.focus({ preventScroll: true });
+  }, [location.pathname]);
 
   return (
     <div className="flex min-h-screen flex-col bg-neutral">
@@ -160,7 +168,7 @@ export const Layout = () => {
         Skip to main content
       </a>
       <SiteHeader />
-      <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">
+      <main ref={mainContentRef} id="main-content" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">
         <Outlet />
       </main>
       <SiteFooter />
