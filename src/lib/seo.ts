@@ -5,14 +5,9 @@ export interface PageMetadataInput {
   robots?: string;
 }
 
-const SITE_URL = "https://kpxacademy.com.ng";
+import { cleanPageDescription } from "./pageMetadata";
 
-const cleanDescription = (value: string) =>
-  value
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 160);
+const SITE_URL = "https://kpxacademy.com.ng";
 
 const setMeta = (
   key: string,
@@ -36,7 +31,7 @@ export const updatePageMetadata = ({
   canonicalPath,
   robots = "index, follow",
 }: PageMetadataInput) => {
-  const safeDescription = cleanDescription(description);
+  const safeDescription = cleanPageDescription(description);
   const canonicalUrl = new URL(canonicalPath, SITE_URL).toString();
 
   document.title = title;
