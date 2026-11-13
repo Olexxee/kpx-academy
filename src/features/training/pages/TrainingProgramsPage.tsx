@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
+import { GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
-import { SiteImage } from "../../../components/ui/SiteImage";
+import { PublicPageHero } from "../../../components/ui/PublicPageHero";
 import { siteImages } from "../../../config/siteImages";
 import { useTrainingPrograms } from "../hooks/useTrainingPrograms";
 import { useTrainingMedia } from "../hooks/useTrainingMedia";
@@ -49,26 +50,20 @@ export const TrainingProgramsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative isolate overflow-hidden bg-primary text-white">
-        <SiteImage src={siteImages.programmes} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/95 via-[#17324D]/80 to-[#17324D]/50" />
-        <Container className="relative py-16 sm:py-20 lg:py-28">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70 sm:text-sm">KPX Academy · Learn with purpose</p>
-          <div className="mt-5 max-w-3xl">
-            <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Find a skill worth <span className="text-[#F4DCD6]">learning.</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
-              Explore practical training programmes designed to help you develop your knowledge, strengthen your skills, and put what you learn into practice.
-            </p>
+      <PublicPageHero
+        eyebrow="KPX Academy · Learn with purpose"
+        title={<>Find a skill worth <span className="text-[#F4DCD6]">learning.</span></>}
+        description="Explore practical training programmes designed to help you develop your knowledge, strengthen your skills, and put what you learn into practice."
+        icon={GraduationCap}
+        image={siteImages.programmes}
+        actions={
+          <div className="flex flex-wrap gap-3 text-sm font-medium text-white/90">
+            <span className="rounded-full border border-white/35 px-4 py-2">Practical learning</span>
+            <span className="rounded-full border border-white/35 px-4 py-2">Detailed training</span>
+            <span className="rounded-full border border-white/35 px-4 py-2">Online and in-person options</span>
           </div>
-          <div className="mt-8 flex flex-wrap gap-3 text-sm font-medium text-white/90">
-            <span className="rounded-full border border-white/25 px-4 py-2">Practical learning</span>
-            <span className="rounded-full border border-white/25 px-4 py-2">Detailed training</span>
-            <span className="rounded-full border border-white/25 px-4 py-2">Online and in-person options</span>
-          </div>
-        </Container>
-      </section>
+        }
+      />
 
       <section aria-labelledby="programme-list-heading" className="py-12 sm:py-16 lg:py-20">
         <Container>
