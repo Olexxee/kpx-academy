@@ -29,7 +29,7 @@ export function PublicPageHero({
   className = "",
 }: PublicPageHeroProps) {
   const titleId = useId();
-  const hasImage = variant === "image" && Boolean(image);
+  const hasImage = (variant === "image" || variant === "split") && Boolean(image);
 
   return (
     <header
