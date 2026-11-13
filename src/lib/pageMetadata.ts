@@ -75,7 +75,7 @@ export function getProgrammeMetadata(
   description: string | null | undefined,
   slug: string,
 ): PageMetadata & { canonicalPath: string } {
-  const includesTraining = /\\btraining\\b/i.test(title);
+  const includesTraining = /\btraining\b/i.test(title);
   return {
     title: includesTraining
       ? `${title} | ${SITE_NAME}`
