@@ -3,6 +3,7 @@ import type { Route } from "./+types/framework-app";
 import App from "./App";
 import {
   DEFAULT_PAGE_METADATA,
+  cleanPageDescription,
   STATIC_PAGE_METADATA,
   getProgrammeMetadata,
   getResourceMetadata,
@@ -294,10 +295,9 @@ export function meta({ data, location }: Route.MetaArgs) {
       : pathname.startsWith("/resources/")
         ? "Training Resource | KPX Academy"
         : DEFAULT_PAGE_METADATA.title);
-  const description =
-    seo?.description ||
-    fallback?.description ||
-    DEFAULT_PAGE_METADATA.description;
+  const description = cleanPageDescription(
+    seo?.description || fallback?.description || DEFAULT_PAGE_METADATA.description,
+  );
   const canonical =
     pathname === "/courses"
       ? new URL("/programs", SITE_URL).toString()
