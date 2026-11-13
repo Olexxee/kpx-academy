@@ -20,7 +20,7 @@ const heroSlides: HeroSlide[] = [
     eyebrow: "Make technology work for you",
     description: "Build digital confidence and practical skills for the opportunities of today and tomorrow.",
     category: "Technology",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&q=75",
     alt: "Learners collaborating around a laptop during digital skills training",
   },
   {
@@ -28,7 +28,7 @@ const heroSlides: HeroSlide[] = [
     eyebrow: "Turn your creativity into a skill",
     description: "Explore hands-on creative training, experiment with ideas, and learn by making something of your own.",
     category: "Creative & Craft",
-    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1600&q=75",
     alt: "Artist working with colourful materials in a creative workspace",
   },
   {
@@ -36,7 +36,7 @@ const heroSlides: HeroSlide[] = [
     eyebrow: "Build your next opportunity",
     description: "Strengthen your business mindset with practical knowledge you can apply to work, projects, and everyday decisions.",
     category: "Business",
-    image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1600&q=75",
     alt: "Small business team sharing ideas around a table",
   },
   {
@@ -44,7 +44,7 @@ const heroSlides: HeroSlide[] = [
     eyebrow: "Practical learning starts here",
     description: "Move beyond theory with guided, hands-on learning designed to help you build confidence through practice.",
     category: "Hands-on Training",
-    image: "https://images.unsplash.com/photo-1524178252363-1fb2b075b655?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1524178252363-1fb2b075b655?auto=format&fit=crop&w=1600&q=75",
     alt: "Instructor leading a practical learning session with students",
   },
   {
@@ -52,7 +52,7 @@ const heroSlides: HeroSlide[] = [
     eyebrow: "Discover what you can do",
     description: "Start with your curiosity, learn something useful, and take a confident step toward your personal goals.",
     category: "Personal Growth",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=2200&q=85",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1600&q=75",
     alt: "Students learning together in a collaborative study session",
   },
 ];
@@ -102,16 +102,24 @@ export const BoldAspirationalHomePage = () => {
 
       <section aria-label="Discover KPX Academy training" aria-roledescription="carousel" onFocusCapture={() => setIsPaused(true)} onMouseEnter={() => setIsPaused(true)} className="relative isolate min-h-[650px] overflow-hidden bg-[#07152F] text-white sm:min-h-[690px] lg:min-h-[720px]">
         <div className="absolute inset-0 -z-20">
-          {slides.map((item, index) => (
-            <img
-              key={item.category}
-              src={item.image}
-              alt={index === activeSlide ? item.alt : ""}
-              aria-hidden={index !== activeSlide}
-              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 motion-reduce:transition-none ${index === activeSlide ? "opacity-100" : "opacity-0"}`}
-              fetchPriority={index === 0 ? "high" : "auto"}
-            />
-          ))}
+          {slides.map((item, index) => {
+            const isActive = index === activeSlide;
+            const isNext = index === (activeSlide + 1) % slides.length;
+            if (!isActive && !isNext) return null;
+
+            return (
+              <img
+                key={item.category}
+                src={item.image}
+                alt={isActive ? item.alt : ""}
+                aria-hidden={!isActive}
+                loading={isActive ? "eager" : "lazy"}
+                decoding="async"
+                fetchPriority={isActive ? "high" : "low"}
+                className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 motion-reduce:transition-none ${isActive ? "opacity-100" : "opacity-0"}`}
+              />
+            );
+          })}
         </div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#06142F]/95 via-[#06142F]/80 to-[#06142F]/20 sm:via-[#06142F]/70" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#06142F]/85 via-transparent to-[#06142F]/15" />
