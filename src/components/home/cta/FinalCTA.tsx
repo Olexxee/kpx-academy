@@ -36,7 +36,7 @@ export const FinalCTA = () => {
               Ready to explore what you can learn?
             </h2>
 
-            <p className="mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
               Discover practical training, explore your interests, and take the
               first step towards developing new skills with KPX Academy.
             </p>
