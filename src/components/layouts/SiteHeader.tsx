@@ -38,6 +38,13 @@ export const SiteHeader = () => {
   const branding = useQuery({ queryKey: ["site-content", "branding"], queryFn: getSiteBranding, staleTime: 5 * 60 * 1000 });
 
   useEffect(() => {
+    const logoUrl = branding.data?.logoUrl;
+    if (!logoUrl) return;
+    const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (icon) icon.href = logoUrl;
+  }, [branding.data?.logoUrl]);
+
+  useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
