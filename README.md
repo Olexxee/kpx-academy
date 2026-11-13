@@ -157,7 +157,7 @@ The React Router/Vercel preview build completed and logged HTML prerender output
 
 ## Public-site visual consistency and accessibility remediation
 
-**Status:** Source audit complete; implementation in progress.  
+**Status:** Source inventory complete; accessibility audit and remediation in progress.  
 **Scope:** Public-facing website only. The admin workspace is excluded unless a later, separately approved audit identifies an issue.
 
 ### Audit findings
