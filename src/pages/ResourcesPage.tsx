@@ -1,30 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import { BookOpenText, Download, FileText, Search } from "lucide-react";
+import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getPublicResources, getResourceDownloadUrl } from "../api/siteContent.api";
-import { SiteImage } from "../components/ui/SiteImage";
-import { siteImages } from "../config/siteImages";
 
 export default function ResourcesPage() {
   const [search, setSearch] = useState("");
   const query = useQuery({ queryKey: ["site-content", "resources", search], queryFn: () => getPublicResources(search || undefined) });
   const resources = query.data ?? [];
   return <div className="min-h-[70vh] bg-[#FAF8F5]">
-    <section className="relative isolate overflow-hidden bg-[#07152F] px-5 py-16 text-white sm:px-8 sm:py-20">
-      <link rel="preload" as="image" href={siteImages.resources} fetchPriority="high" />
-      <SiteImage src={siteImages.resources} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" loading="eager" fetchPriority="high" />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/90 via-[#07152F]/75 to-[#07152F]/45" />
-      <div className="relative z-10 mx-auto max-w-6xl">
-        <p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">KPX learning library</p>
-        <h1 className="mt-4 max-w-3xl font-[Sora] text-4xl font-extrabold tracking-tight text-[#D94A91] sm:text-6xl">Resources to keep you learning.</h1>
-        <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">Read training manuals and practical guides online, or download a copy to use offline.</p>
-        <label className="mt-8 flex max-w-xl items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F4DCD6]">
-          <Search size={19} className="shrink-0 text-white/70" />
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search guides and manuals" aria-label="Search resources" className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/50" />
-        </label>
-      </div>
-    </section>
+    <PublicPageHero
+      eyebrow="KPX learning library"
+      title="Resources to keep you learning."
+      description="Read training manuals and practical guides online, or download a copy to use offline."
+      icon={BookOpenText}
+      image={siteImages.resources}
+      imageAlt=""
+    >
+      <label className="mt-7 flex min-h-12 max-w-xl items-center gap-3 rounded-xl border border-white/25 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F4DCD6] focus-within:ring-offset-2 focus-within:ring-offset-[#07152F]">
+        <Search aria-hidden="true" size={19} className="shrink-0 text-white/80" />
+        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search guides and manuals" aria-label="Search resources" className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/65" />
+      </label>
+    </PublicPageHero>
     <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       {query.isLoading && <p className="text-sm text-slate-500">Loading resources…</p>}
       {query.isError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">Resources could not be loaded. Please try again.</p>}
