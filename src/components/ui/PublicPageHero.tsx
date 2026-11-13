@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 
 type PublicPageHeroProps = {
   eyebrow: string;
-  title: string;
+  title: ReactNode;
   description?: string;
   icon?: LucideIcon;
   image?: string;
