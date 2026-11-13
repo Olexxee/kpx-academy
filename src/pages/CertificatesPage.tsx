@@ -146,7 +146,7 @@ export default function CertificatesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       <PublicPageHero
         eyebrow="Student certificate services"
         title="Your learning deserves to be recognised."
