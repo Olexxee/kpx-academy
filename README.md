@@ -312,3 +312,11 @@ The mobile PageSpeed capture recorded FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052
 The public footer uses the Tailwind `bg-primary` token (`#1D4ED8`). Its descriptive and copyright text previously used `text-white/75`, which composites to approximately `#C6D3F5` and yields a 4.48:1 contrast ratio against that background. This is below the 4.5:1 requirement for normal text. The footer text opacity has been raised to `text-white/80` (approximately 4.89:1 for the same flat pairing). Footer links already use `text-white/80`; their blush hover/focus colour has approximately 5.12:1 contrast against the footer background.
 
 These are calculated flat-colour values, not a full rendered-page certification. Remaining work includes auditing every public-page text/control pairing, including translucent text, focus indicators, badges, disabled states, and image-backed heroes, then verifying keyboard operation, responsive layouts, and form error states in a browser. Do not mark WCAG conformance complete based on token calculations alone.
+
+#### Keyboard and landmark remediation — completed in source
+
+- Replaced page-level `<main>` wrappers in FAQ, Gallery, About, Certificate, and Resource Reader route components with neutral containers. The shared public `Layout` owns the single main landmark; route components must not introduce nested main landmarks.
+- Gallery category filters now expose their selected state with `aria-pressed` and have explicit `focus-visible` rings. The filter controls remain native buttons and retain their existing URL-driven selection behavior.
+- The FAQ disclosure controls use native `<details>/<summary>`, preserving keyboard-operable disclosure behavior.
+
+This is a source-level remediation. Verify the actual route tree and keyboard focus order in a browser before treating the landmark audit as closed. Login and admin layouts are separate route surfaces and are not part of the public shared-layout correction.
