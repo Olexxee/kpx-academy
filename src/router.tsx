@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 import { Layout } from "./components/layouts/Layout";
 import { HomePage } from "./pages/HomePage";
@@ -16,24 +17,26 @@ import { WorkshopBookingPage } from "./features/workshops/pages/WorkshopBookingP
 import { WorkshopBookingTrackerPage } from "./features/workshops/pages/WorkshopBookingTrackerPage";
 import { WorkshopGuestAccessPage } from "./features/workshops/pages/WorkshopGuestAccessPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
-import AdminLayout from "./components/admin/AdminLayout";
-import LoginPage from "./pages/LoginPage";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import AdminTrainingPage from "./pages/admin/AdminTrainingPage";
-import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
-import AdminTestimonialsPage from "./features/testimonials/pages/AdminTestimonialsPage";
-import AdminCertificatesPage from "./pages/admin/AdminCertificatesPage";
-import AdminSiteContentPage from "./pages/admin/AdminSiteContentPage";
-import AdminCreativeWorkspacePage from "./pages/admin/AdminCreativeWorkspacePage";
-import AdminSouvenirsPage from "./pages/admin/AdminSouvenirsPage";
-import AdminFounderPage from "./pages/admin/AdminFounderPage";
-import AdminLogoPage from "./pages/admin/AdminLogoPage";
-import AdminOrganizationPage from "./pages/admin/AdminOrganizationPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import ResourceReaderPage from "./pages/ResourceReaderPage";
 import GalleryPage from "./pages/GalleryPage";
 import FaqPage from "./pages/FaqPage";
-import AdminFaqPage from "./pages/admin/AdminFaqPage";
+
+// Keep administrator-only code out of the public route's initial JavaScript.
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"));
+const AdminTrainingPage = lazy(() => import("./pages/admin/AdminTrainingPage"));
+const AdminRegistrationsPage = lazy(() => import("./pages/admin/AdminRegistrationsPage"));
+const AdminTestimonialsPage = lazy(() => import("./features/testimonials/pages/AdminTestimonialsPage"));
+const AdminCertificatesPage = lazy(() => import("./pages/admin/AdminCertificatesPage"));
+const AdminSiteContentPage = lazy(() => import("./pages/admin/AdminSiteContentPage"));
+const AdminCreativeWorkspacePage = lazy(() => import("./pages/admin/AdminCreativeWorkspacePage"));
+const AdminSouvenirsPage = lazy(() => import("./pages/admin/AdminSouvenirsPage"));
+const AdminFounderPage = lazy(() => import("./pages/admin/AdminFounderPage"));
+const AdminLogoPage = lazy(() => import("./pages/admin/AdminLogoPage"));
+const AdminOrganizationPage = lazy(() => import("./pages/admin/AdminOrganizationPage"));
+const AdminFaqPage = lazy(() => import("./pages/admin/AdminFaqPage"));
 
 const routeDefinitions = [
   {
@@ -89,5 +92,17 @@ const routeDefinitions = [
 ];
 
 export function AppRoutes() {
-  return useRoutes(routeDefinitions);
+  const routes = useRoutes(routeDefinitions);
+
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[50vh] items-center justify-center text-sm text-text-muted" role="status">
+          Loading workspace…
+        </div>
+      }
+    >
+      {routes}
+    </Suspense>
+  );
 }
