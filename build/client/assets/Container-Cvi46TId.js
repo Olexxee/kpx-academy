@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-D7tXonMO.js";var t=e(),n=({children:e,className:n=``,as:r=`div`})=>(0,t.jsx)(r,{className:[`mx-auto w-full max-w-container px-4`,`sm:px-6 lg:px-8`,n].join(` `),children:e});export{n as t};

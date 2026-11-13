@@ -2,6 +2,7 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 import type { Route } from "./+types/framework-app";
 import App from "./App";
 
+
 const SITE_URL = "https://kpxacademy.com.ng";
 const DEFAULT_API_BASE =
   "https://keplex-registration-backend.onrender.com/api";

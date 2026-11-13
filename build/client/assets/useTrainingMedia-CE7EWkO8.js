@@ -1,0 +1,1 @@
+import{t as e}from"./useQuery-IkaTpdqb.js";import{r as t}from"./useTrainingPrograms-BGhIMKmt.js";var n={all:[`training`,`media`],forProgram:e=>[...n.all,e]},r=r=>e({queryKey:r?n.forProgram(r):[...n.all,`disabled`],queryFn:()=>{if(!r)throw Error(`programId is required`);return t(r)},enabled:!!r,staleTime:3e5});export{r as t};

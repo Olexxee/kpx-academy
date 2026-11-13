@@ -1,0 +1,1 @@
+import{t as e}from"./registrationApi-C1x6VSZ-.js";var t=async t=>(await e.post(`/payments/initialize`,t)).data.data,n=async t=>(await e.get(`/payments/verify/${encodeURIComponent(t)}`)).data.data;export{n,t};

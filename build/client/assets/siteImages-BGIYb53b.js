@@ -1,0 +1,1 @@
+var e={homepageHero:`/homepagehero.jpg`,programmes:`/programmepage.jpg`,resources:`/resourcepage.jpg`,creativeWorkshop:`/creativeworkshop.jpg`,certificates:`/certificate.jpg`,about:`/about.jpg.jpg`,gallery:`/gallery.jpg`,souvenirs:`/sourvenir.jpg`};export{e as t};
