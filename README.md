@@ -153,3 +153,100 @@ Each route emits its own title, description, canonical URL, Open Graph metadata,
 The sitemap is regenerated before every build from the same public-route manifest. Only active programmes, published resources, and active non-archived souvenir products are included. If the public API is unavailable, the build fails rather than publishing a stale sitemap. Never add private guest-access URLs, admin pages, payment pages, registration pages, or query-string variants.
 
 The React Router/Vercel preview build completed and logged HTML prerender output for 21 routes, including the SPA fallback. After the production release, verify direct HTTP responses and page metadata, check `/robots.txt` and `/sitemap.xml`, then submit the sitemap in Google Search Console. Catalogue changes require a new build/deployment to update static HTML and the sitemap; an authenticated automatic rebuild hook remains future work.
+
+
+## Public-site visual consistency and accessibility remediation
+
+**Status:** Audit documented; implementation not yet started.  
+**Scope:** Public-facing website only. The admin workspace is excluded unless a later, separately approved audit identifies an issue.
+
+### Audit findings
+
+The public pages currently use multiple hero implementations and layout conventions. The observed differences include:
+
+- Different content-width limits, including approximately 1,152 px, 1,280 px, and a wider homepage layout.
+- Inconsistent horizontal and vertical section padding.
+- Different heading sizes, eyebrow styles, line heights, and description widths.
+- Different hero compositions (image-backed, solid-background, and split layouts) without a shared structural standard.
+- Brand colours are defined both as Tailwind theme tokens and as page-level literal colours. The configured primary value (#1D4ED8) does not match the navy used in several public sections (#17324D).
+- The existing brand palette includes navy (#17324D), teal (#2A7F7F), warm cream (#F7F5F0), soft coral (#F3D7CC), and magenta accents (#D94A91, #8B1E5A). These need semantic roles rather than competing definitions.
+
+A preliminary contrast check of solid colour pairs identified likely WCAG AA failures:
+
+| Foreground | Background | Approx. contrast | Finding |
+|---|---|---:|---|
+| #D94A91 | #FFFFFF | 3.93:1 | Fails normal-text AA (4.5:1) |
+| #D94A91 | #F7F5F0 | 3.71:1 | Fails normal-text AA |
+| #2A7F7F | #F7F5F0 | 4.46:1 | Slightly below normal-text AA |
+| #2A7F7F | #FFFFFF | 4.73:1 | Passes normal-text AA |
+| #17324D | #FFFFFF | 13.13:1 | Passes |
+| #8B1E5A | #FFFFFF | 8.64:1 | Passes |
+| #212529 | #8B1E5A | 1.79:1 | Fails |
+
+These are preliminary calculations for opaque, flat colour pairs. They do not certify text over photographs, gradients, overlays, transparency, hover states, or disabled states. Those must be tested against the actual rendered colours. Large text has a 3:1 WCAG AA minimum; normal text has a 4.5:1 minimum. Non-text UI components and meaningful graphical objects generally require 3:1 contrast against adjacent colours.
+
+### Remediation phases and completion criteria
+
+#### Phase 0 — Baseline and inventory
+- [ ] Confirm the public routes and identify every page-level hero/header implementation.
+- [ ] Record current mobile and desktop screenshots for representative pages.
+- [ ] Record current Lighthouse/PageSpeed results separately for mobile and desktop.
+- [ ] Identify the actual LCP element and its resource timing before attributing long LCP to hosting, images, or application code.
+- [ ] Inventory colour literals, Tailwind theme tokens, typography, container widths, and spacing conventions used by public pages.
+
+**Exit criteria:** A verified route/component inventory and reproducible baseline. Do not infer that Render cold starts explain the full LCP result without checking the LCP element and network timings.
+
+#### Phase 1 — Authoritative design tokens
+- [ ] Define semantic colour tokens for page backgrounds, primary text, muted text, headings, links, primary/secondary actions, borders, and focus indicators.
+- [ ] Reconcile Tailwind theme values with the approved KPX brand palette; remove conflicting definitions only after all usages are mapped.
+- [ ] Select accessible text variants for magenta and teal where the existing brand colour does not meet the required contrast.
+- [ ] Preserve decorative/accent use of the original brand colours where contrast requirements for text do not apply.
+- [ ] Standardise the public typography scale using Sora for headings and Inter for body text.
+
+**Exit criteria:** One documented source of truth for public design tokens, with contrast values verified for intended text/background pairings.
+
+#### Phase 2 — Shared public-page hero structure
+- [ ] Introduce a reusable public-page hero component with explicit variants for solid, image-backed, and split layouts.
+- [ ] Standardise content width, horizontal gutters, vertical spacing, eyebrow placement, H1 scale, description width, and CTA spacing.
+- [ ] Keep page-specific content, imagery, and visual identity configurable; do not force every page into an identical composition.
+- [ ] Ensure mobile layouts stack predictably, avoid clipped text, and retain readable spacing.
+- [ ] Preserve existing hero image loading behaviour unless measured evidence supports a change.
+
+**Exit criteria:** Shared structural rules are used by the in-scope public pages, with no unintended visual regressions at mobile and desktop breakpoints.
+
+#### Phase 3 — Public-page migration
+- [ ] Migrate the homepage and each public informational/catalogue page to the shared hero structure where appropriate.
+- [ ] Retain intentional page-specific compositions (for example, split layouts) through documented variants rather than one-off spacing overrides.
+- [ ] Remove obsolete page-level hero styles only after confirming they have no remaining consumers.
+
+**Exit criteria:** All in-scope public pages follow the shared spacing, alignment, and typography rules while retaining their intended imagery and content.
+
+#### Phase 4 — WCAG 2.2 AA contrast and interaction states
+- [ ] Correct normal-text contrast to at least 4.5:1 and large-text contrast to at least 3:1.
+- [ ] Check links, buttons, navigation, form labels, placeholders, helper/error text, badges, footer text, and text over images/gradients.
+- [ ] Check non-text controls, boundaries, and meaningful graphical indicators for applicable 3:1 contrast.
+- [ ] Provide visible keyboard focus indicators and verify hover, active, disabled, and error states.
+- [ ] Do not rely on colour alone to communicate status or errors.
+
+**Exit criteria:** Automated contrast checks pass for applicable states, and manual inspection confirms image/gradient overlays and interactive states are readable.
+
+#### Phase 5 — Verification and regression checks
+- [ ] Run the production build and repository CI checks.
+- [ ] Inspect representative public routes at mobile, tablet, and desktop widths.
+- [ ] Run an accessibility scan and manually review keyboard navigation, focus order, headings, and link purpose.
+- [ ] Re-run PageSpeed Insights under comparable test conditions and compare against the recorded baseline.
+- [ ] Record remaining exceptions and follow-up work in this README.
+
+**Exit criteria:** Build and CI pass; no material layout regressions; documented WCAG issues are resolved or explicitly tracked with rationale.
+
+### Performance investigation — separate workstream
+
+The mobile PageSpeed capture recorded FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052, and Speed Index 9.3 s. A free Render web service may spin down after inactivity and delay the initial server response, but this does not prove that the full LCP delay is caused by Render. The LCP element, request waterfall, server response timing, and image/resource loading behaviour must be inspected before choosing a fix. Performance remediation must preserve the good TBT and CLS results.
+
+### Working rules
+
+- Keep this README updated as each phase starts, changes scope, and passes its exit criteria.
+- Make targeted changes; do not perform broad visual rewrites without a route-by-route comparison.
+- Keep admin pages out of scope for this public-site remediation.
+- Do not claim WCAG compliance based only on a Lighthouse score or a few colour-pair calculations.
+- Do not claim a performance improvement from a hosting change without comparable measurements.
