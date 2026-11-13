@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Container } from "../ui/Container";
 import { useQuery } from "@tanstack/react-query";
 import { getOrganizationProfile, getSiteBranding } from "../../api/siteContent.api";
+import { getCloudinaryImageUrl } from "../../lib/cloudinaryImage";
 
 const exploreLinks = [
   { label: "Home", to: "/" },
@@ -39,7 +40,7 @@ export const SiteFooter = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr_0.9fr] lg:gap-10">
           <div>
             <Link to="/" aria-label="KPX Academy home" className="inline-flex items-center gap-2 rounded-sm">
-              {branding.data?.logoUrl ? <img src={branding.data.logoUrl} alt={branding.data.logoAltText || profile?.organizationName || "KPX Academy"} className="h-14 w-14 rounded-full border border-white/20 bg-white p-1 object-contain" /> : <span className="font-heading text-2xl font-bold tracking-tight text-white">{profile?.organizationName || "KPX Academy"}</span>}
+              {branding.data?.logoUrl ? <img src={getCloudinaryImageUrl(branding.data.logoUrl, 128)} alt={branding.data.logoAltText || profile?.organizationName || "KPX Academy"} width={128} height={128} loading="lazy" decoding="async" className="h-14 w-14 rounded-full border border-white/20 bg-white p-1 object-contain" /> : <span className="font-heading text-2xl font-bold tracking-tight text-white">{profile?.organizationName || "KPX Academy"}</span>}
             </Link>
             <p className="mt-4 max-w-md font-heading text-lg font-semibold text-white">
               {profile?.tagline || "Practical Skills. More Possibilities."}
