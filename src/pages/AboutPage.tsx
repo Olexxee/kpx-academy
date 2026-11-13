@@ -28,7 +28,7 @@ export default function AboutPage() {
   const founder = useQuery({ queryKey: ["founder-profile"], queryFn: getFounderProfile });
 
   return (
-    <main className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
+    <div className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
       <PublicPageHero
         eyebrow="Get to know KPX Academy"
         title="Skills are the start. Possibility is the point."
@@ -201,6 +201,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
