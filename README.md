@@ -469,3 +469,22 @@ A `Content-Security-Policy-Report-Only` header has been added for observation be
 **Important limitations:** report-only does not block resources; it only surfaces policy violations in browser developer tools. No CSP reporting collector is configured, so violations are not centrally collected. The policy is an initial inventory, not proof that every route and admin workflow is covered. In particular, verify PDF preview, Cloudinary uploads/previews, admin operations, Google sign-in if enabled, and Paystack checkout before tightening any directive. Do not convert this policy to enforced CSP until browser testing confirms there are no required-resource violations. The use of `'unsafe-inline'` means this is not yet a strong script-injection mitigation; nonce/hash-based script policy is a later hardening step and requires a compatible document-generation strategy.
 
 **Verification boundary:** the report-only policy is committed, but its deployment and browser console reports have not yet been verified. Do not claim CSP is enforced or that the application is CSP-clean.
+
+
+### Phase 7 — JavaScript bundle optimisation (admin route splitting)
+
+The production build generated a `framework-app` chunk of 500.23 KB minified (117.34 KB gzip), alongside the shared client entry and JSX runtime. The previous Lighthouse report showed unused JavaScript, but low JavaScript execution time and zero Total Blocking Time. This means the correct first intervention is not arbitrary vendor chunking: it is removing route-specific code from the initial public download.
+
+The route tree previously statically imported every administrator page and the administrator layout. Those modules are now loaded with `React.lazy()` and dynamic imports:
+
+- Admin login
+- Admin layout and all dashboard/management pages
+- Testimonials, certificates, training, registrations, content, gallery, resources, souvenirs, founder and organization modules
+
+Public route imports, route paths, authorization guard placement, and route components' props remain unchanged. A shared Suspense fallback provides a status announcement while an administrator-only module loads. The admin authorization guard remains outside the lazy admin layout, so loading a page chunk does not grant access.
+
+**Expected effect:** public visitors should not download admin-only page/layout modules until an admin route is requested. This should reduce the initial public JavaScript payload, but no byte saving is claimed until the next production build and browser network waterfall are measured.
+
+**Regression risks to verify:** direct navigation to `/admin/login`; unauthenticated direct navigation to `/admin`; successful admin login and dashboard load; refresh on a protected admin subroute; navigation between admin modules; and public route prerendering/refreshes. Dynamic chunks must resolve correctly on the deployed Vercel origin.
+
+**Verification boundary:** source change committed; production build, CI and deployment checks are pending. Do not mark Phase 7 complete until build output shows admin chunks separated from the initial framework chunk and the production routes above are verified.
