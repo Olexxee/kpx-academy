@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
+import { getCloudinaryImageSrcSet, getCloudinaryImageUrl } from "../../../lib/cloudinaryImage";
 import { PublicPageHero } from "../../../components/ui/PublicPageHero";
 import { siteImages } from "../../../config/siteImages";
 import { useTrainingPrograms } from "../hooks/useTrainingPrograms";
@@ -177,7 +178,17 @@ function ProgrammeCard({ program }: { program: TrainingProgram }) {
       <Link to={`/programs/${program.slug}`} aria-label={`View ${program.title}`} className="block overflow-hidden bg-[#F4DCD6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-inset">
         <div className="relative aspect-[4/3] overflow-hidden">
           {image ? (
-            <img src={image.url} alt={program.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+            <img
+              src={getCloudinaryImageUrl(image.url, 768)}
+              srcSet={getCloudinaryImageSrcSet(image.url)}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              width={768}
+              height={576}
+              alt={program.title}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            />
           ) : (
             <div className="flex h-full items-end bg-primary p-6">
               <div>
