@@ -20,7 +20,7 @@ export default function FaqPage() {
   }, [faqs.data, search]);
 
   return (
-    <main className="min-h-[70vh] bg-[#FAF8F5] text-[#212529]">
+    <div className="min-h-[70vh] bg-[#FAF8F5] text-[#212529]">
       <PublicPageHero
         eyebrow="KPX Academy support"
         title="Frequently asked questions"
@@ -53,6 +53,6 @@ export default function FaqPage() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }
