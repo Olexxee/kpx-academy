@@ -4,7 +4,6 @@ import { Award, BadgeCheck, FileCheck2, Search, ShieldCheck, UploadCloud } from 
 import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { siteImages } from "../config/siteImages";
 import { registrationApi } from "../lib/registrationApi";
-import { prepareUploadFile } from "../lib/fileCompression";
 import { useTrainingPrograms } from "../features/training/hooks/useTrainingPrograms";
 
 type CertificateVerification = {
@@ -109,6 +108,7 @@ export default function CertificatesPage() {
     }
     setIsSubmitting(true);
     try {
+      const { prepareUploadFile } = await import("../lib/fileCompression");
       const uploadProof = await prepareUploadFile(proof);
       if (uploadProof.size > 10 * 1024 * 1024) {
         setSubmissionError("The proof file must not exceed 10 MB after image optimization.");
