@@ -162,7 +162,7 @@ export const Layout = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-neutral">
+    <div className="public-site-shell flex min-h-screen flex-col bg-neutral">
       <RouteMetadata pathname={location.pathname} />
       <a href="#main-content" className="sr-only z-[100] rounded-control bg-white px-4 py-3 font-semibold text-primary focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary">
         Skip to main content
