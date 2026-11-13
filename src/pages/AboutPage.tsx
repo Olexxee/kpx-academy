@@ -51,13 +51,13 @@ export default function AboutPage() {
             <div className="rounded-[2rem] border border-white/20 bg-white/[0.08] p-7 backdrop-blur-sm sm:p-9">
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#287979]"><Compass size={18} aria-hidden="true" /></span>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/75">The KPX promise</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/80">The KPX promise</p>
               </div>
               <div className="my-7 h-px bg-white/20" />
               <p className="text-3xl font-semibold leading-tight sm:text-4xl">Practical Knowledge.</p>
               <p className="mt-3 text-3xl font-semibold leading-tight text-[#F4DCD6] sm:text-4xl">Detailed Training.</p>
               <p className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">Real Value.</p>
-              <p className="mt-7 text-sm leading-7 text-white/75">Learn with purpose. Build through practice. Make room for what’s possible.</p>
+              <p className="mt-7 text-sm leading-7 text-white/80">Learn with purpose. Build through practice. Make room for what’s possible.</p>
             </div>
             <div className="absolute -bottom-5 -left-2 rounded-2xl bg-[#8B1E5A] px-5 py-4 text-white shadow-xl sm:-left-8">
               <p className="text-[10px] font-bold uppercase tracking-[0.16em]">Our belief</p>
@@ -197,7 +197,7 @@ export default function AboutPage() {
               <Link to="/programs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-[#212529] transition hover:bg-[#FAF8F5]">Explore programmes <ArrowRight size={17} /></Link>
               <Link to="/register" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/50 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10">Start learning</Link>
             </div>
-            <p className="mt-9 text-sm font-semibold tracking-wide text-white/75">KPX Academy — Practical Skills. More Possibilities.</p>
+            <p className="mt-9 text-sm font-semibold tracking-wide text-white/80">KPX Academy — Practical Skills. More Possibilities.</p>
           </div>
         </div>
       </section>
