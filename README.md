@@ -316,6 +316,10 @@ The mobile PageSpeed capture recorded FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052
 - The report labels its device profile as **Moto G Power** and its score calculator as **mobile**; it is therefore treated as a mobile run even though the pasted page heading says “computer Desktop.” The report also flags a 720 ms render-blocking opportunity, 143 KiB of unused JavaScript, 7,183 KiB total payload, one contrast issue, and browser console errors. These are secondary investigations after the oversized image requests are corrected.
 - The report's two hero images both appear as eager/high-priority resources, which conflicts with the expected low-priority next-slide source behaviour. Removing the second in-viewport image from the initial DOM makes that initial request behaviour explicit rather than relying on native lazy-loading thresholds.
 
+- The follow-up mobile report records LCP **4.9 s**, down from **21.8 s**, with FCP **1.8 s**, TBT **0 ms**, and CLS **0**. The reported Accessibility score is 96, but the contrast audit flags two homepage headings.
+- Root cause: the global `h1–h6` rule in `design-system.css` assigns headings the charcoal colour directly. In the two homepage sections, `text-white` was only inherited from the parent section, so it did not override the heading's own colour declaration. Charcoal text against deep magenta/navy is low contrast. Both headings now explicitly declare `text-white`; the blush-highlighted inline phrases retain their explicit accent colour.
+- The PageSpeed report URL could not be fetched directly in this review environment. The pasted failing-element details were cross-checked against the current source, which exposed the heading-specific CSS cascade issue. Re-run the contrast audit after deployment to verify the fix.
+
 #### Phase 5 verification still required
 
 - Capture a fresh mobile and desktop Lighthouse/PageSpeed run against the deployed production build, using the same URL, device profile, network conditions, and test location as the baseline where possible.
