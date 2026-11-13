@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Container } from "../ui/Container";
 import { useQuery } from "@tanstack/react-query";
@@ -33,6 +33,7 @@ const ctaClass =
 
 export const SiteHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
   const branding = useQuery({ queryKey: ["site-content", "branding"], queryFn: getSiteBranding, staleTime: 5 * 60 * 1000 });
 
@@ -44,7 +45,10 @@ export const SiteHeader = () => {
     if (!isMobileMenuOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsMobileMenuOpen(false);
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+        mobileMenuButtonRef.current?.focus();
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -89,8 +93,9 @@ export const SiteHeader = () => {
           </Link>
 
           <button
+            ref={mobileMenuButtonRef}
             type="button"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-control text-primary transition-colors hover:bg-accent-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-control text-primary transition-colors hover:bg-accent-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 lg:hidden"
             onClick={() => setIsMobileMenuOpen((open) => !open)}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
