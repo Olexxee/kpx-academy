@@ -514,3 +514,18 @@ The `framework-app` chunk decreased from 224.40 KB (49.53 KB gzip) after admin s
 **Remaining verification:** the Vercel preview deployment is still marked BUILDING after the build/prerender output, so it is not yet considered deployed/ready. The preview is behind Vercel Deployment Protection, preventing unauthenticated automated fetches. Do not disable protection. Once READY, verify homepage preload behavior, direct-load and refresh representative public routes, route metadata/canonical tags, admin login/protected routes, and PageSpeed using the same mobile conditions.
 
 **Verification boundary:** type generation, TypeScript build, Vite client build, and the 21-route prerender output are confirmed by Vercel build logs. Browser behavior, deployment readiness, total initial network transfer, and PageSpeed impact remain unverified.
+
+
+#### Phase 7B follow-up — defer upload-only compression code
+
+The preview's homepage HTML still listed `fileCompression` as a module preload. Import tracing identified the cause: shared public API modules used by the homepage and shared layout imported the upload compressor at module scope, even though compression is only needed after an administrator selects a file.
+
+Updated:
+- `src/api/siteContent.api.ts`: load `fileCompression` inside the shared upload function, only when an asset upload is actually requested.
+- `src/api/training.api.ts`: load `fileCompression` inside the training-media upload function, only when an upload is actually requested.
+
+This preserves the same compression helper and upload behavior; it changes when the code is downloaded. The homepage still needs `registrationApi` for live public content queries (hero slides, branding, organization details, training programme data), so that shared API client remains in its initial dependency graph. The intent is to remove the upload-only compression module from the initial public preload list, not to eliminate required API code.
+
+**Prerender route classification:** `scripts/public-routes.mjs` deliberately prerenders the public content pages and database-driven programme/resource/souvenir detail pages. Registration, workshop booking/tracking, payment result, and admin routes are not in that SEO content manifest; their SPA fallback responses are therefore expected and should not be treated as missing SEO pages. They still require client-side route and refresh verification.
+
+**Verification still required:** a fresh preview build must confirm `fileCompression` is absent from homepage preloads but remains loadable when an upload flow is opened; confirm route-level dynamic chunks, direct loads, metadata, and admin flows. Do not claim the change improves Lighthouse until a comparable run is available.
