@@ -107,14 +107,14 @@ export default function CertificatesPage() {
       setSubmissionError("Upload a PDF, JPEG, PNG, or WebP file.");
       return;
     }
-    const uploadProof = await prepareUploadFile(proof);
-    if (uploadProof.size > 10 * 1024 * 1024) {
-      setSubmissionError("The proof file must not exceed 10 MB after image optimization.");
-      return;
-    }
-
     setIsSubmitting(true);
     try {
+      const uploadProof = await prepareUploadFile(proof);
+      if (uploadProof.size > 10 * 1024 * 1024) {
+        setSubmissionError("The proof file must not exceed 10 MB after image optimization.");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("studentName", studentName.trim());
       formData.append("studentEmail", studentEmail.trim());
@@ -179,11 +179,12 @@ export default function CertificatesPage() {
               </div>
             </div>
 
-            <form onSubmit={handleVerify} className="mt-7 space-y-4">
+            <form onSubmit={handleVerify} aria-busy={isVerifying} className="mt-7 space-y-4">
               <label className={labelClass} htmlFor="certificateNumber">
                 Certificate number
                 <input
                   id="certificateNumber"
+                  required
                   value={certificateNumber}
                   onChange={(event) => setCertificateNumber(event.target.value)}
                   placeholder="e.g. KPX-2026-XXXXXXXXXX"
@@ -198,7 +199,7 @@ export default function CertificatesPage() {
 
             {verifyError && <p role="alert" className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">{verifyError}</p>}
             {verification && (
-              <div className={`mt-5 rounded-xl border p-5 ${verification.valid ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"}`}>
+              <div role="status" aria-live="polite" className={`mt-5 rounded-xl border p-5 ${verification.valid ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"}`}>
                 <div className="flex items-center gap-2">
                   <span className={`h-2.5 w-2.5 rounded-full ${verification.valid ? "bg-emerald-600" : "bg-red-600"}`} />
                   <p className={`text-sm font-bold ${verification.valid ? "text-emerald-800" : "text-red-800"}`}>
@@ -229,7 +230,7 @@ export default function CertificatesPage() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmission} className="mt-7 space-y-5">
+            <form onSubmit={handleSubmission} aria-busy={isSubmitting} className="mt-7 space-y-5">
               <label className={labelClass} htmlFor="studentName">
                 Full name
                 <input id="studentName" required minLength={2} maxLength={120} value={studentName} onChange={(event) => setStudentName(event.target.value)} autoComplete="name" className={inputClass} placeholder="Enter the name for your certificate" />
