@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Award, BadgeCheck, FileCheck2, Search, ShieldCheck, UploadCloud } from "lucide-react";
-import { Container } from "../components/ui/Container";
-import { SiteImage } from "../components/ui/SiteImage";
-import { siteImages } from "../config/siteImages";
+import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { registrationApi } from "../lib/registrationApi";
 import { prepareUploadFile } from "../lib/fileCompression";
 import { useTrainingPrograms } from "../features/training/hooks/useTrainingPrograms";
@@ -148,31 +146,24 @@ export default function CertificatesPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <section className="relative isolate overflow-hidden bg-primary py-16 text-white sm:py-20">
-        <SiteImage src={siteImages.certificates} alt="" aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center" />
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/95 via-[#17324D]/80 to-[#17324D]/50" />
-        <Container className="relative z-10">
-          <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F4DCD6]">
-            <Award size={16} /> Student certificate services
-          </p>
-          <h1 className="mt-4 max-w-3xl font-heading text-4xl font-bold leading-tight text-[#D94A91] sm:text-5xl">
-            Your learning deserves to be recognised.
-          </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
-            Verify a KPX Academy certificate or submit your proof of work for review by our team.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#verify-certificate" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-primary transition hover:bg-[#FAF8F5]">
-              <ShieldCheck size={17} /> Verify a certificate
+      <PublicPageHero
+        eyebrow="Student certificate services"
+        title="Your learning deserves to be recognised."
+        description="Verify a KPX Academy certificate or submit your proof of work for review by our team."
+        icon={Award}
+        image={siteImages.certificates}
+        actions={
+          <>
+            <a href="#verify-certificate" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[#17324D] transition hover:bg-[#FAF8F5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+              <ShieldCheck size={17} aria-hidden="true" /> Verify a certificate
             </a>
-            <a href="#submit-proof" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/40 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-              <UploadCloud size={17} /> Submit proof of work
+            <a href="#submit-proof" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/60 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+              <UploadCloud size={17} aria-hidden="true" /> Submit proof of work
             </a>
-          </div>
-        </Container>
-      </section>
-
-      <Container className="py-12 sm:py-16">
+          </>
+        }
+      />
+      <div className="mx-auto w-full max-w-container px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="grid items-start gap-8 lg:grid-cols-2">
           <section id="verify-certificate" className="scroll-mt-28 rounded-2xl border border-border bg-white p-5 shadow-sm sm:p-8">
             <div className="flex items-start gap-4">
@@ -288,7 +279,7 @@ export default function CertificatesPage() {
           </div>
           <Link to="/programs" className="mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-secondary sm:mt-0">Explore programmes</Link>
         </div>
-      </Container>
+      </div>
     </main>
   );
 }
