@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
+import { MessageCircleQuestion, Search } from "lucide-react";
+import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { getPublicFaqs } from "../api/siteContent.api";
-import { Container } from "../components/ui/Container";
 
 export default function FaqPage() {
   const [search, setSearch] = useState("");
@@ -21,17 +21,17 @@ export default function FaqPage() {
 
   return (
     <main className="min-h-[70vh] bg-[#FAF8F5] text-[#212529]">
-      <section className="bg-[#17324D] px-5 py-16 text-white sm:px-8 sm:py-20">
-        <Container>
-          <p className="text-xs font-bold uppercase tracking-[.2em] text-[#F3D7CC]">KPX Academy support</p>
-          <h1 className="mt-4 font-heading text-4xl font-bold tracking-tight sm:text-5xl">Frequently asked questions</h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-white/75">Clear answers to common questions about learning with KPX Academy.</p>
-          <label className="mt-8 flex max-w-xl items-center gap-3 rounded-xl border border-white/20 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F3D7CC]">
-            <Search size={18} className="shrink-0 text-white/70" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search questions and answers" aria-label="Search FAQs" className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/50" />
-          </label>
-        </Container>
-      </section>
+      <PublicPageHero
+        eyebrow="KPX Academy support"
+        title="Frequently asked questions"
+        description="Clear answers to common questions about learning with KPX Academy."
+        icon={MessageCircleQuestion}
+      >
+        <label className="mt-7 flex min-h-12 max-w-xl items-center gap-3 rounded-xl border border-white/25 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F4DCD6] focus-within:ring-offset-2 focus-within:ring-offset-[#17324D]">
+          <Search aria-hidden="true" size={18} className="shrink-0 text-white/80" />
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search questions and answers" aria-label="Search FAQs" className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/65" />
+        </label>
+      </PublicPageHero>
       <section className="mx-auto max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
         {faqs.isLoading && <p className="text-sm text-slate-500">Loading frequently asked questions…</p>}
         {faqs.isError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">FAQs could not be loaded. Please refresh the page.</p>}
