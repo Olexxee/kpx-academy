@@ -2,7 +2,11 @@ import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
-import { DEFAULT_PAGE_METADATA, STATIC_PAGE_METADATA } from "../../lib/pageMetadata";
+import {
+  DEFAULT_PAGE_METADATA,
+  STATIC_PAGE_METADATA,
+  cleanPageDescription,
+} from "../../lib/pageMetadata";
 
 const SITE_URL = "https://kpxacademy.com.ng";
 
@@ -69,20 +73,21 @@ function RouteMetadata({ pathname }: { pathname: string }) {
     if (ownsContentMetadata && !pathname.includes("/access/")) return;
 
     const metadata = resolveMetadata(pathname);
+    const description = cleanPageDescription(metadata.description);
     const canonicalUrl = new URL(metadata.canonicalPath, SITE_URL).toString();
     const noIndex = noIndexPrefixes.some((prefix) => pathname.startsWith(prefix)) || pathname.includes("/access/");
 
     document.title = metadata.title;
-    updateMeta("description", metadata.description);
+    updateMeta("description", description);
     updateMeta("robots", noIndex ? "noindex, nofollow" : "index, follow");
     updateMeta("og:type", "website", "property");
     updateMeta("og:site_name", "KPX Academy", "property");
     updateMeta("og:title", metadata.title, "property");
-    updateMeta("og:description", metadata.description, "property");
+    updateMeta("og:description", description, "property");
     updateMeta("og:url", canonicalUrl, "property");
     updateMeta("twitter:card", "summary");
     updateMeta("twitter:title", metadata.title);
-    updateMeta("twitter:description", metadata.description);
+    updateMeta("twitter:description", description);
 
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
