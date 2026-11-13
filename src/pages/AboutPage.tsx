@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 import { ArrowDownRight, ArrowRight, Check, Compass, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getFounderProfile } from "../api/siteContent.api";
-import { Container } from "../components/ui/Container";
-import { SiteImage } from "../components/ui/SiteImage";
+import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { siteImages } from "../config/siteImages";
 
 const values = [
@@ -30,56 +29,47 @@ export default function AboutPage() {
 
   return (
     <main className="overflow-hidden bg-[#FAF8F5] text-[#212529]">
-      <section className="relative isolate overflow-hidden bg-[#212529] text-white">
-        <link rel="preload" as="image" href={siteImages.about} fetchPriority="high" />
-        <SiteImage src={siteImages.about} alt="" aria-hidden="true" loading="eager" fetchPriority="high" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center" />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[#111827]/80" />
-        <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-24 h-[26rem] w-[26rem] rounded-full border border-white/10 sm:h-[38rem] sm:w-[38rem]" />
-        <div aria-hidden="true" className="pointer-events-none absolute right-8 top-24 h-56 w-56 rounded-full border border-[#1D4ED8]/50 sm:right-24 sm:top-28 sm:h-80 sm:w-80" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 left-[35%] h-64 w-64 rounded-full bg-[#1D4ED8]/15 blur-3xl" />
-        <Container className="relative py-20 sm:py-28 lg:py-36">
-          <div className="grid items-end gap-14 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="max-w-3xl">
-              <Eyebrow light>Get to know KPX Academy</Eyebrow>
-              <h1 className="mt-6 text-5xl font-semibold leading-[1.04] tracking-[-0.045em] text-[#D94A91] sm:text-6xl lg:text-7xl">
-                Skills are the start. Possibility is the point.
-              </h1>
-              <p className="mt-7 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
-                We make practical learning feel closer, clearer, and more useful—so you can build your abilities and decide what comes next.
-              </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Link to="/programs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4DCD6] px-6 py-3 text-sm font-bold text-[#212529] transition hover:bg-white">
-                  Explore our programmes <ArrowRight size={17} />
-                </Link>
-                <a href="#our-story" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-                  Our story <ArrowDownRight size={17} />
-                </a>
+      <PublicPageHero
+        eyebrow="Get to know KPX Academy"
+        title="Skills are the start. Possibility is the point."
+        description="We make practical learning feel closer, clearer, and more useful—so you can build your abilities and decide what comes next."
+        icon={Compass}
+        image={siteImages.about}
+        variant="split"
+        actions={
+          <>
+            <Link to="/programs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F4DCD6] px-6 py-3 text-sm font-bold text-[#212529] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+              Explore our programmes <ArrowRight size={17} aria-hidden="true" />
+            </Link>
+            <a href="#our-story" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/50 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+              Our story <ArrowDownRight size={17} aria-hidden="true" />
+            </a>
+          </>
+        }
+        aside={
+          <div className="relative">
+            <div className="rounded-[2rem] border border-white/20 bg-white/[0.08] p-7 backdrop-blur-sm sm:p-9">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#287979]"><Compass size={18} aria-hidden="true" /></span>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/75">The KPX promise</p>
               </div>
+              <div className="my-7 h-px bg-white/20" />
+              <p className="text-3xl font-semibold leading-tight sm:text-4xl">Practical Knowledge.</p>
+              <p className="mt-3 text-3xl font-semibold leading-tight text-[#F4DCD6] sm:text-4xl">Detailed Training.</p>
+              <p className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">Real Value.</p>
+              <p className="mt-7 text-sm leading-7 text-white/75">Learn with purpose. Build through practice. Make room for what’s possible.</p>
             </div>
-            <div className="relative lg:justify-self-end lg:max-w-sm">
-              <div className="rounded-[2rem] border border-white/15 bg-white/[0.06] p-7 backdrop-blur-sm sm:p-9">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1D4ED8]"><Compass size={18} /></span>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/65">The KPX promise</p>
-                </div>
-                <div className="my-7 h-px bg-white/15" />
-                <p className="text-3xl font-semibold leading-tight sm:text-4xl">Practical Knowledge.</p>
-                <p className="mt-3 text-3xl font-semibold leading-tight text-[#F4DCD6] sm:text-4xl">Detailed Training.</p>
-                <p className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">Real Value.</p>
-                <p className="mt-7 text-sm leading-7 text-white/65">Learn with purpose. Build through practice. Make room for what’s possible.</p>
-              </div>
-              <div className="absolute -bottom-5 -left-4 rounded-2xl bg-[#8B1E5A] px-5 py-4 text-[#212529] shadow-xl sm:-left-8">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em]">Our belief</p>
-                <p className="mt-1 text-sm font-bold">Practical Skills.</p>
-                <p className="text-sm font-bold">More Possibilities.</p>
-              </div>
+            <div className="absolute -bottom-5 -left-2 rounded-2xl bg-[#8B1E5A] px-5 py-4 text-white shadow-xl sm:-left-8">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em]">Our belief</p>
+              <p className="mt-1 text-sm font-bold">Practical Skills.</p>
+              <p className="text-sm font-bold">More Possibilities.</p>
             </div>
           </div>
-        </Container>
-      </section>
+        }
+      />
 
       <section id="our-story" className="scroll-mt-20 py-20 sm:py-28">
-        <Container>
+        <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
             <div>
               <Eyebrow>Why we exist</Eyebrow>
@@ -97,11 +87,11 @@ export default function AboutPage() {
               <p className="font-semibold text-[#212529]">Our aim is straightforward: make learning practical, worthwhile, and full of possibility.</p>
             </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       <section className="bg-white py-20 sm:py-28">
-        <Container>
+        <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
             <div className="mx-auto w-full max-w-md">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-[#F4DCD6]">
@@ -136,11 +126,11 @@ export default function AboutPage() {
               </div>
             </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       <section className="bg-[#212529] py-20 text-white sm:py-28">
-        <Container>
+        <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <Eyebrow light>Our purpose</Eyebrow>
             <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">Knowledge that helps you move forward.</h2>
@@ -158,11 +148,11 @@ export default function AboutPage() {
               <p className="mt-4 leading-8 text-white/70">To grow into a trusted learning platform where people can access practical knowledge, develop valuable skills, and discover opportunities for personal and business growth.</p>
             </article>
           </div>
-        </Container>
+        </div>
       </section>
 
       <section className="py-20 sm:py-28">
-        <Container>
+        <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
             <div>
               <Eyebrow>What guides us</Eyebrow>
@@ -179,11 +169,11 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
-        </Container>
+        </div>
       </section>
 
       <section className="bg-[#F4DCD6] py-20 sm:py-24">
-        <Container>
+        <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <Eyebrow>What you can explore</Eyebrow>
@@ -194,11 +184,11 @@ export default function AboutPage() {
               {areas.map((area) => <li key={area} className="flex items-center gap-3 py-4 text-sm font-semibold sm:text-base"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1D4ED8] text-white"><Check size={15} /></span>{area}</li>)}
             </ul>
           </div>
-        </Container>
+        </div>
       </section>
 
       <section className="bg-[#1D4ED8] py-20 text-white sm:py-24">
-        <Container>
+        <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <Eyebrow light>Your next chapter starts here</Eyebrow>
             <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">Discover what you can do with the right skills.</h2>
@@ -209,7 +199,7 @@ export default function AboutPage() {
             </div>
             <p className="mt-9 text-sm font-semibold tracking-wide text-white/75">KPX Academy — Practical Skills. More Possibilities.</p>
           </div>
-        </Container>
+        </div>
       </section>
     </main>
   );
