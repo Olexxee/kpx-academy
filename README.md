@@ -386,3 +386,14 @@ The next source review found several gaps in the public experience and applied t
 **Contrast notes:** The flat colour pairs `#8B1E5A` on white and warm-white backgrounds are approximately 8.64:1 and 8.15:1. The public muted-text token `#6B7280` is approximately 4.83:1 on white and 4.56:1 on `#FAF8F5`. The bright teal `#2A7F7F` remains below normal-text AA on warm-white at approximately 4.46:1; do not use it for normal-sized text on that surface. These calculations do not certify translucent, photographic, gradient, hover, or disabled states.
 
 **Still requiring browser verification:** Test route-change focus, skip-link operation, the new dual focus indicator against light and dark components, mobile menu keyboard behavior, all form error/success announcements, zoom/reflow, and reduced-motion behavior. A source edit is not proof that a screen reader/browser combination announces content correctly. No browser-driven keyboard or screen-reader session has been completed yet.
+
+
+## November 2026 PageSpeed follow-up
+
+The latest mobile Lighthouse run reported a 6.3 s LCP with the homepage hero still correctly discovered in the initial document and requested with eager loading/high fetch priority. The reported LCP subparts show a 1.73 s element-render delay; TTFB was 10 ms and image resource load duration was 410 ms. These subparts do not account for the full reported LCP, so they are diagnostic clues rather than a complete timing explanation. The run had no CrUX field data.
+
+The same report identified oversized responsive programme-card imagery and repeated generic “View details” link names. Programme cards now request bounded Cloudinary widths with responsive `srcSet` values where the media URL is a Cloudinary image, and the CTA links include the programme title in their accessible names. Non-Cloudinary media URLs are left unchanged by the shared URL helper.
+
+The report also showed cross-origin failures for `/api/auth/me` and public training-media requests. The backend CORS configuration was corrected separately: the production apex and www origins are explicitly allowed, and CORS now runs before the global rate limiter so 429 responses retain readable CORS headers. This is a source-level fix only until the backend deploy is live and the actual response headers and Render logs are checked.
+
+Still outstanding: investigate the hero element-render delay using a browser performance trace; optimise the 220 KB `/homepagehero.jpg` and the 164 KB training image if those assets are confirmed to be served on the measured route; inspect Google Fonts and unused-JavaScript costs before changing loading strategy; and rerun PageSpeed after both deployments. Do not infer a Render cold-start problem from the current 10 ms TTFB measurement.
