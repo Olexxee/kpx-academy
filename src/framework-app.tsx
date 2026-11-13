@@ -106,7 +106,7 @@ async function loadFrameworkRouteData(request: Request) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },
   });
-  let detailMetadata: { title: string; description: string } | undefined;
+  let detailMetadata: { title: string; description: string; canonicalPath: string } | undefined;
 
   const load = async <T,>(key: readonly unknown[], path: string) => {
     const data = await fetchPublicData<T>(path);
@@ -236,7 +236,7 @@ async function loadFrameworkRouteData(request: Request) {
       detailMetadata?.description ||
       staticPage?.description ||
       DEFAULT_PAGE_METADATA.description,
-    canonical: new URL(pathname, SITE_URL).toString(),
+    canonical: new URL(detailMetadata?.canonicalPath || pathname, SITE_URL).toString(),
   };
 
   return { dehydratedState: dehydrate(queryClient), seo };
