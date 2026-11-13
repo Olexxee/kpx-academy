@@ -535,3 +535,14 @@ The same preview was fetched for `/`, `/about`, `/programs`, and a programme det
 The latest client build retains `framework-app` at 67.62 KB (18.79 KB gzip). This is a chunk-size observation, not a Lighthouse score or total initial transfer measurement. The prior preview's 69.9% framework chunk reduction remains valid compared with the post-admin-split build; no new total-page JavaScript reduction is claimed.
 
 **Still outstanding:** interactive browser verification of route navigation, refresh, workshop/registration forms, and admin login/protected-route behavior; inspect whether the upload chunk is fetched only when an upload flow is used; and run a comparable PageSpeed test. Do not merge until these checks are complete.
+
+
+#### Phase 7B follow-up — remove dead query-client export and defer certificate compression
+
+Import tracing confirmed that `src/lib/registrationApi.ts` exported a `QueryClient` instance that had no consumers. The actual application creates its active client inside `src/App.tsx`, and the prerender loader creates its own server-side client inside `src/framework-app.tsx`. Removed the unused `QueryClient` import/export from the API transport module. No active cache configuration or provider was changed.
+
+Also changed `src/pages/CertificatesPage.tsx` to dynamically import `fileCompression` only inside the proof-upload submission path. The certificate page itself remains route-lazy-loaded, and its verification/search path does not need to download upload compression code.
+
+**Expected impact:** removes dead query-client construction from the API module and defers upload-only compression from the certificate route until proof submission. This is not expected to materially reduce the homepage's `registrationApi` chunk: the shared Axios instance is required by public API modules, and the homepage uses those APIs for live content. Do not report a performance gain until the fresh build and preview preload/chunk output are checked.
+
+**Regression checks:** build/typecheck; verify public API requests still use the same Axios base URL, credentials, and timeout; verify query cache behaviour is unchanged; test certificate lookup and proof submission; confirm compression code is requested only when upload begins.
