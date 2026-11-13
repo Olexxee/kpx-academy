@@ -546,3 +546,20 @@ Also changed `src/pages/CertificatesPage.tsx` to dynamically import `fileCompres
 **Expected impact:** removes dead query-client construction from the API module and defers upload-only compression from the certificate route until proof submission. This is not expected to materially reduce the homepage's `registrationApi` chunk: the shared Axios instance is required by public API modules, and the homepage uses those APIs for live content. Do not report a performance gain until the fresh build and preview preload/chunk output are checked.
 
 **Regression checks:** build/typecheck; verify public API requests still use the same Axios base URL, credentials, and timeout; verify query cache behaviour is unchanged; test certificate lookup and proof submission; confirm compression code is requested only when upload begins.
+
+
+#### Phase 7B final preview verification — build passed
+
+Latest branch commit deployed to Vercel preview deployment `dpl_5mGioGYpZiGk89C4BqtRyyrx7Gzs` and reached `READY`. GitHub's Vercel status check is `success`.
+
+Verified from the deployed preview using HTTP fetch:
+- Homepage, About, Certificates, Programmes, and a programme detail route each returned HTTP 200.
+- Each sampled public route includes a page title, `<main>`, and an `<h1>` in the prerendered HTML.
+- `/sitemap.xml` returned HTTP 200 and contains exactly 21 URLs.
+- Homepage and sampled public-route HTML do not module-preload `fileCompression`; compression is deferred until an upload action imports it.
+- Homepage HTML retains the expected responsive Cloudinary hero preload and public API module preloads.
+- Build logs confirm `tsc -b`, React Router build, successful prerender output, and `✓ built in 9.49s`.
+
+**Limitations:** This is build and static-response verification, not interactive browser testing. It does not prove client-side route transitions, admin login/session behavior, certificate proof upload, or real user performance. Those require browser/network testing and a fresh PageSpeed run after merge/deployment. The Vercel build emitted a non-blocking warning that `vercelPreset()` was not detected; it did not prevent the build from completing.
+
+**Phase 7B status:** implementation and preview build/static checks complete; interactive regression checks and production PageSpeed comparison remain outstanding. No merge or production promotion performed.
