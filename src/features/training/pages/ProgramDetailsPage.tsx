@@ -271,7 +271,7 @@ export const ProgramDetailsPage = () => {
               ) : (
                 <div className="flex aspect-[4/3] items-end bg-primary p-7">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70">
+                    <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/80">
                       KPX Academy
                     </p>
                     <p className="mt-3 font-heading text-2xl font-bold text-white">
@@ -493,13 +493,13 @@ export const ProgramDetailsPage = () => {
       <section className="bg-primary py-14 sm:py-20">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/70">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/80">
               KPX Academy
             </p>
             <h2 className="mt-4 font-heading text-3xl font-bold text-white sm:text-4xl">
               Ready to explore this programme?
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-white/75">
+            <p className="mx-auto mt-4 max-w-2xl leading-7 text-white/80">
               Review the programme details and continue to registration when you
               are ready.
             </p>
