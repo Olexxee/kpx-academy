@@ -281,6 +281,6 @@ export default function CertificatesPage() {
           <Link to="/programs" className="mt-4 inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-secondary sm:mt-0">Explore programmes</Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
