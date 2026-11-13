@@ -101,7 +101,7 @@ export default function AboutPage() {
                   <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
                     <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#212529] text-3xl font-semibold text-white">KO</div>
                     <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-[#1D4ED8]">The founder</p>
-                    <p className="mt-2 max-w-[15rem] text-sm leading-6 text-[#212529]/65">Founder portrait coming soon.</p>
+                    <p className="mt-2 max-w-[15rem] text-sm leading-6 text-[#212529]/70">Founder portrait coming soon.</p>
                   </div>
                 )}
                 <div aria-hidden="true" className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-[#212529]/90 p-4 text-white backdrop-blur-sm">
@@ -122,7 +122,7 @@ export default function AboutPage() {
               </div>
               <div className="mt-8 border-t border-[#212529]/10 pt-5">
                 <p className="font-semibold">{founder.data?.name ?? "Kepemi Oluwafunke (Keplex)"}</p>
-                <p className="mt-1 text-sm text-[#212529]/60">{founder.data?.role ?? "Founder, KPX Academy"}</p>
+                <p className="mt-1 text-sm text-[#212529]/70">{founder.data?.role ?? "Founder, KPX Academy"}</p>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function AboutPage() {
             <div>
               <Eyebrow>What guides us</Eyebrow>
               <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">The principles behind every learning experience.</h2>
-              <p className="mt-5 leading-7 text-[#212529]/65">These values shape how we teach, support learners, and build for the future.</p>
+              <p className="mt-5 leading-7 text-[#212529]/70">These values shape how we teach, support learners, and build for the future.</p>
             </div>
             <div className="border-t border-[#212529]/15">
               {values.map((value) => (
