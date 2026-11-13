@@ -306,3 +306,9 @@ The mobile PageSpeed capture recorded FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052
 - Keep admin pages out of scope for this public-site remediation.
 - Do not claim WCAG compliance based only on a Lighthouse score or a few colour-pair calculations.
 - Do not claim a performance improvement from a hosting change without comparable measurements.
+
+### Phase 4 — WCAG 2.2 AA contrast audit (in progress)
+
+The public footer uses the Tailwind `bg-primary` token (`#1D4ED8`). Its descriptive and copyright text previously used `text-white/75`, which composites to approximately `#C6D3F5` and yields a 4.48:1 contrast ratio against that background. This is below the 4.5:1 requirement for normal text. The footer text opacity has been raised to `text-white/80` (approximately 4.89:1 for the same flat pairing). Footer links already use `text-white/80`; their blush hover/focus colour has approximately 5.12:1 contrast against the footer background.
+
+These are calculated flat-colour values, not a full rendered-page certification. Remaining work includes auditing every public-page text/control pairing, including translucent text, focus indicators, badges, disabled states, and image-backed heroes, then verifying keyboard operation, responsive layouts, and form error states in a browser. Do not mark WCAG conformance complete based on token calculations alone.
