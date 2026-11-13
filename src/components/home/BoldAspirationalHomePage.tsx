@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getPublicHeroSlides } from "../../api/siteContent.api";
 import { SiteImage } from "../ui/SiteImage";
 import { siteImages } from "../../config/siteImages";
+import { getCloudinaryImageSrcSet, getCloudinaryImageUrl } from "../../lib/cloudinaryImage";
 
 const benefits = [
   "Detailed, practical training",
@@ -102,24 +103,17 @@ export const BoldAspirationalHomePage = () => {
 
       <section aria-label="Discover KPX Academy training" aria-roledescription="carousel" onFocusCapture={() => setIsPaused(true)} onMouseEnter={() => setIsPaused(true)} className="relative isolate min-h-[650px] overflow-hidden bg-[#07152F] text-white sm:min-h-[690px] lg:min-h-[720px]">
         <div className="absolute inset-0 -z-20">
-          {slides.map((item, index) => {
-            const isActive = index === activeSlide;
-            const isNext = index === (activeSlide + 1) % slides.length;
-            if (!isActive && !isNext) return null;
-
-            return (
-              <img
-                key={item.category}
-                src={item.image}
-                alt={isActive ? item.alt : ""}
-                aria-hidden={!isActive}
-                loading={isActive ? "eager" : "lazy"}
-                decoding="async"
-                fetchPriority={isActive ? "high" : "low"}
-                className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 motion-reduce:transition-none ${isActive ? "opacity-100" : "opacity-0"}`}
-              />
-            );
-          })}
+          <img
+            key={slide.category}
+            src={getCloudinaryImageUrl(slide.image, 1440)}
+            srcSet={getCloudinaryImageSrcSet(slide.image)}
+            sizes="100vw"
+            alt={slide.alt}
+            decoding="async"
+            loading="eager"
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
         </div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#06142F]/95 via-[#06142F]/80 to-[#06142F]/20 sm:via-[#06142F]/70" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#06142F]/85 via-transparent to-[#06142F]/15" />
