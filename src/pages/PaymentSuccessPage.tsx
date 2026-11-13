@@ -65,17 +65,23 @@ export const PaymentSuccessPage = () => {
   return (
     <section className="min-h-[65vh] bg-background py-16 sm:py-24">
       <Container>
-        <div className="mx-auto max-w-2xl rounded-card border border-border bg-surface px-6 py-10 text-center sm:px-10 sm:py-14">
+        <div aria-busy={status === "verifying"} className="mx-auto max-w-2xl rounded-card border border-border bg-surface px-6 py-10 text-center sm:px-10 sm:py-14">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-secondary">
             KPX Academy
+          </p>
+          <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+            {status === "verifying" && "Verifying your payment."}
+            {status === "success" && "Registration successful. Your payment has been confirmed."}
+            {status === "pending" && "Your payment is still being confirmed."}
+            {status === "failed" && "Payment could not be confirmed."}
+            {status === "error" && "We could not reach the payment verification service."}
           </p>
 
           {status === "verifying" && (
             <>
               <div
                 className="mx-auto mt-8 h-10 w-10 animate-spin rounded-full border-4 border-border border-t-secondary"
-                role="status"
-                aria-label="Verifying payment"
+                aria-hidden="true"
               />
               <h1 className="mt-6 font-heading text-3xl font-bold text-primary">
                 Verifying your payment
