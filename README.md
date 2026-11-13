@@ -171,30 +171,73 @@ The public pages currently use multiple hero implementations and layout conventi
 - Brand colours are defined both as Tailwind theme tokens and as page-level literal colours. The configured primary value (#1D4ED8) does not match the navy used in several public sections (#17324D).
 - The existing brand palette includes navy (#17324D), teal (#2A7F7F), warm cream (#F7F5F0), soft coral (#F3D7CC), and magenta accents (#D94A91, #8B1E5A). These need semantic roles rather than competing definitions.
 
-A preliminary contrast check of solid colour pairs identified likely WCAG AA failures:
+A preliminary contrast check of solid colour pairs identified likely WCAG AA risks. The figures below are recalculated against the exact hex values and must be interpreted in the context of the actual rendered pairing:
 
-| Foreground | Background | Approx. contrast | Finding |
+| Foreground | Background | Approx. contrast | Interpretation |
 |---|---|---:|---|
-| #D94A91 | #FFFFFF | 3.93:1 | Fails normal-text AA (4.5:1) |
-| #D94A91 | #F7F5F0 | 3.71:1 | Fails normal-text AA |
-| #2A7F7F | #F7F5F0 | 4.46:1 | Slightly below normal-text AA |
+| #D94A91 | #FFFFFF | 3.93:1 | Fails normal-text AA; can pass large-text AA |
+| #D94A91 | #FAF8F5 | 3.71:1 | Fails normal-text AA; can pass large-text AA |
+| #D94A91 | #F7F5F0 | 3.61:1 | Fails normal-text AA; can pass large-text AA |
+| #D94A91 | #07152F | 4.61:1 | Passes normal-text AA for this flat pairing |
+| #D94A91 | #212529 | 3.92:1 | Fails normal-text AA; passes large-text AA if the text meets WCAG large-text sizing |
+| #2A7F7F | #FAF8F5 | 4.46:1 | Slightly below normal-text AA |
+| #2A7F7F | #F7F5F0 | 4.34:1 | Fails normal-text AA |
 | #2A7F7F | #FFFFFF | 4.73:1 | Passes normal-text AA |
 | #17324D | #FFFFFF | 13.13:1 | Passes |
 | #8B1E5A | #FFFFFF | 8.64:1 | Passes |
-| #212529 | #8B1E5A | 1.79:1 | Fails |
+| #212529 | #8B1E5A | 1.79:1 | Fails; this pairing is present in the About-page callout |
+| #6B7280 | #FAF8F5 | 4.56:1 | Passes normal-text AA |
+| #F4DCD6 | #17324D | 10.04:1 | Passes |
 
-These are preliminary calculations for opaque, flat colour pairs. They do not certify text over photographs, gradients, overlays, transparency, hover states, or disabled states. Those must be tested against the actual rendered colours. Large text has a 3:1 WCAG AA minimum; normal text has a 4.5:1 minimum. Non-text UI components and meaningful graphical objects generally require 3:1 contrast against adjacent colours.
+Important correction: the bright magenta heading colour is not automatically a failure everywhere it appears. In the inspected hero source it is used over dark backgrounds; its solid-colour ratios are 4.61:1 over #07152F and 3.92:1 over #212529. The About-page heading is large text and may meet the 3:1 large-text threshold for the flat colour pair, but its photographic background and overlay still require rendered-state testing. The clear source-level failure found so far is dark charcoal text (#212529) on the deep-magenta (#8B1E5A) About-page callout. The teal text colour (#2A7F7F) is also just below normal-text AA on the warm background token (#FAF8F5).
+
+These calculations are for opaque, flat colour pairs only. They do not certify text over photographs, gradients, overlays, transparency, hover states, or disabled states. Large text has a 3:1 WCAG AA minimum; normal text has a 4.5:1 minimum. Non-text UI components and meaningful graphical objects generally require 3:1 contrast against adjacent colours.
+
+### Verified source inventory (Phase 0)
+
+The route tree in `src/router.tsx` confirms these public routes:
+
+- Core pages: `/`, `/about`, `/register`, `/programs`, `/courses` (alias), `/programs/:slug`, `/certificates`, `/resources`, `/resources/:slug`, `/gallery`, and `/faq`.
+- Payment and guest workflows: `/payment/success`, `/payment/failed`, `/workshops/book`, `/workshops/track-booking`, `/workshops/access/:reference/:token`, `/souvenirs`, `/souvenirs/enquire`, `/souvenirs/:resource/access/:token`, and `/souvenirs/:slug`.
+- The public shell is shared through `src/components/layouts/Layout.tsx`, with a sticky `SiteHeader`, route content, and `SiteFooter`. The admin route tree is separate and remains out of scope.
+
+The source-level hero inventory confirms the following differences:
+
+| Page | Current structure | Measured source conventions |
+|---|---|---|
+| Homepage | Dynamic, image-backed carousel | 1,440 px content width; px-5 / sm:px-8 / lg:px-12; top padding 16 / 20 / 24; min-height 650 / 690 / 720 px |
+| About | Image-backed split layout | Shared 1,280 px Container; vertical padding 20 / 28 / 36; H1 5xl / 6xl / 7xl |
+| FAQ | Solid navy hero with search | Outer px-5 / sm:px-8 plus nested Container gutters (double horizontal padding); vertical padding 16 / 20 |
+| Gallery | Image-backed dark hero | max-w-6xl (1,152 px); outer px-5 / sm:px-8; vertical padding 16 / 20; H1 4xl / 6xl |
+| Resources | Image-backed dark hero with search | max-w-6xl (1,152 px); outer px-5 / sm:px-8; vertical padding 16 / 20; H1 4xl / 6xl |
+| Certificates | Image-backed hero with two actions | Shared 1,280 px Container; vertical padding 16 / 20; H1 4xl / 5xl |
+| Training programmes | Image-backed hero | Shared 1,280 px Container; vertical padding 16 / 20 / 28; H1 4xl / 5xl / 6xl |
+| Souvenir catalogue | Image-backed hero | Shared 1,280 px Container; vertical padding 16 / 20 / 28; H1 4xl / 5xl / 6xl |
+| Workshop booking | Image-backed hero | Shared 1,280 px Container; vertical padding 14 / 20 / 24 |
+| Souvenir enquiry | Solid hero | Shared 1,280 px Container; vertical padding 14 / 20 |
+
+Registration, programme detail, resource reader, payment result, booking tracker, guest-access, and product/enquiry detail screens use task-specific layouts rather than marketing heroes. They remain in the accessibility and responsive audit, but should not be forced into the marketing-hero component.
+
+The FAQ double-gutter issue is confirmed in source: its hero section applies horizontal padding and then nests the shared Container, which applies its own horizontal padding. This should be corrected during hero migration, not patched with a one-off negative margin.
+
+### Existing design-system inventory
+
+- `src/styles/design-system.css` already defines root CSS variables, typography (Sora and Inter), a 1,280 px content/container width, spacing scale, radii, focus styling, and legacy semantic colour variables.
+- `tailwind.config.js` separately defines Tailwind colour tokens. Its legacy `primary` is royal blue (#1D4ED8), while several public pages use literal navy (#17324D) and teal (#2A7F7F).
+- Page-level literals remain in public and admin files. The inventory must preserve the admin boundary: do not globally change existing `primary`, `secondary`, or legacy variables until their admin and public consumers are fully mapped.
+- The current public shell header is sticky and uses the shared Container. Header and footer states are included in the later contrast review.
 
 ### Remediation phases and completion criteria
 
 #### Phase 0 — Baseline and inventory
-- [ ] Confirm the public routes and identify every page-level hero/header implementation.
-- [ ] Record current mobile and desktop screenshots for representative pages.
-- [ ] Record current Lighthouse/PageSpeed results separately for mobile and desktop.
-- [ ] Identify the actual LCP element and its resource timing before attributing long LCP to hosting, images, or application code.
-- [ ] Inventory colour literals, Tailwind theme tokens, typography, container widths, and spacing conventions used by public pages.
+- [x] Confirm the public routes and identify the marketing hero/header implementations from the route tree and page source.
+- [x] Inventory the shared public shell, existing design-system variables, Tailwind tokens, typography, container widths, and spacing conventions for the inspected public pages.
+- [x] Record the supplied mobile PageSpeed baseline: FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052, and Speed Index 9.3 s. The screenshot does not identify the exact tested route or expose the LCP element.
+- [ ] Capture representative rendered screenshots at mobile, tablet, and desktop widths. Source inspection cannot establish actual visual alignment or overlay contrast.
+- [ ] Record a desktop PageSpeed baseline under comparable conditions.
+- [ ] Identify the LCP element and inspect its request timing before attributing the delay to Render, images, or application code.
 
-**Exit criteria:** A verified route/component inventory and reproducible baseline. Do not infer that Render cold starts explain the full LCP result without checking the LCP element and network timings.
+**Phase 0 status:** Source inventory is complete for the confirmed public route tree and the primary marketing heroes. Rendered screenshot baselines, desktop performance data, and LCP-element diagnosis remain outstanding. These gaps do not prevent defining additive design tokens, but they must be closed before declaring the full baseline/verification work complete.
 
 #### Phase 1 — Authoritative design tokens
 - [ ] Define semantic colour tokens for page backgrounds, primary text, muted text, headings, links, primary/secondary actions, borders, and focus indicators.
