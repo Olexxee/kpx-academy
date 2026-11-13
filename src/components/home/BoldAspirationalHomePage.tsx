@@ -179,7 +179,7 @@ export const BoldAspirationalHomePage = () => {
 
     <section className="bg-[#8B1E5A] text-white">
       <div className="mx-auto grid max-w-[1440px] gap-8 px-5 py-14 sm:px-8 md:grid-cols-[.7fr_1.3fr] md:items-center md:px-12 md:py-20">
-        <div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">A little about us</p><h2 className="mt-4 max-w-md text-3xl font-bold leading-tight tracking-[-.04em] sm:text-5xl">Learning should lead to <span className="text-[#F4DCD6]">possibility.</span></h2></div>
+        <div><p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">A little about us</p><h2 className="mt-4 max-w-md text-3xl font-bold leading-tight tracking-[-.04em] text-white sm:text-5xl">Learning should lead to <span className="text-[#F4DCD6]">possibility.</span></h2></div>
         <div className="max-w-2xl md:justify-self-end"><p className="text-base leading-7 text-white/75 sm:text-lg sm:leading-8">KPX Academy brings practical, skill-based training together in one place. We help learners understand the process, practise with purpose, and explore ways to use their skills in everyday life or business.</p><Link to="/about" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#F4DCD6] hover:text-white">Our story <ArrowRight size={17} /></Link></div>
       </div>
     </section>
@@ -193,7 +193,7 @@ export const BoldAspirationalHomePage = () => {
 
     <section className="bg-[#17324D] px-5 py-16 text-white sm:px-8 md:px-12 md:py-24">
       <div className="mx-auto flex max-w-[1344px] flex-col justify-between gap-8 md:flex-row md:items-end">
-        <div><p className="text-xs font-bold uppercase tracking-[.22em] text-white/75">Your journey can start here</p><h2 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight tracking-[-.06em] sm:text-6xl">One new skill can open up a new possibility.</h2><p className="mt-5 max-w-2xl text-base leading-7 text-white/80">Explore what interests you, learn at your own pace where available, and take the next step with practical knowledge.</p></div>
+        <div><p className="text-xs font-bold uppercase tracking-[.22em] text-white/75">Your journey can start here</p><h2 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight tracking-[-.06em] text-white sm:text-6xl">One new skill can open up a new possibility.</h2><p className="mt-5 max-w-2xl text-base leading-7 text-white/80">Explore what interests you, learn at your own pace where available, and take the next step with practical knowledge.</p></div>
         <Link to="/programs" className="inline-flex min-h-14 shrink-0 items-center justify-center gap-3 self-start rounded-full bg-[#FAF8F5] px-7 py-4 text-sm font-bold text-[#17324D] transition hover:bg-[#F3D7CC]">Find your course <ArrowRight size={18} /></Link>
       </div>
     </section>
