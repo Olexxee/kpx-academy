@@ -44,7 +44,7 @@ export const SiteFooter = () => {
             <p className="mt-4 max-w-md font-heading text-lg font-semibold text-white">
               {profile?.tagline || "Practical Skills. More Possibilities."}
             </p>
-            <p className="mt-3 max-w-md text-sm leading-7 text-white/75">
+            <p className="mt-3 max-w-md text-sm leading-7 text-white/80">
               {profile?.description || "Practical training and detailed knowledge to help learners develop useful skills and put what they learn into practice."}
             </p>
             {socialLinks.some(([, key]) => profile?.[key]) && (
@@ -77,14 +77,14 @@ export const SiteFooter = () => {
 
           <div>
             <h2 className="mb-5 font-heading text-sm font-semibold text-white">Our approach</h2>
-            <p className="max-w-xs text-sm leading-7 text-white/75">Learn with purpose. Build through practice. Discover what your skills can make possible.</p>
+            <p className="max-w-xs text-sm leading-7 text-white/80">Learn with purpose. Build through practice. Discover what your skills can make possible.</p>
             <Link to="/about" className={`${footerLinkClass} mt-4 inline-flex`}>Learn more about {profile?.organizationName || "KPX"}</Link>
           </div>
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/20 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-white/75">{profile?.copyrightText || `© ${currentYear} ${profile?.organizationName || "KPX Academy"}. All rights reserved.`}</p>
-          <p className="font-medium text-white/75">Learn It. Build With It.</p>
+          <p className="text-white/80">{profile?.copyrightText || `© ${currentYear} ${profile?.organizationName || "KPX Academy"}. All rights reserved.`}</p>
+          <p className="font-medium text-white/80">Learn It. Build With It.</p>
         </div>
       </Container>
     </footer>
