@@ -5,6 +5,7 @@ import { Container } from "../../../components/ui/Container";
 import { createSouvenirOrder, getSouvenirProduct } from "../api";
 import { SOUVENIR_COLOR_PALETTE, type SouvenirOrderResult, type SouvenirPriceTier, type SouvenirPaletteColor } from "../types";
 import { updatePageMetadata } from "../../../lib/seo";
+import { getSouvenirMetadata } from "../../../lib/pageMetadata";
 
 const money = (amount: number | string, currency = "NGN") => {
   const value = Number(amount);
@@ -29,11 +30,9 @@ export const SouvenirProductPage = () => {
       });
       return;
     }
-    updatePageMetadata({
-      title: `${product.name} | Custom Souvenir Package | KPX Academy`,
-      description: product.description || `Explore the ${product.name} souvenir package from KPX Academy and enquire about quantities, colours, and custom requirements.`,
-      canonicalPath: `/souvenirs/${encodeURIComponent(product.slug)}`,
-    });
+    updatePageMetadata(
+      getSouvenirMetadata(product.name, product.description, product.slug),
+    );
   }, [isError, isLoading, product, slug]);
   const [quantity, setQuantity] = useState(1);
   const [colors, setColors] = useState<SouvenirPaletteColor[]>([]);
