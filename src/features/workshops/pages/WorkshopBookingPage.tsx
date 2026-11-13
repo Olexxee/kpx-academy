@@ -33,7 +33,7 @@ const localDateMinimum = () => {
 
 const fieldClass =
   "mt-2 min-h-12 w-full rounded-control border border-border bg-white px-4 py-3 text-sm text-text " +
-  "placeholder:text-text-muted focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20";
+  "placeholder:text-text-muted focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/30 focus-visible:outline-none";
 
 const labelClass = "block text-sm font-semibold text-text";
 
@@ -182,7 +182,7 @@ export const WorkshopBookingPage = () => {
             </aside>
 
             <div className="rounded-card border border-border bg-white p-5 sm:p-8">
-              <h2 className="font-heading text-2xl font-bold text-primary">Request a workshop booking</h2>
+              <h2 id="workshop-booking-form-title" className="font-heading text-2xl font-bold text-primary">Request a workshop booking</h2>
               <p className="mt-2 text-sm leading-6 text-text-muted">Fields marked with * are required. Submitting this form does not confirm the event.</p>
 
               {offeringsQuery.isLoading ? (
@@ -199,7 +199,7 @@ export const WorkshopBookingPage = () => {
                   <p className="mt-2 text-sm leading-6 text-text-muted">The team is preparing current workshop options and participant pricing. Please check back soon.</p>
                 </div>
               ) : (
-                <form className="mt-7 space-y-5" onSubmit={submit}>
+                <form aria-labelledby="workshop-booking-form-title" aria-busy={bookingMutation.isPending} className="mt-7 space-y-5" onSubmit={submit}>
                   <label className={labelClass}>Workshop option *
                     <select required value={selectedOffering?.id ?? ""} onChange={(event) => { setOfferingId(event.target.value); setTierId(""); }} className={fieldClass}>
                       <option value="" disabled>Select a workshop</option>
@@ -263,7 +263,7 @@ export const WorkshopBookingPage = () => {
                     <textarea rows={4} value={form.customerNotes} onChange={(event) => updateField("customerNotes", event.target.value)} className={fieldClass} placeholder="Occasion, timing preferences, accessibility needs, or other notes" />
                   </label>
 
-                  {bookingMutation.isError && <div role="alert" className="rounded-control border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">{(bookingMutation.error as any)?.response?.data?.message ?? "Your request could not be submitted. Please review the details and try again."}</div>}
+                  {bookingMutation.isError && <div role="alert" aria-live="assertive" className="rounded-control border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">{(bookingMutation.error as any)?.response?.data?.message ?? "Your request could not be submitted. Please review the details and try again."}</div>}
 
                   <button type="submit" disabled={bookingMutation.isPending || !selectedTier} className="inline-flex min-h-12 w-full items-center justify-center rounded-control bg-secondary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto">
                     {bookingMutation.isPending ? "Submitting request…" : "Submit workshop request"}
