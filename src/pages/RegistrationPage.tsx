@@ -287,7 +287,7 @@ export default function RegistrationForm() {
                     aria-describedby={
                       errors.fullName ? "name-error" : undefined
                     }
-                    className="w-full rounded-control border border-border bg-surface py-3 pl-10 pr-4 text-text outline-none transition placeholder:text-text-muted/70 focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:opacity-60"
+                    className="w-full rounded-control border border-border bg-surface py-3 pl-10 pr-4 text-text outline-none transition placeholder:text-text-muted focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:opacity-60"
                   />
                 </div>
 
@@ -324,7 +324,7 @@ export default function RegistrationForm() {
                     disabled={isSubmitting}
                     aria-invalid={Boolean(errors.email)}
                     aria-describedby={errors.email ? "email-error" : undefined}
-                    className="w-full rounded-control border border-border bg-surface py-3 pl-10 pr-4 text-text outline-none transition placeholder:text-text-muted/70 focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:opacity-60"
+                    className="w-full rounded-control border border-border bg-surface py-3 pl-10 pr-4 text-text outline-none transition placeholder:text-text-muted focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:opacity-60"
                   />
                 </div>
 
