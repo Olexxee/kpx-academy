@@ -8,7 +8,8 @@ type PublicPageHeroProps = {
   icon?: LucideIcon;
   image?: string;
   imageAlt?: string;
-  variant?: "solid" | "image";
+  variant?: "solid" | "image" | "split";
+  aside?: ReactNode;
   children?: ReactNode;
   actions?: ReactNode;
   className?: string;
@@ -24,6 +25,7 @@ export function PublicPageHero({
   variant = image ? "image" : "solid",
   children,
   actions,
+  aside,
   className = "",
 }: PublicPageHeroProps) {
   const titleId = useId();
@@ -48,8 +50,8 @@ export function PublicPageHero({
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-[#07152F]/35 to-transparent" />
         </>
       )}
-      <div className="mx-auto w-full max-w-container px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-        <div className="public-page-hero__content max-w-4xl">
+      <div className={`mx-auto w-full max-w-container px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20 ${variant === "split" && aside ? "grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14" : ""}`}>
+        <div className={`public-page-hero__content ${variant === "split" && aside ? "max-w-3xl" : "max-w-4xl"}`}>
           <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#F4DCD6] sm:text-sm">
             {Icon && <Icon aria-hidden="true" size={16} strokeWidth={2.2} />}
             {eyebrow}
@@ -65,6 +67,7 @@ export function PublicPageHero({
           {children}
           {actions && <div className="mt-7 flex flex-col gap-3 sm:flex-row">{actions}</div>}
         </div>
+        {variant === "split" && aside && <div className="public-page-hero__content lg:justify-self-end lg:max-w-sm">{aside}</div>}
       </div>
     </header>
   );
