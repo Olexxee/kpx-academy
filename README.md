@@ -157,7 +157,7 @@ The React Router/Vercel preview build completed and logged HTML prerender output
 
 ## Public-site visual consistency and accessibility remediation
 
-**Status:** Audit documented; implementation not yet started.  
+**Status:** Source audit complete; implementation in progress.  
 **Scope:** Public-facing website only. The admin workspace is excluded unless a later, separately approved audit identifies an issue.
 
 ### Audit findings
@@ -218,7 +218,7 @@ The source-level hero inventory confirms the following differences:
 
 Registration, programme detail, resource reader, payment result, booking tracker, guest-access, and product/enquiry detail screens use task-specific layouts rather than marketing heroes. They remain in the accessibility and responsive audit, but should not be forced into the marketing-hero component.
 
-The FAQ double-gutter issue is confirmed in source: its hero section applies horizontal padding and then nests the shared Container, which applies its own horizontal padding. This should be corrected during hero migration, not patched with a one-off negative margin.
+The FAQ double-gutter issue was corrected during migration by removing the redundant nested Container. The About and Certificates heroes have also been migrated; the About callout now uses white text on deep magenta to correct the identified source-level contrast failure.
 
 ### Existing design-system inventory
 
@@ -246,7 +246,7 @@ The FAQ double-gutter issue is confirmed in source: its hero section applies hor
 - [x] Preserve bright magenta (#D94A91) as an accent and avoid using it for normal-sized text on light surfaces.
 - [ ] Standardise the public typography scale using Sora for headings and Inter for body text.
 
-**Phase 1 progress:** Additive semantic tokens have been introduced in `src/styles/design-system.css` and exposed through the Tailwind `kpx` colour namespace. Existing `primary`, `secondary`, and legacy semantic tokens were deliberately left unchanged to avoid unintended effects on admin screens and existing components. The new teal text token (#287979) provides at least 4.70:1 contrast against #F7F5F0 and 4.83:1 against #FAF8F5. No page components have been migrated yet.
+**Phase 1 progress:** Additive semantic tokens have been introduced in `src/styles/design-system.css` and exposed through the Tailwind `kpx` colour namespace. Existing `primary`, `secondary`, and legacy semantic tokens were deliberately left unchanged to avoid unintended effects on admin screens and existing components. The new teal text token (#287979) provides at least 4.70:1 contrast against #F7F5F0 and 4.83:1 against #FAF8F5. Full public-page usage mapping and typography standardisation remain outstanding.
 
 **Exit criteria:** One documented source of truth for public design tokens, with contrast values verified for intended text/background pairings. This phase remains in progress until all in-scope page usages are mapped and the typography scale is standardised.
 
@@ -256,17 +256,17 @@ The FAQ double-gutter issue is confirmed in source: its hero section applies hor
 - [x] Keep page-specific copy, imagery, and search controls configurable.
 - [x] Add a restrained entrance animation that respects `prefers-reduced-motion`.
 - [x] Use icons as visual signposts where they clarify the page purpose; decorative icons are hidden from assistive technology and controls retain text labels.
-- [ ] Add and validate the split-layout variant for pages that need a side-by-side hero composition.
+- [x] Add a split-layout variant for pages that need a side-by-side hero composition.
 - [ ] Inspect hero alignment and text/image contrast at mobile, tablet, and desktop breakpoints.
 
-**Phase 2 progress:** `src/components/ui/PublicPageHero.tsx` is implemented with solid and image-backed variants. FAQ, Gallery, and Resources now use the shared component. The FAQ search control remains functional and the redundant nested Container gutters have been removed. Hero content has a short opacity/vertical entrance transition; the transition is disabled when the user requests reduced motion. No animation is required to reveal information or operate controls. About and Certificates retain their existing bespoke compositions pending the split/action variant and route-by-route migration.
+**Phase 2 progress:** `src/components/ui/PublicPageHero.tsx` now supports solid, image-backed, and split layouts. FAQ, Gallery, Resources, About, and Certificates use the shared component. The FAQ search control and certificate actions remain functional. The About page retains its side-by-side promise panel through the split variant. Hero content has a short opacity/vertical entrance transition; the transition is disabled when the user requests reduced motion. No animation is required to reveal information or operate controls.
 
 **Animation and icon rules:** Motion is progressive enhancement only. Respect `prefers-reduced-motion`, avoid parallax and continuously moving decorative elements, and do not animate essential content in a way that delays access. Icons should reinforce a visible text label, not replace it; decorative icons must be `aria-hidden`, and icon-only buttons require accessible names.
 
 **Exit criteria:** Shared structural rules are used by all in-scope public pages, with no unintended visual regressions at mobile and desktop breakpoints. This phase remains in progress until the split variant, remaining page migrations, and rendered responsive review are complete.
 
 #### Phase 3 — Public-page migration
-- [ ] Migrate the homepage and each public informational/catalogue page to the shared hero structure where appropriate.
+- [ ] Migrate the homepage and remaining public informational/catalogue pages to the shared hero structure where appropriate.
 - [ ] Retain intentional page-specific compositions (for example, split layouts) through documented variants rather than one-off spacing overrides.
 - [ ] Remove obsolete page-level hero styles only after confirming they have no remaining consumers.
 
