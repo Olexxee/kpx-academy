@@ -150,6 +150,17 @@ h6 {
   box-shadow: none;
 }
 
+/* Keep public form-control and outlined-action boundaries distinguishable. */
+.public-site-shell input:not([type="checkbox"]):not([type="radio"]):not(:focus),
+.public-site-shell select:not(:focus),
+.public-site-shell textarea:not(:focus),
+.public-site-shell button.border-border:not(:hover):not(:focus),
+.public-site-shell a.border-border:not(:hover):not(:focus),
+.public-site-shell button.border-slate-200:not(:hover):not(:focus),
+.public-site-shell a.border-slate-200:not(:hover):not(:focus) {
+  border-color: #767676;
+}
+
 /* Restrained entrance motion: never required to understand or operate the page. */
 @keyframes public-hero-enter {
   from {
