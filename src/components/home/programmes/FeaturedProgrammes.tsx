@@ -6,6 +6,7 @@ import { formatPrice } from "../../../features/training/utils/format";
 import { getPrimaryImage } from "../../../features/training/utils/media";
 import type { TrainingProgram } from "../../../features/training/types";
 import { Container } from "../../ui/Container";
+import { getCloudinaryImageSrcSet, getCloudinaryImageUrl } from "../../../lib/cloudinaryImage";
 
 export const FeaturedProgrammes = () => {
   const { data: programmes, isLoading, isError } = useTrainingPrograms();
@@ -137,9 +138,14 @@ function FeaturedProgrammeCard({ program }: { program: TrainingProgram }) {
         <div className="relative aspect-[4/3] overflow-hidden">
           {image ? (
             <img
-              src={image.url}
+              src={getCloudinaryImageUrl(image.url, 768)}
+              srcSet={getCloudinaryImageSrcSet(image.url)}
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              width={768}
+              height={576}
               alt={program.title}
               loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             />
           ) : (
@@ -187,6 +193,7 @@ function FeaturedProgrammeCard({ program }: { program: TrainingProgram }) {
 
           <Link
             to={`/programs/${program.slug}`}
+            aria-label={`View details for ${program.title}`}
             className="inline-flex min-h-10 items-center justify-center rounded-control bg-secondary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2"
           >
             View details
