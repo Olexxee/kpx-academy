@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { Images } from "lucide-react";
 import { PublicPageHero } from "../components/ui/PublicPageHero";
+import { siteImages } from "../config/siteImages";
+import { useSearchParams } from "react-router-dom";
+import { getPublicCategories, getPublicGallery } from "../api/siteContent.api";
+import { Images } from "lucide-react";
+import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { useSearchParams } from "react-router-dom";
 import { getPublicCategories, getPublicGallery } from "../api/siteContent.api";
 
