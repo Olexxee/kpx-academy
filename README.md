@@ -408,3 +408,18 @@ The remaining image audit identified two separate opportunities:
 - **Local homepage section image:** `/homepagehero.jpg` is a local public asset (~220 KiB in the supplied Lighthouse report), displayed at roughly 651 × 651 CSS pixels while its source is 1280 × 895. It is below the LCP hero and is already lazy-loaded through the shared `SiteImage` component. The Cloudinary helper intentionally leaves local URLs unchanged, so adding Cloudinary transformations would do nothing. The next safe step is to create and compare a correctly cropped, responsive modern-format local variant (e.g. WebP/AVIF), then update the source only after visual comparison confirms that the crop and quality are preserved. That binary optimisation has not been performed in this source pass.
 
 **Verification boundary:** this commit is a targeted source change and README update. No production build, CI result, deployed network waterfall, or new PageSpeed run has been verified here. Re-run the same mobile test after deployment and confirm that the footer requests the transformed logo rather than the original asset. Record the measured transfer size before claiming a saving.
+
+#### Phase 5B — font request consolidation (source change in progress)
+
+The latest mobile PageSpeed report identifies Google Fonts CSS as a render-blocking request (~750 ms in the lab trace) and shows multiple Inter/Sora font resources in the critical request chain. The document already preconnects to `fonts.googleapis.com` and `fonts.gstatic.com`, and the stylesheet uses `display=swap`; adding more preconnects or changing to `font-display: optional` without evidence is not justified.
+
+The Google Fonts request now asks for variable weight ranges instead of enumerating separate static weights:
+
+- Inter: 400–700
+- Sora: 400–800
+
+This matches the public site's observed body and heading weight usage, including the 800-weight Sora homepage heading, while allowing the browser to select intermediate weights from variable font files. It is intended to consolidate font resources; it does **not** remove the render-blocking stylesheet dependency and must not be described as a measured performance gain until the deployed network waterfall confirms fewer/smaller font transfers and the PageSpeed retest confirms the effect.
+
+**Next verification:** inspect the generated Google Fonts CSS and deployed font requests, confirm all required weights render without synthetic-weight regressions, check heading/layout stability (CLS), then compare mobile PageSpeed using the same conditions. If the CSS request remains the dominant delay, evaluate self-hosted WOFF2 files with correct subsets and font metric overrides as a separate change; do not add speculative preload hints.
+
+**Remaining Phase 5A item:** the local `/homepagehero.jpg` binary has not yet been converted. It is already lazy-loaded and is not the LCP image. A correctly cropped WebP/AVIF derivative still requires visual comparison before swapping the asset; no fake Cloudinary transform or unverified external image proxy will be introduced.
