@@ -240,13 +240,15 @@ The FAQ double-gutter issue is confirmed in source: its hero section applies hor
 **Phase 0 status:** Source inventory is complete for the confirmed public route tree and the primary marketing heroes. Rendered screenshot baselines, desktop performance data, and LCP-element diagnosis remain outstanding. These gaps do not prevent defining additive design tokens, but they must be closed before declaring the full baseline/verification work complete.
 
 #### Phase 1 — Authoritative design tokens
-- [ ] Define semantic colour tokens for page backgrounds, primary text, muted text, headings, links, primary/secondary actions, borders, and focus indicators.
+- [x] Add semantic public-site colour roles for page backgrounds, primary text, muted text, headings, links, primary/secondary actions, borders, and focus indicators.
 - [ ] Reconcile Tailwind theme values with the approved KPX brand palette; remove conflicting definitions only after all usages are mapped.
-- [ ] Select accessible text variants for magenta and teal where the existing brand colour does not meet the required contrast.
-- [ ] Preserve decorative/accent use of the original brand colours where contrast requirements for text do not apply.
+- [x] Select accessible text variants for magenta and teal where the existing brand colour does not meet the required contrast. The deep-magenta text variant is #8B1E5A; the accessible teal text variant is #287979.
+- [x] Preserve bright magenta (#D94A91) as an accent and avoid using it for normal-sized text on light surfaces.
 - [ ] Standardise the public typography scale using Sora for headings and Inter for body text.
 
-**Exit criteria:** One documented source of truth for public design tokens, with contrast values verified for intended text/background pairings.
+**Phase 1 progress:** Additive semantic tokens have been introduced in `src/styles/design-system.css` and exposed through the Tailwind `kpx` colour namespace. Existing `primary`, `secondary`, and legacy semantic tokens were deliberately left unchanged to avoid unintended effects on admin screens and existing components. The new teal text token (#287979) provides at least 4.70:1 contrast against #F7F5F0 and 4.83:1 against #FAF8F5. No page components have been migrated yet.
+
+**Exit criteria:** One documented source of truth for public design tokens, with contrast values verified for intended text/background pairings. This phase remains in progress until all in-scope page usages are mapped and the typography scale is standardised.
 
 #### Phase 2 — Shared public-page hero structure
 - [ ] Introduce a reusable public-page hero component with explicit variants for solid, image-backed, and split layouts.
