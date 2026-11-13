@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
+import { PackagePlus } from "lucide-react";
 import { Container } from "../../../components/ui/Container";
+import { PublicPageHero } from "../../../components/ui/PublicPageHero";
 import { createSouvenirEnquiry, getSouvenirProducts } from "../api";
 import type { SouvenirEnquiryResult } from "../types";
 
@@ -21,7 +23,17 @@ export const SouvenirEnquiryPage = () => {
   if (result) return <section className="py-16 sm:py-24"><Container><div className="mx-auto max-w-2xl rounded-card border border-border bg-white p-7 sm:p-10"><p className="text-sm font-bold uppercase tracking-[0.16em] text-secondary">Enquiry received</p><h1 className="mt-3 font-heading text-3xl font-bold text-primary">Your custom request is in.</h1><p className="mt-4 leading-7 text-text-muted">We have recorded your enquiry. Keep the reference below and use the private link to review our response and any quotation.</p><div className="mt-6 rounded-control bg-background p-4"><p className="text-xs text-text-muted">Enquiry reference</p><p className="mt-1 font-heading text-lg font-bold text-primary">{result.enquiry.publicReference}</p><p className="mt-2 text-sm text-text-muted">Reference files: {result.enquiry.mediaCount}</p></div><Link to={`/souvenirs/enquiries/access/${result.accessToken}`} className="mt-7 inline-flex min-h-12 items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white hover:bg-primary">Open secure enquiry page</Link><p className="mt-4 text-xs leading-6 text-text-muted">Save this private link somewhere secure. It grants access to your enquiry and quotation.</p></div></Container></section>;
 
   return <div className="min-h-screen bg-background">
-    <section className="bg-primary py-14 text-white sm:py-20"><Container><p className="text-sm font-bold uppercase tracking-[0.16em] text-white/70">KPX Academy · Bespoke souvenirs</p><h1 className="mt-4 max-w-3xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl">Tell us what you have in mind.</h1><p className="mt-5 max-w-2xl leading-8 text-white/80">Share your event details, preferred quantity, design ideas, and reference files. We will prepare a response through your private enquiry page.</p></Container></section>
+    <PublicPageHero
+      eyebrow="KPX Academy · Bespoke souvenirs"
+      title="Tell us what you have in mind."
+      description="Share your event details, preferred quantity, design ideas, and reference files. We will prepare a response through your private enquiry page."
+      icon={PackagePlus}
+      actions={
+        <Link to="/souvenirs" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/60 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+          Browse the souvenir catalogue
+        </Link>
+      }
+    />
     <section className="py-12 sm:py-16"><Container><div className="mx-auto max-w-3xl">
       <div className="mb-7"><Link to="/souvenirs" className="text-sm font-semibold text-secondary hover:text-primary">← Back to souvenir catalogue</Link></div>
       <form onSubmit={(event)=>{event.preventDefault();mutation.mutate({customerName:name,customerEmail:email,customerWhatsApp:whatsApp,productId:productId||productsQuery.data?.find((product)=>product.slug===params.get("product"))?.id,requestedQuantity:quantity?Number(quantity):undefined,designDescription:description,media:files});}} className="rounded-card border border-border bg-white p-6 sm:p-9">
