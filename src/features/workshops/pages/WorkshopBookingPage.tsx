@@ -117,7 +117,7 @@ export const WorkshopBookingPage = () => {
       <div className="min-h-[70vh] bg-background py-16 sm:py-20">
         <Container>
           <section className="mx-auto max-w-2xl rounded-card border border-border bg-white p-7 sm:p-10">
-            <span className="inline-flex rounded-full bg-[#F4DCD6] px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary">Request received</span>
+            <span role="status" aria-live="polite" className="inline-flex rounded-full bg-[#F4DCD6] px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary">Request received</span>
             <h1 className="mt-5 font-heading text-3xl font-bold text-primary sm:text-4xl">Your workshop request is in.</h1>
             <p className="mt-4 leading-7 text-text-muted">We’ve recorded your event details. KPX Academy will review the request and follow up to confirm the arrangements.</p>
             <div className="mt-7 rounded-control bg-background p-5">
