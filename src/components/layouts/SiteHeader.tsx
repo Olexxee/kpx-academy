@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { Container } from "../ui/Container";
 import { useQuery } from "@tanstack/react-query";
 import { getSiteBranding } from "../../api/siteContent.api";
+import { getCloudinaryImageUrl } from "../../lib/cloudinaryImage";
 
 const navigation = [
   { label: "Home", to: "/" },
@@ -72,7 +73,7 @@ export const SiteHeader = () => {
             aria-label="KPX Academy home"
           >
             {branding.data?.logoUrl ? (
-              <img src={branding.data.logoUrl} alt={branding.data.logoAltText || "KPX Academy"} className="h-11 w-11 rounded-full border border-border bg-white p-1 object-contain sm:h-12 sm:w-12" />
+              <img src={getCloudinaryImageUrl(branding.data.logoUrl, 128)} alt={branding.data.logoAltText || "KPX Academy"} width={128} height={128} loading="eager" decoding="async" className="h-11 w-11 rounded-full border border-border bg-white p-1 object-contain sm:h-12 sm:w-12" />
             ) : <>
               <span className="font-heading text-xl font-bold tracking-tight text-primary sm:text-2xl">KPX</span>
               <span className="font-heading text-xl font-bold tracking-tight text-secondary sm:text-2xl">ACADEMY</span>
