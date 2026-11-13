@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Images } from "lucide-react";
+import { PublicPageHero } from "../components/ui/PublicPageHero";
 import { useSearchParams } from "react-router-dom";
 import { getPublicCategories, getPublicGallery } from "../api/siteContent.api";
-import { SiteImage } from "../components/ui/SiteImage";
-import { siteImages } from "../config/siteImages";
 
 export default function GalleryPage() {
   const [params, setParams] = useSearchParams();
@@ -13,12 +12,14 @@ export default function GalleryPage() {
   const categories = categoriesQuery.data ?? [];
   const images = galleryQuery.data ?? [];
   return <main className="min-h-[70vh] bg-[#FAF8F5]">
-    <section className="relative isolate overflow-hidden bg-[#07152F] px-5 py-16 text-white sm:px-8 sm:py-20">
-      <link rel="preload" as="image" href={siteImages.gallery} fetchPriority="high" />
-      <SiteImage src={siteImages.gallery} alt="" aria-hidden="true" loading="eager" fetchPriority="high" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center" />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/90 via-[#07152F]/75 to-[#07152F]/45" />
-      <div className="mx-auto max-w-6xl"><p className="text-xs font-bold uppercase tracking-[.22em] text-[#F4DCD6]">Learning in practice</p><h1 className="mt-4 font-[Sora] text-4xl font-extrabold tracking-tight text-[#D94A91] sm:text-6xl">Real work. Practical skills.</h1><p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">Explore published projects, practical training activities, and creative work from KPX Academy.</p></div>
-    </section>
+    <PublicPageHero
+      eyebrow="Learning in practice"
+      title="Real work. Practical skills."
+      description="Explore published projects, practical training activities, and creative work from KPX Academy."
+      icon={Images}
+      image={siteImages.gallery}
+      imageAlt=""
+    />
     <section className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
       <div className="mb-8 flex flex-wrap gap-2"><button onClick={() => setParams({})} className={`rounded-full border px-4 py-2 text-sm font-semibold ${!activeCategory ? "border-[#1D4ED8] bg-[#1D4ED8] text-white" : "border-slate-200 bg-white text-slate-600"}`}>All categories</button>{categories.map((category) => <button key={category.id} onClick={() => setParams({ category: category.slug })} className={`rounded-full border px-4 py-2 text-sm font-semibold ${activeCategory === category.slug ? "border-[#1D4ED8] bg-[#1D4ED8] text-white" : "border-slate-200 bg-white text-slate-600"}`}>{category.name}</button>)}</div>
       {galleryQuery.isLoading && <p className="text-sm text-slate-500">Loading gallery…</p>}
