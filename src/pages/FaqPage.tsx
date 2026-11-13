@@ -27,7 +27,7 @@ export default function FaqPage() {
         description="Clear answers to common questions about learning with KPX Academy."
         icon={MessageCircleQuestion}
       >
-        <label className="mt-7 flex min-h-12 max-w-xl items-center gap-3 rounded-xl border border-white/25 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F4DCD6] focus-within:ring-offset-2 focus-within:ring-offset-[#17324D]">
+        <label className="mt-7 flex min-h-12 max-w-xl items-center gap-3 rounded-xl border border-white/50 bg-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-[#F4DCD6] focus-within:ring-offset-2 focus-within:ring-offset-[#17324D]">
           <Search aria-hidden="true" size={18} className="shrink-0 text-white/80" />
           <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search questions and answers" aria-label="Search FAQs" className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/65" />
         </label>
