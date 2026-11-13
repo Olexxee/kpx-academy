@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { Gift } from "lucide-react";
 import { Container } from "../../../components/ui/Container";
-import { SiteImage } from "../../../components/ui/SiteImage";
+import { PublicPageHero } from "../../../components/ui/PublicPageHero";
 import { siteImages } from "../../../config/siteImages";
 import { getSouvenirProducts } from "../api";
 import type { SouvenirProduct } from "../types";
@@ -19,17 +20,18 @@ export const SouvenirCataloguePage = () => {
   });
 
   return <div className="min-h-screen bg-background">
-    <section className="relative isolate overflow-hidden bg-primary py-16 text-white sm:py-20 lg:py-28">
-      <link rel="preload" as="image" href={siteImages.souvenirs} fetchPriority="high" />
-      <SiteImage src={siteImages.souvenirs} alt="" aria-hidden="true" loading="eager" fetchPriority="high" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center" />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#17324D]/90 via-[#17324D]/75 to-[#17324D]/45" />
-      <Container>
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70 sm:text-sm">KPX Academy · Custom and ready-made</p>
-        <h1 className="mt-5 max-w-3xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">Souvenirs made for <span className="text-[#F4DCD6]">your moment.</span></h1>
-        <p className="mt-6 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">Explore souvenir packages for celebrations, events, gifting, and branded occasions. Choose an available package or tell us what you have in mind.</p>
-        <Link to="/souvenirs/enquire" className="mt-8 inline-flex min-h-12 items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-primary">Request a custom design</Link>
-      </Container>
-    </section>
+    <PublicPageHero
+      eyebrow="KPX Academy · Custom and ready-made"
+      title={<>Souvenirs made for <span className="text-[#F4DCD6]">your moment.</span></>}
+      description="Explore souvenir packages for celebrations, events, gifting, and branded occasions. Choose an available package or tell us what you have in mind."
+      icon={Gift}
+      image={siteImages.souvenirs}
+      actions={
+        <Link to="/souvenirs/enquire" className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-[#17324D] transition hover:bg-[#FAF8F5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+          Request a custom design
+        </Link>
+      }
+    />
     <section className="py-12 sm:py-16 lg:py-20"><Container>
       <div className="flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div><p className="text-sm font-semibold uppercase tracking-[0.16em] text-secondary">The catalogue</p><h2 className="mt-3 font-heading text-3xl font-bold text-primary sm:text-4xl">Available souvenir packages</h2></div>
