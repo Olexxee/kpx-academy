@@ -333,3 +333,5 @@ The public-form source review identified and corrected these issues:
 Workshop booking already uses native required-field validation, labelled controls, a grouped venue radio set, an `aria-busy` form state, and an assertive submission error region. Its dynamic venue/custom-workshop requirements remain conditional on the selected options.
 
 **Verification boundary:** These are source-level checks and targeted code corrections. No browser-driven keyboard/screen-reader session, live API submission, production build, lint run, or CI result has been established by this review. Those remain explicit Phase 5 tasks.
+
+- Workshop booking's successful-request state now exposes its confirmation message as a polite status announcement, complementing the existing assertive submission-error feedback.
