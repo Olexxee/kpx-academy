@@ -299,6 +299,28 @@ The FAQ double-gutter issue was corrected during migration by removing the redun
 
 The mobile PageSpeed capture recorded FCP 1.8 s, LCP 64.5 s, TBT 0 ms, CLS 0.052, and Speed Index 9.3 s. A free Render web service may spin down after inactivity and delay the initial server response, but this does not prove that the full LCP delay is caused by Render. The LCP element, request waterfall, server response timing, and image/resource loading behaviour must be inspected before choosing a fix. Performance remediation must preserve the good TBT and CLS results.
 
+### Phase 5 — Performance and production quality (in progress)
+
+**Baseline available:** A prior mobile PageSpeed capture recorded FCP **1.8 s**, LCP **64.5 s**, TBT **0 ms**, CLS **0.052**, and Speed Index **9.3 s**. This is a historical baseline, not a current post-change measurement. The very high LCP must not be attributed to Render cold starts without identifying the LCP element and separating document TTFB, image transfer/decode, font loading, and client-side work.
+
+#### Initial source audit and targeted optimisations
+
+- The brand fonts were loaded through CSS `@import`. This has been removed; Google Fonts stylesheet loading now lives in the document head, with preconnect hints for `fonts.googleapis.com` and `fonts.gstatic.com`. This removes the CSS import chain and allows the browser to establish font connections earlier. It does not guarantee that font loading is no longer render-blocking; verify the waterfall and fallback-font behaviour.
+- The homepage hero previously rendered every carousel image at once. It now renders only the active slide and its next slide, assigning high fetch priority to the active image and low priority to the next. This reduces the initial hero image request set from all slides to at most two, while keeping the next slide ready for the carousel transition.
+- The five hardcoded Unsplash fallback hero images have been reduced from 2,200 px at quality 85 to 1,600 px at quality 75. Confirm actual transferred formats and byte sizes in the browser; uploaded admin-managed hero images are not transformed by this change.
+- Existing static prerendering and route-specific metadata remain the SEO baseline. The shared route manifest drives generated public HTML and sitemap entries; private, payment, and tokenized access routes must remain excluded from indexing. Do not switch to runtime SSR or change the hosting architecture without evidence.
+
+#### Phase 5 verification still required
+
+- Capture a fresh mobile and desktop Lighthouse/PageSpeed run against the deployed production build, using the same URL, device profile, network conditions, and test location as the baseline where possible.
+- Record LCP element, TTFB, FCP, LCP subparts, CLS contributors, INP/TBT, total transfer size, request count, image byte sizes, and font loading waterfall. Compare field data (CrUX, if available) separately from lab data.
+- Check homepage, programmes, programme detail, resources, resource detail, souvenirs, souvenir detail, gallery, and certificates. Verify that prerendered HTML contains meaningful route content and metadata without waiting for client-side API requests.
+- Inspect image dimensions, responsive delivery, caching headers, third-party requests, JavaScript chunk sizes, and console/network errors. Do not lazy-load the actual LCP image; below-the-fold media should remain lazy-loaded.
+- Run production regression flows: registration and Paystack return, certificate verification/proof submission, workshop booking and guest tracking, souvenir enquiry, and admin login/content management. Admin checks are regression coverage only; the public-site visual remediation remains out of scope for admin.
+- Phase 4 browser verification remains open in parallel: keyboard navigation, screen-reader announcements, zoom/reflow, focus visibility, and reduced motion.
+
+**Evidence boundary:** The changes above are source-level optimisations. No new Lighthouse/PageSpeed measurement, browser waterfall, bundle analysis, or full production regression run has been completed yet. Do not claim a score improvement until comparable measurements confirm it.
+
 ### Working rules
 
 - Keep this README updated as each phase starts, changes scope, and passes its exit criteria.
