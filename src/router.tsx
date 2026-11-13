@@ -2,27 +2,74 @@ import { lazy, Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 import { Layout } from "./components/layouts/Layout";
 import { HomePage } from "./pages/HomePage";
-import RegistrationPage from "./pages/RegistrationPage";
-import AboutPage from "./pages/AboutPage";
-import CertificatesPage from "./pages/CertificatesPage";
-import { ProgramDetailsPage } from "./features/training/pages/ProgramDetailsPage";
-import { TrainingProgramsPage } from "./features/training/pages/TrainingProgramsPage";
-import { PaymentSuccessPage } from "./pages/PaymentSuccessPage";
-import { PaymentFailedPage } from "./pages/PaymentFailedPage";
-import { SouvenirCataloguePage } from "./features/souvenirs/pages/SouvenirCataloguePage";
-import { SouvenirProductPage } from "./features/souvenirs/pages/SouvenirProductPage";
-import { SouvenirEnquiryPage } from "./features/souvenirs/pages/SouvenirEnquiryPage";
-import { SouvenirGuestAccessPage } from "./features/souvenirs/pages/SouvenirGuestAccessPage";
-import { WorkshopBookingPage } from "./features/workshops/pages/WorkshopBookingPage";
-import { WorkshopBookingTrackerPage } from "./features/workshops/pages/WorkshopBookingTrackerPage";
-import { WorkshopGuestAccessPage } from "./features/workshops/pages/WorkshopGuestAccessPage";
 import { AdminRoute } from "./components/auth/AdminRoute";
-import ResourcesPage from "./pages/ResourcesPage";
-import ResourceReaderPage from "./pages/ResourceReaderPage";
-import GalleryPage from "./pages/GalleryPage";
-import FaqPage from "./pages/FaqPage";
 
-// Keep administrator-only code out of the public route's initial JavaScript.
+// Keep the homepage eager: it is the primary landing route and the LCP/SEO entry point.
+// Other public pages are loaded only when their route is visited.
+const RegistrationPage = lazy(() => import("./pages/RegistrationPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const CertificatesPage = lazy(() => import("./pages/CertificatesPage"));
+const ProgramDetailsPage = lazy(() =>
+  import("./features/training/pages/ProgramDetailsPage").then(({ ProgramDetailsPage }) => ({
+    default: ProgramDetailsPage,
+  })),
+);
+const TrainingProgramsPage = lazy(() =>
+  import("./features/training/pages/TrainingProgramsPage").then(({ TrainingProgramsPage }) => ({
+    default: TrainingProgramsPage,
+  })),
+);
+const PaymentSuccessPage = lazy(() =>
+  import("./pages/PaymentSuccessPage").then(({ PaymentSuccessPage }) => ({
+    default: PaymentSuccessPage,
+  })),
+);
+const PaymentFailedPage = lazy(() =>
+  import("./pages/PaymentFailedPage").then(({ PaymentFailedPage }) => ({
+    default: PaymentFailedPage,
+  })),
+);
+const SouvenirCataloguePage = lazy(() =>
+  import("./features/souvenirs/pages/SouvenirCataloguePage").then(({ SouvenirCataloguePage }) => ({
+    default: SouvenirCataloguePage,
+  })),
+);
+const SouvenirProductPage = lazy(() =>
+  import("./features/souvenirs/pages/SouvenirProductPage").then(({ SouvenirProductPage }) => ({
+    default: SouvenirProductPage,
+  })),
+);
+const SouvenirEnquiryPage = lazy(() =>
+  import("./features/souvenirs/pages/SouvenirEnquiryPage").then(({ SouvenirEnquiryPage }) => ({
+    default: SouvenirEnquiryPage,
+  })),
+);
+const SouvenirGuestAccessPage = lazy(() =>
+  import("./features/souvenirs/pages/SouvenirGuestAccessPage").then(({ SouvenirGuestAccessPage }) => ({
+    default: SouvenirGuestAccessPage,
+  })),
+);
+const WorkshopBookingPage = lazy(() =>
+  import("./features/workshops/pages/WorkshopBookingPage").then(({ WorkshopBookingPage }) => ({
+    default: WorkshopBookingPage,
+  })),
+);
+const WorkshopBookingTrackerPage = lazy(() =>
+  import("./features/workshops/pages/WorkshopBookingTrackerPage").then(({ WorkshopBookingTrackerPage }) => ({
+    default: WorkshopBookingTrackerPage,
+  })),
+);
+const WorkshopGuestAccessPage = lazy(() =>
+  import("./features/workshops/pages/WorkshopGuestAccessPage").then(({ WorkshopGuestAccessPage }) => ({
+    default: WorkshopGuestAccessPage,
+  })),
+);
+const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
+const ResourceReaderPage = lazy(() => import("./pages/ResourceReaderPage"));
+const GalleryPage = lazy(() => import("./pages/GalleryPage"));
+const FaqPage = lazy(() => import("./pages/FaqPage"));
+
+// Administrator-only modules remain independently split from public routes.
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"));
@@ -98,7 +145,7 @@ export function AppRoutes() {
     <Suspense
       fallback={
         <div className="flex min-h-[50vh] items-center justify-center text-sm text-text-muted" role="status">
-          Loading workspace…
+          Loading page…
         </div>
       }
     >

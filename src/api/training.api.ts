@@ -1,5 +1,4 @@
 import { registrationApi } from "../lib/registrationApi";
-import { prepareUploadFile } from "../lib/fileCompression";
 
 export interface TrainingProgram {
   imageUrl: any;
@@ -215,6 +214,7 @@ export const uploadTrainingMedia = async (
   file: File,
 ): Promise<TrainingMedia> => {
   const formData = new FormData();
+  const { prepareUploadFile } = await import("../lib/fileCompression");
   const optimizedFile = await prepareUploadFile(file);
 
   formData.append("media", optimizedFile);

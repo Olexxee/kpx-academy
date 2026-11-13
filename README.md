@@ -488,3 +488,78 @@ Public route imports, route paths, authorization guard placement, and route comp
 **Regression risks to verify:** direct navigation to `/admin/login`; unauthenticated direct navigation to `/admin`; successful admin login and dashboard load; refresh on a protected admin subroute; navigation between admin modules; and public route prerendering/refreshes. Dynamic chunks must resolve correctly on the deployed Vercel origin.
 
 **Verification boundary:** source change committed; production build, CI and deployment checks are pending. Do not mark Phase 7 complete until build output shows admin chunks separated from the initial framework chunk and the production routes above are verified.
+
+
+#### Phase 7B — public route code splitting (source change)
+
+The public route tree now keeps only the homepage eager. The other public pages are loaded through route-level dynamic imports when their URL is visited:
+
+- About, registration, certificates, programmes and programme details
+- Resources and resource reader
+- Gallery and FAQ
+- Payment success and failure
+- Workshop booking, booking tracking and tokenized workshop access
+- Souvenir catalogue, product details, enquiries and tokenized guest access
+
+Named-export page modules are mapped explicitly to the default export expected by `React.lazy`. Existing URL patterns, route nesting, page component props, admin guard placement, and the public route manifest used by prerendering are unchanged. The homepage remains eager to avoid adding a route-chunk wait to the primary landing page and its LCP path. The shared Suspense fallback now uses a neutral “Loading page…” status message.
+
+**Important distinction:** this change splits route modules; it does not guarantee every page dependency is absent from the initial bundle. Dependencies imported by the homepage, root document, shared layout, or common modules can still be part of the initial dependency graph. The next build audit must inspect the actual emitted chunks and preload links rather than assume all public-only dependencies have been removed.
+
+**Regression checks required:** build and typecheck; confirm all static and dynamic URLs remain in the generated prerender output; confirm the homepage does not preload unrelated public page chunks; direct-load and refresh representative public routes; navigate between routes; verify metadata and canonical tags after route changes; and confirm the admin login/protected route flow remains intact.
+
+**Build verification:** Vercel ran the configured build command (`react-router typegen && tsc -b && react-router build`) and reached the client build and prerender stage. The output reports `✓ built in 3.92s`, and the prerender logs show the 21-route manifest and generated HTML/data files for the public static and dynamic routes. The output also confirms distinct async chunks for public pages (for example About 15.24 KB, Program Details 12.69 KB, Training Programs 10.03 KB, Registration 9.83 KB, Certificates 12.18 KB, and Resources 4.11 KB).
+
+The `framework-app` chunk decreased from 224.40 KB (49.53 KB gzip) after admin splitting to 67.66 KB (18.77 KB gzip) after public route splitting: a 69.9% reduction in that chunk only. This is **not** a 69.9% reduction in total initial JavaScript: the build still emits shared `entry.client` (214.80 KB), `jsx-runtime` (132.27 KB), and `registrationApi` (75.01 KB) chunks. Actual homepage transfer/preload behavior must be measured from the built HTML/network waterfall before claiming total initial-payload savings.
+
+**Remaining verification:** the Vercel preview deployment is still marked BUILDING after the build/prerender output, so it is not yet considered deployed/ready. The preview is behind Vercel Deployment Protection, preventing unauthenticated automated fetches. Do not disable protection. Once READY, verify homepage preload behavior, direct-load and refresh representative public routes, route metadata/canonical tags, admin login/protected routes, and PageSpeed using the same mobile conditions.
+
+**Verification boundary:** type generation, TypeScript build, Vite client build, and the 21-route prerender output are confirmed by Vercel build logs. Browser behavior, deployment readiness, total initial network transfer, and PageSpeed impact remain unverified.
+
+
+#### Phase 7B follow-up — defer upload-only compression code
+
+The preview's homepage HTML still listed `fileCompression` as a module preload. Import tracing identified the cause: shared public API modules used by the homepage and shared layout imported the upload compressor at module scope, even though compression is only needed after an administrator selects a file.
+
+Updated:
+- `src/api/siteContent.api.ts`: load `fileCompression` inside the shared upload function, only when an asset upload is actually requested.
+- `src/api/training.api.ts`: load `fileCompression` inside the training-media upload function, only when an upload is actually requested.
+
+This preserves the same compression helper and upload behavior; it changes when the code is downloaded. The homepage still needs `registrationApi` for live public content queries (hero slides, branding, organization details, training programme data), so that shared API client remains in its initial dependency graph. The intent is to remove the upload-only compression module from the initial public preload list, not to eliminate required API code.
+
+**Prerender route classification:** `scripts/public-routes.mjs` deliberately prerenders the public content pages and database-driven programme/resource/souvenir detail pages. Registration, workshop booking/tracking, payment result, and admin routes are not in that SEO content manifest; their SPA fallback responses are therefore expected and should not be treated as missing SEO pages. They still require client-side route and refresh verification.
+
+**Build and preload verification:** the follow-up Vercel build succeeded and the preview deployment reached READY. The client build emits `fileCompression` as its own 1.06 KB (0.62 KB gzip) chunk, but the homepage HTML no longer includes it in its modulepreload list. The homepage still preloads `registrationApi` (75.01 KB, 25.77 KB gzip) because the public homepage and shared shell use it for live hero, branding, organization, and programme data. That remaining dependency is functional, not an accidental upload-only import.
+
+The same preview was fetched for `/`, `/about`, `/programs`, and a programme detail route. Each returned HTTP 200 with prerendered page content, its own title and canonical URL, a main landmark, and an H1. The preview also returned the expected SPA fallback for `/register`, workshop booking/tracking, and admin routes. These are excluded from the SEO prerender manifest by design; they are workflow/transaction routes, not the public content routes in the sitemap. Static HTML inspection does not prove the React client hydrates or that form interactions work.
+
+The latest client build retains `framework-app` at 67.62 KB (18.79 KB gzip). This is a chunk-size observation, not a Lighthouse score or total initial transfer measurement. The prior preview's 69.9% framework chunk reduction remains valid compared with the post-admin-split build; no new total-page JavaScript reduction is claimed.
+
+**Still outstanding:** interactive browser verification of route navigation, refresh, workshop/registration forms, and admin login/protected-route behavior; inspect whether the upload chunk is fetched only when an upload flow is used; and run a comparable PageSpeed test. Do not merge until these checks are complete.
+
+
+#### Phase 7B follow-up — remove dead query-client export and defer certificate compression
+
+Import tracing confirmed that `src/lib/registrationApi.ts` exported a `QueryClient` instance that had no consumers. The actual application creates its active client inside `src/App.tsx`, and the prerender loader creates its own server-side client inside `src/framework-app.tsx`. Removed the unused `QueryClient` import/export from the API transport module. No active cache configuration or provider was changed.
+
+Also changed `src/pages/CertificatesPage.tsx` to dynamically import `fileCompression` only inside the proof-upload submission path. The certificate page itself remains route-lazy-loaded, and its verification/search path does not need to download upload compression code.
+
+**Expected impact:** removes dead query-client construction from the API module and defers upload-only compression from the certificate route until proof submission. This is not expected to materially reduce the homepage's `registrationApi` chunk: the shared Axios instance is required by public API modules, and the homepage uses those APIs for live content. Do not report a performance gain until the fresh build and preview preload/chunk output are checked.
+
+**Regression checks:** build/typecheck; verify public API requests still use the same Axios base URL, credentials, and timeout; verify query cache behaviour is unchanged; test certificate lookup and proof submission; confirm compression code is requested only when upload begins.
+
+
+#### Phase 7B final preview verification — build passed
+
+Latest branch commit deployed to Vercel preview deployment `dpl_5mGioGYpZiGk89C4BqtRyyrx7Gzs` and reached `READY`. GitHub's Vercel status check is `success`.
+
+Verified from the deployed preview using HTTP fetch:
+- Homepage, About, Certificates, Programmes, and a programme detail route each returned HTTP 200.
+- Each sampled public route includes a page title, `<main>`, and an `<h1>` in the prerendered HTML.
+- `/sitemap.xml` returned HTTP 200 and contains exactly 21 URLs.
+- Homepage and sampled public-route HTML do not module-preload `fileCompression`; compression is deferred until an upload action imports it.
+- Homepage HTML retains the expected responsive Cloudinary hero preload and public API module preloads.
+- Build logs confirm `tsc -b`, React Router build, successful prerender output, and `✓ built in 9.49s`.
+
+**Limitations:** This is build and static-response verification, not interactive browser testing. It does not prove client-side route transitions, admin login/session behavior, certificate proof upload, or real user performance. Those require browser/network testing and a fresh PageSpeed run after merge/deployment. The Vercel build emitted a non-blocking warning that `vercelPreset()` was not detected; it did not prevent the build from completing.
+
+**Phase 7B status:** implementation and preview build/static checks complete; interactive regression checks and production PageSpeed comparison remain outstanding. No merge or production promotion performed.
