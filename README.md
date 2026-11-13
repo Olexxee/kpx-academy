@@ -432,3 +432,20 @@ The frontend previously mounted `AuthBootstrap` around the entire application, a
 The auth bootstrap now enables the current-user query only on protected `/admin` routes, excluding `/admin/login`. Public routes and the login page no longer initiate the current-user request. When a protected admin route is entered, the existing session check still runs before `AdminRoute` grants access. Login and logout mutations, cookie handling, endpoint contracts, and authorization enforcement are unchanged.
 
 **Verification boundary:** this is a targeted frontend source change. Confirm after deployment that public pages and `/admin/login` do not request `/api/auth/me`, while a direct visit to `/admin` still checks the existing session and redirects unauthenticated visitors to `/admin/login`. Also verify a successful login still reaches the dashboard and a page refresh preserves a valid administrator session. No build, CI result, browser network trace, or production authentication regression test has been completed in this source pass.
+
+
+#### Phase 6A — baseline security response headers (source change)
+
+The production Vercel response already includes `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`. Do not add a duplicate HSTS header in `vercel.json`.
+
+The frontend's `vercel.json` now adds these response headers to all routes:
+
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
+These are baseline hardening controls and do not require an application script/style allowlist. The existing SPA rewrite is retained.
+
+**Deliberately deferred:** no enforced Content Security Policy, COOP, or Permissions-Policy has been added. CSP requires an inventory of inline scripts, Google Fonts, Cloudinary, payment and authentication integrations, and any other runtime origins. COOP can interfere with popup-based authentication/payment flows. Permissions-Policy must be based on actual browser API usage. The next security step is to inspect the deployed response headers and run registration, Paystack, Google sign-in, and admin-login regression checks before adding those policies.
+
+**Verification boundary:** the configuration change is committed, but the Vercel deployment and response headers have not yet been verified. Do not treat Phase 6A as deployed until the Vercel build is READY and the response headers are confirmed on the production domain.
