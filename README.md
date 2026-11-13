@@ -273,11 +273,16 @@ The FAQ double-gutter issue was corrected during migration by removing the redun
 **Exit criteria:** All in-scope public pages follow the shared spacing, alignment, and typography rules while retaining their intended imagery and content.
 
 #### Phase 4 — WCAG 2.2 AA contrast and interaction states
+- [x] Add a keyboard-visible skip link to the main content region.
+- [x] Restore keyboard focus to the mobile navigation trigger when the menu is dismissed with Escape.
+- [x] Associate workshop and souvenir enquiry forms with their headings, expose submission state, and announce submission errors; expose the selected-file count as a polite live status.
 - [ ] Correct normal-text contrast to at least 4.5:1 and large-text contrast to at least 3:1.
 - [ ] Check links, buttons, navigation, form labels, placeholders, helper/error text, badges, footer text, and text over images/gradients.
 - [ ] Check non-text controls, boundaries, and meaningful graphical indicators for applicable 3:1 contrast.
 - [ ] Provide visible keyboard focus indicators and verify hover, active, disabled, and error states.
 - [ ] Do not rely on colour alone to communicate status or errors.
+
+**Progress:** Structural keyboard and form-feedback improvements are in place. Contrast mapping and rendered checks of all public controls, navigation states, and text over images remain outstanding.
 
 **Exit criteria:** Automated contrast checks pass for applicable states, and manual inspection confirms image/gradient overlays and interactive states are readable.
 
