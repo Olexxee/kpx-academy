@@ -488,3 +488,23 @@ Public route imports, route paths, authorization guard placement, and route comp
 **Regression risks to verify:** direct navigation to `/admin/login`; unauthenticated direct navigation to `/admin`; successful admin login and dashboard load; refresh on a protected admin subroute; navigation between admin modules; and public route prerendering/refreshes. Dynamic chunks must resolve correctly on the deployed Vercel origin.
 
 **Verification boundary:** source change committed; production build, CI and deployment checks are pending. Do not mark Phase 7 complete until build output shows admin chunks separated from the initial framework chunk and the production routes above are verified.
+
+
+#### Phase 7B — public route code splitting (source change)
+
+The public route tree now keeps only the homepage eager. The other public pages are loaded through route-level dynamic imports when their URL is visited:
+
+- About, registration, certificates, programmes and programme details
+- Resources and resource reader
+- Gallery and FAQ
+- Payment success and failure
+- Workshop booking, booking tracking and tokenized workshop access
+- Souvenir catalogue, product details, enquiries and tokenized guest access
+
+Named-export page modules are mapped explicitly to the default export expected by `React.lazy`. Existing URL patterns, route nesting, page component props, admin guard placement, and the public route manifest used by prerendering are unchanged. The homepage remains eager to avoid adding a route-chunk wait to the primary landing page and its LCP path. The shared Suspense fallback now uses a neutral “Loading page…” status message.
+
+**Important distinction:** this change splits route modules; it does not guarantee every page dependency is absent from the initial bundle. Dependencies imported by the homepage, root document, shared layout, or common modules can still be part of the initial dependency graph. The next build audit must inspect the actual emitted chunks and preload links rather than assume all public-only dependencies have been removed.
+
+**Regression checks required:** build and typecheck; confirm all static and dynamic URLs remain in the generated prerender output; confirm the homepage does not preload unrelated public page chunks; direct-load and refresh representative public routes; navigate between routes; verify metadata and canonical tags after route changes; and confirm the admin login/protected route flow remains intact.
+
+**Verification boundary:** source change committed on `perf/public-route-code-splitting`. Build, CI, generated prerender output, deployed chunk graph, browser route navigation, and PageSpeed comparison are not yet verified. Do not claim a performance gain until those measurements are available.
