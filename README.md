@@ -347,7 +347,7 @@ The next source review found several gaps in the public experience and applied t
 - Payment verification state changes now have a polite status announcement, and the result panel exposes its busy state.
 - Workshop booking tracking now exposes pending states and the verification-code transition to assistive technology, and its forms expose `aria-busy`.
 - Successful souvenir enquiry submission now announces the confirmation state.
-- A further contrast pass found white text at 75% opacity over the royal-blue CTA background (`#1D4ED8`) at approximately **4.48:1**, just below normal-text AA. The public homepage CTA and About-page blue CTA now use 80% white text, approximately **4.89:1**.
+- A further contrast pass found white text at 70% and 75% opacity over the royal-blue background (`#1D4ED8`) below normal-text AA (approximately **4.10:1** and **4.48:1**). The homepage CTA, About-page CTA, and programme-detail CTA now use 80% white text, approximately **4.89:1**.
 
 **Contrast notes:** The flat colour pairs `#8B1E5A` on white and warm-white backgrounds are approximately 8.64:1 and 8.15:1. The public muted-text token `#6B7280` is approximately 4.83:1 on white and 4.56:1 on `#FAF8F5`. The bright teal `#2A7F7F` remains below normal-text AA on warm-white at approximately 4.46:1; do not use it for normal-sized text on that surface. These calculations do not certify translucent, photographic, gradient, hover, or disabled states.
 
