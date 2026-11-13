@@ -7,6 +7,33 @@
   --kpx-dark-charcoal: #212529;
   --kpx-pure-white: #ffffff;
 
+  /* Approved KPX public-brand tokens. Additive aliases: legacy tokens below remain unchanged. */
+  --kpx-brand-navy: #17324d;
+  --kpx-brand-teal: #2a7f7f;
+  --kpx-brand-teal-text: #287979;
+  --kpx-brand-magenta: #d94a91;
+  --kpx-brand-warm-white: #faf8f5;
+  --kpx-brand-soft-blush: #f4dcd6;
+  --kpx-brand-charcoal: #212529;
+  --kpx-brand-muted-text: #6b7280;
+  --kpx-brand-border: #e5e2dc;
+
+  /* Semantic public-site roles. Bright magenta is an accent, not a default text colour on light surfaces. */
+  --public-page-background: var(--kpx-brand-warm-white);
+  --public-surface: var(--kpx-pure-white);
+  --public-text: var(--kpx-brand-charcoal);
+  --public-text-muted: var(--kpx-brand-muted-text);
+  --public-heading: var(--kpx-brand-navy);
+  --public-link: var(--kpx-deep-magenta);
+  --public-action-primary-background: var(--kpx-brand-navy);
+  --public-action-primary-foreground: var(--kpx-pure-white);
+  --public-action-secondary-background: var(--kpx-brand-teal);
+  --public-action-secondary-foreground: var(--kpx-pure-white);
+  --public-accent: var(--kpx-brand-magenta);
+  --public-accent-text: var(--kpx-deep-magenta);
+  --public-border: var(--kpx-brand-border);
+  --public-focus: var(--kpx-deep-magenta);
+
   /* Semantic colours */
   --color-primary: var(--kpx-royal-blue);
   --color-secondary: var(--kpx-deep-magenta);
