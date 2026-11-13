@@ -139,8 +139,10 @@ h6 {
 }
 
 :focus-visible {
-  outline: 2px solid var(--kpx-deep-magenta);
+  /* Keep a strong focus indicator even when component utilities reset outlines. */
+  outline: 3px solid var(--kpx-deep-magenta) !important;
   outline-offset: 3px;
+  box-shadow: 0 0 0 2px #ffffff !important;
 }
 
 
