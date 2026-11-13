@@ -1,54 +1,20 @@
 import { QueryClient, dehydrate } from "@tanstack/react-query";
 import type { Route } from "./+types/framework-app";
 import App from "./App";
+import {
+  DEFAULT_PAGE_METADATA,
+  cleanPageDescription,
+  STATIC_PAGE_METADATA,
+  getProgrammeMetadata,
+  getResourceMetadata,
+  getSouvenirMetadata,
+} from "./lib/pageMetadata";
 
 const SITE_URL = "https://kpxacademy.com.ng";
 const DEFAULT_API_BASE =
   "https://keplex-registration-backend.onrender.com/api";
 
-const staticMetadata: Record<string, { title: string; description: string }> = {
-  "/": {
-    title: "KPX Academy | Practical Skills Training & Creative Learning",
-    description: "Learn practical, skill-based techniques with KPX Academy. Explore detailed training, creative workshops, beauty and product formulation, and resources.",
-  },
-  "/about": {
-    title: "About KPX Academy | Our Story & Learning Philosophy",
-    description: "Discover KPX Academy's commitment to practical knowledge, detailed training, and real value across creative skills, beauty, product development, and entrepreneurship.",
-  },
-  "/programs": {
-    title: "Training Programmes | KPX Academy",
-    description: "Explore practical training programmes from KPX Academy. Find skill-focused learning designed to help you practise, create, and grow.",
-  },
-  "/certificates": {
-    title: "Certificate Verification & Proof of Work | KPX Academy",
-    description: "Verify a KPX Academy certificate or submit proof of work for review by the academy.",
-  },
-  "/resources": {
-    title: "Learning Resources & Training Guides | KPX Academy",
-    description: "Explore KPX Academy training manuals, practical guides, and learning resources. Read online or download materials for offline use.",
-  },
-  "/gallery": {
-    title: "Student Projects & Training Gallery | KPX Academy",
-    description: "Explore practical projects, creative work, and training activities from KPX Academy.",
-  },
-  "/faq": {
-    title: "Frequently Asked Questions | KPX Academy",
-    description: "Find answers about KPX Academy programmes, registration, payments, workshops, certificates, and learning.",
-  },
-  "/souvenirs": {
-    title: "Custom Souvenirs & Gifts | KPX Academy",
-    description: "Explore KPX Academy's custom souvenir catalogue and enquire about personalised products and bulk orders.",
-  },
-  "/workshops/track-booking": { title: "Track a Workshop Booking | KPX Academy", description: "Securely check the status and updates for your KPX Academy creative workshop booking." },
-  "/workshops/book": {
-    title: "Book a Creative Workshop | KPX Academy",
-    description: "Request a practical creative workshop with KPX Academy for your group, organisation, or event.",
-  },
-  "/souvenirs/enquire": {
-    title: "Request a Custom Souvenir | KPX Academy",
-    description: "Tell KPX Academy about your custom souvenir idea, quantity, and event requirements.",
-  },
-};
+const staticMetadata = STATIC_PAGE_METADATA;
 
 const apiBase = () =>
   (import.meta.env.VITE_API_URL || DEFAULT_API_BASE).replace(/[/]+$/, "");
@@ -141,8 +107,7 @@ async function loadFrameworkRouteData(request: Request) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },
   });
-  let detailTitle: string | undefined;
-  let detailDescription: string | undefined;
+  let detailMetadata: { title: string; description: string; canonicalPath: string } | undefined;
 
   const load = async <T,>(key: readonly unknown[], path: string) => {
     const data = await fetchPublicData<T>(path);
@@ -197,8 +162,13 @@ async function loadFrameworkRouteData(request: Request) {
       ["training", "detail", slug],
       `/training/slug/${encodeURIComponent(slug)}`,
     );
-    detailTitle = programme.title;
-    detailDescription = programme.shortDescription || programme.description || undefined;
+    if (programme.title) {
+      detailMetadata = getProgrammeMetadata(
+        programme.title,
+        programme.shortDescription || programme.description,
+        slug,
+      );
+    }
     if (programme.id) {
       await load(
         ["training", "media", programme.id],
@@ -220,8 +190,9 @@ async function loadFrameworkRouteData(request: Request) {
       ["site-content", "resource", slug],
       `/site-content/resources/${encodeURIComponent(slug)}`,
     );
-    detailTitle = resource.title;
-    detailDescription = resource.description || undefined;
+    if (resource.title) {
+      detailMetadata = getResourceMetadata(resource.title, resource.description, slug);
+    }
   }
 
   if (pathname === "/gallery") {
@@ -254,20 +225,19 @@ async function loadFrameworkRouteData(request: Request) {
       ["souvenirs", "product", slug],
       `/souvenirs/${encodeURIComponent(slug)}`,
     );
-    detailTitle = product.name;
-    detailDescription = product.description || undefined;
+    if (product.name) {
+      detailMetadata = getSouvenirMetadata(product.name, product.description, slug);
+    }
   }
 
   const staticPage = staticMetadata[pathname];
   const seo = {
-    title: detailTitle
-      ? `${detailTitle} | KPX Academy`
-      : staticPage?.title || "KPX Academy | Practical Skills Training & Creative Learning",
+    title: detailMetadata?.title || staticPage?.title || DEFAULT_PAGE_METADATA.title,
     description:
-      detailDescription ||
+      detailMetadata?.description ||
       staticPage?.description ||
-      "Explore practical skills training, creative learning, and resources from KPX Academy.",
-    canonical: new URL(pathname, SITE_URL).toString(),
+      DEFAULT_PAGE_METADATA.description,
+    canonical: new URL(detailMetadata?.canonicalPath || pathname, SITE_URL).toString(),
   };
 
   return { dehydratedState: dehydrate(queryClient), seo };
@@ -324,11 +294,10 @@ export function meta({ data, location }: Route.MetaArgs) {
       ? "Training Programme Details | KPX Academy"
       : pathname.startsWith("/resources/")
         ? "Training Resource | KPX Academy"
-        : "KPX Academy | Practical Skills Training & Creative Learning");
-  const description =
-    seo?.description ||
-    fallback?.description ||
-    "Explore practical skills training, creative learning, and resources from KPX Academy.";
+        : DEFAULT_PAGE_METADATA.title);
+  const description = cleanPageDescription(
+    seo?.description || fallback?.description || DEFAULT_PAGE_METADATA.description,
+  );
   const canonical =
     pathname === "/courses"
       ? new URL("/programs", SITE_URL).toString()
