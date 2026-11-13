@@ -259,14 +259,14 @@ The FAQ double-gutter issue was corrected during migration by removing the redun
 - [x] Add a split-layout variant for pages that need a side-by-side hero composition.
 - [ ] Inspect hero alignment and text/image contrast at mobile, tablet, and desktop breakpoints.
 
-**Phase 2 progress:** `src/components/ui/PublicPageHero.tsx` now supports solid, image-backed, and split layouts. FAQ, Gallery, Resources, About, and Certificates use the shared component. The FAQ search control and certificate actions remain functional. The About page retains its side-by-side promise panel through the split variant. Hero content has a short opacity/vertical entrance transition; the transition is disabled when the user requests reduced motion. No animation is required to reveal information or operate controls.
+**Phase 2 progress:** `src/components/ui/PublicPageHero.tsx` now supports solid, image-backed, and split layouts. FAQ, Gallery, Resources, About, Certificates, Training Programmes, and Souvenir Catalogue use the shared component. The FAQ search control and certificate actions remain functional. The About page retains its side-by-side promise panel through the split variant. Hero content has a short opacity/vertical entrance transition; the transition is disabled when the user requests reduced motion. The homepage carousel now has an explicit pause/play control, pauses when users focus or hover over it, and does not auto-rotate when reduced motion is requested. Slide changes are not announced automatically to screen readers. No animation is required to reveal information or operate controls.
 
 **Animation and icon rules:** Motion is progressive enhancement only. Respect `prefers-reduced-motion`, avoid parallax and continuously moving decorative elements, and do not animate essential content in a way that delays access. Icons should reinforce a visible text label, not replace it; decorative icons must be `aria-hidden`, and icon-only buttons require accessible names.
 
 **Exit criteria:** Shared structural rules are used by all in-scope public pages, with no unintended visual regressions at mobile and desktop breakpoints. This phase remains in progress until the split variant, remaining page migrations, and rendered responsive review are complete.
 
 #### Phase 3 — Public-page migration
-- [ ] Migrate the homepage and remaining public informational/catalogue pages to the shared hero structure where appropriate.
+- [ ] Migrate the homepage and remaining public informational/catalogue pages to the shared hero structure where appropriate. The homepage retains its carousel-specific composition and now has accessible motion controls.
 - [ ] Retain intentional page-specific compositions (for example, split layouts) through documented variants rather than one-off spacing overrides.
 - [ ] Remove obsolete page-level hero styles only after confirming they have no remaining consumers.
 
