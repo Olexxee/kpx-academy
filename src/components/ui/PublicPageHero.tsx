@@ -41,13 +41,14 @@ export function PublicPageHero({
             alt={imageAlt}
             aria-hidden={imageAlt ? undefined : true}
             className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover object-center"
+            loading="eager"
             fetchPriority="high"
           />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/95 via-[#07152F]/85 to-[#07152F]/65" />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-[#07152F]/35 to-transparent" />
         </>
       )}
-      <div className="mx-auto w-full max-w-container px-4 py-14 sm:px-6 sm:py-18 lg:px-8 lg:py-20">
+      <div className="mx-auto w-full max-w-container px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="public-page-hero__content max-w-4xl">
           <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#F4DCD6] sm:text-sm">
             {Icon && <Icon aria-hidden="true" size={16} strokeWidth={2.2} />}
