@@ -138,13 +138,17 @@ h6 {
   color: var(--kpx-dark-charcoal);
 }
 
-:focus-visible {
+.public-site-shell :focus-visible {
   /* Keep a strong focus indicator even when component utilities reset outlines. */
   outline: 3px solid var(--kpx-deep-magenta) !important;
   outline-offset: 3px;
   box-shadow: 0 0 0 2px #ffffff !important;
 }
 
+.public-site-shell main:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
 
 /* Restrained entrance motion: never required to understand or operate the page. */
 @keyframes public-hero-enter {
