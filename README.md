@@ -449,3 +449,23 @@ These are baseline hardening controls and do not require an application script/s
 **Deliberately deferred:** no enforced Content Security Policy, COOP, or Permissions-Policy has been added. CSP requires an inventory of inline scripts, Google Fonts, Cloudinary, payment and authentication integrations, and any other runtime origins. COOP can interfere with popup-based authentication/payment flows. Permissions-Policy must be based on actual browser API usage. The next security step is to inspect the deployed response headers and run registration, Paystack, Google sign-in, and admin-login regression checks before adding those policies.
 
 **Verification boundary:** the configuration change is committed, but the Vercel deployment and response headers have not yet been verified. Do not treat Phase 6A as deployed until the Vercel build is READY and the response headers are confirmed on the production domain.
+
+
+#### Phase 6A verification — baseline headers deployed
+
+The Vercel production deployment for the baseline header commit and its README follow-up reached **READY**. A direct fetch of the deployed root response confirmed:
+
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` (already present from the platform configuration)
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
+The existing SPA fallback rewrite to `/__spa-fallback.html` was preserved. The fetched `/admin/login` path also returned HTTP 200 with the SPA fallback document, as expected for this client-routed application; this verifies routing fallback delivery, not interactive login behavior. Browser-level authentication, payment, and registration regression tests remain outstanding.
+
+#### Phase 6B — report-only Content Security Policy (source change)
+
+A `Content-Security-Policy-Report-Only` header has been added for observation before enforcement. It allows the currently identified runtime dependencies: same-origin application resources, the Render API, Cloudinary images, Google Fonts styles/fonts, and the backend-hosted PDF resource iframe. Inline scripts and styles remain allowed in this report-only policy because the React Router SPA document includes inline hydration/runtime code and JSON-LD, and the app uses inline styling patterns. `object-src 'none'`, `base-uri 'self'`, and `frame-ancestors 'none'` are included in the policy.
+
+**Important limitations:** report-only does not block resources; it only surfaces policy violations in browser developer tools. No CSP reporting collector is configured, so violations are not centrally collected. The policy is an initial inventory, not proof that every route and admin workflow is covered. In particular, verify PDF preview, Cloudinary uploads/previews, admin operations, Google sign-in if enabled, and Paystack checkout before tightening any directive. Do not convert this policy to enforced CSP until browser testing confirms there are no required-resource violations. The use of `'unsafe-inline'` means this is not yet a strong script-injection mitigation; nonce/hash-based script policy is a later hardening step and requires a compatible document-generation strategy.
+
+**Verification boundary:** the report-only policy is committed, but its deployment and browser console reports have not yet been verified. Do not claim CSP is enforced or that the application is CSP-clean.
