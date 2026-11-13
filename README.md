@@ -423,3 +423,12 @@ This matches the public site's observed body and heading weight usage, including
 **Next verification:** inspect the generated Google Fonts CSS and deployed font requests, confirm all required weights render without synthetic-weight regressions, check heading/layout stability (CLS), then compare mobile PageSpeed using the same conditions. If the CSS request remains the dominant delay, evaluate self-hosted WOFF2 files with correct subsets and font metric overrides as a separate change; do not add speculative preload hints.
 
 **Remaining Phase 5A item:** the local `/homepagehero.jpg` binary has not yet been converted. It is already lazy-loaded and is not the LCP image. A correctly cropped WebP/AVIF derivative still requires visual comparison before swapping the asset; no fake Cloudinary transform or unverified external image proxy will be introduced.
+
+
+#### Phase 5C — avoid anonymous current-user requests (source change in progress)
+
+The frontend previously mounted `AuthBootstrap` around the entire application, and that component unconditionally ran `useCurrentUser`. As a result, every public page and the administrator login page could call the protected `GET /auth/me` endpoint even when no administrator session was needed. The latest Lighthouse report showed a 401 response for this request. A 401 is an expected response for an unauthenticated request, but making that request on every public visit is unnecessary noise and avoidable network work.
+
+The auth bootstrap now enables the current-user query only on protected `/admin` routes, excluding `/admin/login`. Public routes and the login page no longer initiate the current-user request. When a protected admin route is entered, the existing session check still runs before `AdminRoute` grants access. Login and logout mutations, cookie handling, endpoint contracts, and authorization enforcement are unchanged.
+
+**Verification boundary:** this is a targeted frontend source change. Confirm after deployment that public pages and `/admin/login` do not request `/api/auth/me`, while a direct visit to `/admin` still checks the existing session and redirects unauthenticated visitors to `/admin/login`. Also verify a successful login still reaches the dashboard and a page refresh preserves a valid administrator session. No build, CI result, browser network trace, or production authentication regression test has been completed in this source pass.
