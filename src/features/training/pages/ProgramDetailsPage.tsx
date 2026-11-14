@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
+import { ExpandableDescription } from "../../../components/ui/ExpandableDescription";
 import { useTrainingProgram } from "../hooks/useTrainingPrograms";
 import { useTrainingMedia } from "../hooks/useTrainingMedia";
 import type { ProgramMedia } from "../types";
@@ -256,9 +257,9 @@ export const ProgramDetailsPage = () => {
                   <h2 className="font-heading text-xl font-bold text-primary">
                     About this programme
                   </h2>
-                  <p className="mt-4 whitespace-pre-line leading-8 text-text-muted">
-                    {program.description}
-                  </p>
+                  <div className="mt-4">
+                    <ExpandableDescription text={program.description} />
+                  </div>
                 </div>
               )}
             </div>
