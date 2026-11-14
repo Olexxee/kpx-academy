@@ -4,13 +4,11 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 type ExpandableDescriptionProps = {
   text: string;
   className?: string;
-  previewLines?: number;
 };
 
 export const ExpandableDescription = ({
   text,
   className = "",
-  previewLines = 4,
 }: ExpandableDescriptionProps) => {
   const contentId = useId();
   const contentRef = useRef<HTMLParagraphElement>(null);
@@ -44,7 +42,7 @@ export const ExpandableDescription = ({
       <p
         ref={contentRef}
         id={contentId}
-        className={`whitespace-pre-line leading-8 text-text-muted ${!expanded ? `line-clamp-${previewLines}` : ""} ${className}`.trim()}
+        className={`whitespace-pre-line leading-8 text-text-muted ${!expanded ? "line-clamp-4" : ""} ${className}`.trim()}
       >
         {text}
       </p>
