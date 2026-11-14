@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
+import { ExpandableDescription } from "../../../components/ui/ExpandableDescription";
 import { createSouvenirOrder, getSouvenirProduct } from "../api";
 import { SOUVENIR_COLOR_PALETTE, type SouvenirOrderResult, type SouvenirPriceTier, type SouvenirPaletteColor } from "../types";
 import { updatePageMetadata } from "../../../lib/seo";
@@ -57,7 +58,7 @@ export const SouvenirProductPage = () => {
     <section className="py-10 sm:py-16"><Container><div className="grid items-start gap-10 lg:grid-cols-[1fr_0.9fr] lg:gap-14">
       <div><div className="overflow-hidden rounded-card border border-border bg-[#F4DCD6]">{product.media?.length ? <img src={(product.media.find((item)=>item.isPrimary) ?? product.media[0]).url} alt={(product.media.find((item)=>item.isPrimary) ?? product.media[0]).altText || product.name} className="aspect-[4/3] w-full object-cover"/> : <div className="flex aspect-[4/3] items-end bg-primary p-8"><p className="font-heading text-3xl font-bold text-white">{product.name}</p></div>}</div>
         {product.media?.length > 1 && <div className="mt-4 grid grid-cols-4 gap-3">{product.media.slice(0,4).map((item)=><img key={item.id} src={item.url} alt={item.altText || product.name} loading="lazy" className="aspect-square w-full rounded-control border border-border object-cover"/>)}</div>}
-        <p className="mt-8 text-sm font-bold uppercase tracking-[0.16em] text-secondary">Souvenir package</p><h1 className="mt-3 font-heading text-3xl font-bold text-primary sm:text-4xl">{product.name}</h1><p className="mt-4 whitespace-pre-line leading-8 text-text-muted">{product.description || "Contact us to discuss how this package can fit your event."}</p>
+        <p className="mt-8 text-sm font-bold uppercase tracking-[0.16em] text-secondary">Souvenir package</p><h1 className="mt-3 font-heading text-3xl font-bold text-primary sm:text-4xl">{product.name}</h1><div className="mt-4"><ExpandableDescription text={product.description || "Contact us to discuss how this package can fit your event."} /></div>
         {product.productionLeadTimeDays != null && <p className="mt-5 text-sm text-text-muted">Estimated production lead time: <strong className="text-primary">{product.productionLeadTimeDays} days</strong></p>}
         {product.bookingTerms && <div className="mt-6 rounded-control border border-border bg-white p-4"><h2 className="font-semibold text-primary">Package terms</h2><p className="mt-2 whitespace-pre-line text-sm leading-7 text-text-muted">{product.bookingTerms}</p></div>}
       </div>
