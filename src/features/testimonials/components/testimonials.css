@@ -59,7 +59,7 @@
   aspect-ratio: 1;
   top: -17rem;
   left: -13rem;
-  background: radial-gradient(circle, rgba(42, 127, 127, .12), transparent 68%);
+  background: radial-gradient(circle, rgba(139, 30, 90, .12), transparent 68%);
   animation: kpx-halo-drift 16s ease-in-out infinite;
 }
 
@@ -90,7 +90,7 @@
 .kpx-testimonials__orbit--two {
   width: min(58vw, 44rem);
   aspect-ratio: 1.65;
-  border-color: rgba(42, 127, 127, .12);
+  border-color: rgba(139, 30, 90, .12);
   animation: kpx-orbit-reverse 94s linear infinite;
 }
 
@@ -404,7 +404,7 @@
 
 .kpx-testimonials__success {
   margin: 1rem 0 0;
-  color: #275D4D;
+  color: #17324D;
   font-size: .88rem;
   font-weight: 650;
   text-align: right;
@@ -512,8 +512,8 @@
 
 .kpx-testimonial-form input:focus,
 .kpx-testimonial-form textarea:focus {
-  border-color: #2A7F7F;
-  box-shadow: 0 0 0 3px rgba(42, 127, 127, .12);
+  border-color: #8B1E5A;
+  box-shadow: 0 0 0 3px rgba(139, 30, 90, .12);
 }
 
 .kpx-testimonial-form textarea { resize: vertical; line-height: 1.65; }
