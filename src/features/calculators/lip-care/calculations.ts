@@ -53,7 +53,9 @@ export function calculateManualMeasurements(ingredients: ManualIngredientInput[]
     throw new LipCareCalculationError("Every ingredient quantity must be greater than zero.");
   }
   const units: ManualMeasurementUnit[] = ["g", "ml", "tsp", "tbsp", "cup", "drop"];
+  if (ingredients.some((item) => !units.includes(item.unit))) throw new LipCareCalculationError("Select a supported measurement unit for every ingredient.");
   const subtotals = Object.fromEntries(units.map((unit) => [unit, 0])) as Record<ManualMeasurementUnit, number>;
   for (const item of ingredients) subtotals[item.unit] += item.quantity;
+  if (units.some((unit) => !Number.isFinite(subtotals[unit]))) throw new LipCareCalculationError("The entered quantities are too large to total safely.");
   return { ingredients: ingredients.map((item) => ({ ...item })), subtotals };
 }
