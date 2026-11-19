@@ -39,8 +39,8 @@ export const STATIC_PAGE_METADATA: Record<string, PageMetadata> = {
       "View student projects, creative work, and practical training activities from KPX Academy.",
   },
   "/calculators/resin": {
-    title: "Resin Planning & Cost Calculator | KPX Academy",
-    description: "Estimate resin and hardener quantities, mould capacity, production costs and selling prices with the browser-based KPX Academy resin calculator.",
+    title: "Resin & Lip Care Calculators | KPX Academy",
+    description: "Calculate resin quantities, project costs and custom lip care formulation weights with free browser-based calculators from KPX Academy.",
   },
   "/faq": {
     title: "KPX Academy FAQs | Courses, Registration & Payments",

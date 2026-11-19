@@ -10,6 +10,7 @@ export const STATIC_PUBLIC_PATHS = [
   "/resources",
   "/gallery",
   "/faq",
+  "/calculators/resin",
   "/souvenirs",
 ];
 

@@ -9,7 +9,7 @@
     "build": "react-router typegen && tsc -b && react-router build",
     "lint": "eslint .",
     "preview": "vite preview --outDir build/client",
-    "test": "node --experimental-strip-types --test src/features/calculators/resin/calculations.test.mjs"
+    "test": "node --experimental-strip-types --test src/features/calculators/resin/calculations.test.mjs src/features/calculators/lip-care/calculations.test.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.2",
