@@ -235,7 +235,7 @@ export const ProgramDetailsPage = () => {
               </h1>
 
               {program.shortDescription && (
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-text-muted sm:text-xl">
+                <p className="mt-5 line-clamp-3 max-w-2xl text-base leading-7 text-text-muted sm:text-lg">
                   {program.shortDescription}
                 </p>
               )}
@@ -253,8 +253,8 @@ export const ProgramDetailsPage = () => {
               </div>
 
               {program.description && (
-                <div className="mt-9 max-w-2xl">
-                  <h2 className="font-heading text-xl font-bold text-primary">
+                <div className="mt-7 max-w-2xl rounded-card border border-border bg-surface p-5 sm:p-6">
+                  <h2 className="font-heading text-lg font-bold text-primary">
                     About this programme
                   </h2>
                   <div className="mt-4">
@@ -322,9 +322,7 @@ export const ProgramDetailsPage = () => {
                 )}
 
                 <p className="mt-4 text-center text-sm leading-6 text-text-muted">
-                  Registration and payment are handled through our secure
-                  enrolment process. Training delivery instructions are provided
-                  after the required verification.
+                  Secure registration and payment. Programme access details follow verification.
                 </p>
               </div>
             </aside>

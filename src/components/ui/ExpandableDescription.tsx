@@ -42,7 +42,7 @@ export const ExpandableDescription = ({
       <p
         ref={contentRef}
         id={contentId}
-        className={`whitespace-pre-line leading-8 text-text-muted ${!expanded ? "line-clamp-4" : ""} ${className}`.trim()}
+        className={`whitespace-pre-line text-sm leading-7 text-text-muted sm:text-base ${!expanded ? "line-clamp-3" : ""} ${className}`.trim()}
       >
         {text}
       </p>

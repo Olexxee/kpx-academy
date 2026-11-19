@@ -54,7 +54,7 @@ export const TrainingProgramsPage = () => {
       <PublicPageHero
         eyebrow="KPX Academy · Learn with purpose"
         title={<>Find a skill worth <span className="text-[#F4DCD6]">learning.</span></>}
-        description="Explore practical training programmes designed to help you develop your knowledge, strengthen your skills, and put what you learn into practice."
+        description="Practical programmes built around skills you can put to work."
         icon={GraduationCap}
         image={siteImages.programmes}
         actions={
@@ -174,7 +174,7 @@ function ProgrammeCard({ program }: { program: TrainingProgram }) {
     program.deliveryMode === "HYBRID" ? "Hybrid" : program.deliveryMode;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-surface transition duration-200 hover:-translate-y-1 hover:shadow-md">
+    <article className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-surface shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
       <Link to={`/programs/${program.slug}`} aria-label={`View ${program.title}`} className="block overflow-hidden bg-[#F4DCD6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-inset">
         <div className="relative aspect-[4/3] overflow-hidden">
           {image ? (
@@ -209,8 +209,8 @@ function ProgrammeCard({ program }: { program: TrainingProgram }) {
         <h3 className="mt-4 font-heading text-xl font-bold leading-snug text-primary">
           <Link to={`/programs/${program.slug}`} className="transition-colors hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary">{program.title}</Link>
         </h3>
-        <p className="mt-3 flex-1 text-sm leading-7 text-text-muted">
-          {program.shortDescription || "Explore this programme to learn about its content, delivery, and training details."}
+        <p title={program.shortDescription || undefined} className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-text-muted">
+          {program.shortDescription || "Explore the learning path, delivery format, and outcomes."}
         </p>
         <div className="mt-6 flex items-end justify-between gap-3 border-t border-border pt-5">
           <div>
