@@ -182,6 +182,9 @@ export function calculateResinProject(input: ResinCalculatorInput): ResinCalcula
   const hasSellingPrice = input.sellingPricePerPiece !== undefined;
   const totalSales = hasSellingPrice ? input.sellingPricePerPiece! * input.pieces : undefined;
   const profitPerPiece = hasSellingPrice ? input.sellingPricePerPiece! - costPerPiece : undefined;
+  if (hasSellingPrice && (!Number.isFinite(totalSales) || !Number.isFinite(profitPerPiece) || !Number.isFinite(totalSales! - totalOrderCost))) {
+    throw new CalculationInputError("The selling price is too large to calculate safely. Check your input.");
+  }
 
   return {
     cavityVolumeMl,
