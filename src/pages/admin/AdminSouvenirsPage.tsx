@@ -27,7 +27,8 @@ export default function AdminSouvenirsPage() {
     mutationFn: ({ productId, data }: { productId: string; data: { label: string; minQuantity: number; maxQuantity: number | null; unitPrice: number; currency: string; displayOrder: number } }) => createAdminSouvenirPriceTier(productId, data),
     onSuccess: async () => { setNotice("Price tier saved and activated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
-  const updateTier = useMutation({ mutationFn: ({ id, data }: { id: string; data: { label?: string; minQuantity?: number; maxQuantity?: number | null; unitPrice?: number } }) => updateAdminSouvenirPriceTier(id, data), onSuccess: async () => { setNotice("Price tier updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });\n  const deleteTier = useMutation({ mutationFn: (id: string) => deleteAdminSouvenirPriceTier(id), onSuccess: async () => { setNotice("Unreferenced price tier deleted."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });
+  const updateTier = useMutation({ mutationFn: ({ id, data }: { id: string; data: { label?: string; minQuantity?: number; maxQuantity?: number | null; unitPrice?: number } }) => updateAdminSouvenirPriceTier(id, data), onSuccess: async () => { setNotice("Price tier updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });
+  const deleteTier = useMutation({ mutationFn: (id: string) => deleteAdminSouvenirPriceTier(id), onSuccess: async () => { setNotice("Unreferenced price tier deleted."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });
   const toggleTier = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) => setAdminSouvenirPriceTierActive(id, active),
     onSuccess: async () => { setNotice("Price tier status updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
