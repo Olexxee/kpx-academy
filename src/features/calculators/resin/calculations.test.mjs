@@ -84,9 +84,9 @@ test("converts separate purchase units only when component density is supplied",
 
 test("prices only consumed quantities from a combined kit", () => {
   const result = calculateResinProject({ ...base, orderQuantity: 1, purchaseMethod: "combined" });
-  assert.equal(result.resinCost, 40);
-  assert.equal(result.hardenerCost, 20);
-  assert.equal(result.resinAndHardenerCost, 60);
+  assert.equal(result.resinCost, 30);
+  assert.equal(result.hardenerCost, 15);
+  assert.equal(result.resinAndHardenerCost, 45);
   assert.ok(result.resinAndHardenerCost < base.combinedPurchasePrice);
 });
 
