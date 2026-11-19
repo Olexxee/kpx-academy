@@ -760,10 +760,8 @@ function NumberField({
       onChange(null);
       return;
     }
-    const parsed = integer
-      ? (/^-?\d+$/.test(raw) ? Number(raw) : Number.NaN)
-      : Number(raw);
-    if (Number.isFinite(parsed)) {
+    const parsed = Number(raw);
+    if (Number.isFinite(parsed) && (!integer || Number.isInteger(parsed))) {
       lastEmitted.current = parsed;
       onChange(parsed);
     }
