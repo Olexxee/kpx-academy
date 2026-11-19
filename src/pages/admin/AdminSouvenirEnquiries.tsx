@@ -19,7 +19,6 @@ const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2
 const btn = "rounded-xl px-3 py-2 text-xs font-semibold disabled:opacity-50";
 const unwrap = <T,>(p: Promise<{data: Envelope<T>}>) => p.then(r => r.data.data);
 const list = async (status: string, page: number) => unwrap(registrationApi.get<Envelope<Page>>("/souvenirs/admin/enquiries", { params: { page, limit: 10, ...(status ? {status} : {})} }));
-const detail = async (id: string) => unwrap(registrationApi.get<Envelope<Enquiry>>(`/souvenirs/admin/enquiries/${encodeURIComponent(id)}`));
 const update = async (id: string, payload: Partial<Pick<Enquiry, "status" | "adminNotes" | "responseMessage">>) => unwrap(registrationApi.patch<Envelope<Enquiry>>(`/souvenirs/admin/enquiries/${encodeURIComponent(id)}`, payload));
 const createQuote = async (id: string, payload: {currency: string; message: string; terms: string; items: Array<{name: string; quantity: number; unitPrice: number}>}) => unwrap(registrationApi.post<Envelope<Quote>>(`/souvenirs/admin/enquiries/${encodeURIComponent(id)}/quotes`, payload));
 const attachQuoteMedia = async (id: string, quoteId: string, files: File[]) => {
@@ -59,7 +58,6 @@ export default function AdminSouvenirEnquiries() {
   const send = useMutation({mutationFn:({id,quoteId}:{id:string;quoteId:string})=>sendQuote(id,quoteId),onSuccess:invalidate});
   const enquiries = query.data?.items ?? [];
   const totalPages = Math.max(1,Math.ceil((query.data?.pagination.total ?? 0)/(query.data?.pagination.limit ?? 10)));
-  const selected = enquiries.find(item=>item.id===expanded);
   return <section className="mt-7 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
     <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-bold text-slate-900">Customer design enquiries</h2><p className="mt-1 text-sm text-slate-500">Review customer briefs and reference uploads, record internal notes, and prepare quotations.</p></div>
       <select value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}} className={field+" mt-0 w-auto"}><option value="">All statuses</option>{statuses.map(s=><option key={s} value={s}>{s.replaceAll("_"," ")}</option>)}</select>
