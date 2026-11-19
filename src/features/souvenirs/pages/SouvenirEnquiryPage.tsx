@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
-import { PackagePlus } from "lucide-react";
+import { FileVideo, ImagePlus, PackagePlus, X } from "lucide-react";
 import { Container } from "../../../components/ui/Container";
 import { PublicPageHero } from "../../../components/ui/PublicPageHero";
 import { createSouvenirEnquiry, getSouvenirProducts } from "../api";
 import type { SouvenirEnquiryResult } from "../types";
+
+const MAX_FILES = 10;
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+const ACCEPTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4", "video/webm", "video/quicktime"]);
 
 export const SouvenirEnquiryPage = () => {
   const [params] = useSearchParams();
@@ -16,9 +20,53 @@ export const SouvenirEnquiryPage = () => {
   const [quantity,setQuantity] = useState("");
   const [description,setDescription] = useState("");
   const [files,setFiles] = useState<File[]>([]);
+  const [filePreviews,setFilePreviews] = useState<Array<{ file: File; url: string }>>([]);
+  const previewUrls = useRef(new Set<string>());
+  const [fileError,setFileError] = useState("");
   const [result,setResult] = useState<SouvenirEnquiryResult|null>(null);
   const productsQuery = useQuery({queryKey:["souvenirs","catalogue"],queryFn:getSouvenirProducts,staleTime:300000});
   const mutation = useMutation({mutationFn:createSouvenirEnquiry,onSuccess:setResult});
+
+  useEffect(() => () => {
+    previewUrls.current.forEach((url) => URL.revokeObjectURL(url));
+    previewUrls.current.clear();
+  }, []);
+
+  const addFiles = (selected: File[]) => {
+    setFileError("");
+    const invalidType = selected.find((file) => !ACCEPTED_TYPES.has(file.type));
+    if (invalidType) {
+      setFileError(`“${invalidType.name}” has an unsupported file type.`);
+      return;
+    }
+    const oversized = selected.find((file) => file.size > MAX_FILE_BYTES);
+    if (oversized) {
+      setFileError(`“${oversized.name}” exceeds the 10 MB per-file limit.`);
+      return;
+    }
+    if (files.length + selected.length > MAX_FILES) {
+      setFileError(`You can attach up to ${MAX_FILES} files.`);
+      return;
+    }
+    const previews = selected.map((file) => {
+      const url = URL.createObjectURL(file);
+      previewUrls.current.add(url);
+      return { file, url };
+    });
+    setFiles((current) => [...current, ...selected]);
+    setFilePreviews((current) => [...current, ...previews]);
+  };
+
+  const removeFile = (index: number) => {
+    const preview = filePreviews[index];
+    if (preview) {
+      URL.revokeObjectURL(preview.url);
+      previewUrls.current.delete(preview.url);
+    }
+    setFiles((current) => current.filter((_, fileIndex) => fileIndex !== index));
+    setFilePreviews((current) => current.filter((_, fileIndex) => fileIndex !== index));
+    setFileError("");
+  };
 
   if (result) return <section className="py-16 sm:py-24"><Container><div className="mx-auto max-w-2xl rounded-card border border-border bg-white p-7 sm:p-10"><p role="status" aria-live="polite" aria-atomic="true" className="text-sm font-bold uppercase tracking-[0.16em] text-secondary">Enquiry received</p><h1 className="mt-3 font-heading text-3xl font-bold text-primary">Your custom request is in.</h1><p className="mt-4 leading-7 text-text-muted">We have recorded your enquiry. Keep the reference below and use the private link to review our response and any quotation.</p><div className="mt-6 rounded-control bg-background p-4"><p className="text-xs text-text-muted">Enquiry reference</p><p className="mt-1 font-heading text-lg font-bold text-primary">{result.enquiry.publicReference}</p><p className="mt-2 text-sm text-text-muted">Reference files: {result.enquiry.mediaCount}</p></div><Link to={`/souvenirs/enquiries/access/${result.accessToken}`} className="mt-7 inline-flex min-h-12 items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white hover:bg-primary">Open secure enquiry page</Link><p className="mt-4 text-xs leading-6 text-text-muted">Save this private link somewhere secure. It grants access to your enquiry and quotation.</p></div></Container></section>;
 
@@ -42,14 +90,28 @@ export const SouvenirEnquiryPage = () => {
         <div className="mt-7 grid gap-5 sm:grid-cols-2">
           <label className="block"><span className="mb-2 block text-sm font-semibold text-text">Full name *</span><input value={name} onChange={(e)=>setName(e.target.value)} autoComplete="name" required minLength={2} maxLength={100} className="min-h-12 w-full rounded-control border border-border px-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20"/></label>
           <label className="block"><span className="mb-2 block text-sm font-semibold text-text">Email address *</span><input type="email" value={email} onChange={(e)=>setEmail(e.target.value)} autoComplete="email" required maxLength={254} className="min-h-12 w-full rounded-control border border-border px-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20"/></label>
-          <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-semibold text-text">WhatsApp number *</span><input type="tel" value={whatsApp} onChange={(e)=>setWhatsApp(e.target.value)} autoComplete="tel" required minLength={7} maxLength={30} pattern="\+?[0-9 ()-]+" className="min-h-12 w-full rounded-control border border-border px-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20"/></label>
+          <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-semibold text-text">WhatsApp number *</span><input type="tel" value={whatsApp} onChange={(e)=>setWhatsApp(e.target.value)} autoComplete="tel" required minLength={7} maxLength={30} pattern="\\+?[0-9 ()-]+" className="min-h-12 w-full rounded-control border border-border px-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20"/></label>
           <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-semibold text-text">Related package <span className="font-normal text-text-muted">(optional)</span></span><select value={productId || productsQuery.data?.find((product)=>product.slug===params.get("product"))?.id || ""} onChange={(e)=>setProductId(e.target.value)} className="min-h-12 w-full rounded-control border border-border bg-white px-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20"><option value="">I have a custom idea</option>{(productsQuery.data??[]).map((product)=> <option key={product.id} value={product.id}>{product.name}</option>)}</select>{productsQuery.isError&&<span className="mt-1 block text-xs text-text-muted">The catalogue could not be loaded; you can still submit a custom request.</span>}</label>
           <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-semibold text-text">Estimated quantity <span className="font-normal text-text-muted">(optional)</span></span><input type="number" min={1} max={100000} value={quantity} onChange={(e)=>setQuantity(e.target.value)} className="min-h-12 w-full rounded-control border border-border bg-white px-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/30"/></label>
           <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-semibold text-text">Describe your requirements *</span><textarea value={description} onChange={(e)=>setDescription(e.target.value)} required minLength={10} maxLength={5000} rows={6} placeholder="Include the event or occasion, preferred design, branding, colours, deadline, and other requirements." className="w-full rounded-control border border-border bg-white px-3 py-3 focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/30"/></label>
-          <label className="block sm:col-span-2"><span className="mb-2 block text-sm font-semibold text-text">Reference files <span className="font-normal text-text-muted">(optional)</span></span><input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e)=>setFiles(Array.from(e.target.files??[]).slice(0,10))} className="block w-full text-sm text-text-muted file:mr-3 file:rounded-control file:border-0 file:bg-[#F4DCD6] file:px-4 file:py-2 file:font-semibold file:text-secondary"/><span aria-live="polite" className="mt-2 block text-xs leading-5 text-text-muted">{files.length} of 10 files selected. JPEG, PNG, WEBP, GIF, MP4, WEBM, or MOV up to 10 MB each.</span></label>
+          <div className="sm:col-span-2">
+            <label className="block"><span className="mb-2 block text-sm font-semibold text-text">Reference files <span className="font-normal text-text-muted">(optional)</span></span><span className="mb-3 block text-xs leading-5 text-text-muted">Upload up to 10 images or videos, maximum 10 MB each. Image previews appear below before you submit.</span><input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(event)=>{addFiles(Array.from(event.target.files??[]));event.target.value="";}} disabled={files.length>=MAX_FILES} className="block w-full text-sm text-text-muted file:mr-3 file:rounded-control file:border-0 file:bg-[#F4DCD6] file:px-4 file:py-2 file:font-semibold file:text-secondary disabled:opacity-50"/></label>
+            <p aria-live="polite" className="mt-2 text-xs text-text-muted">{files.length} of {MAX_FILES} files selected.</p>
+            {fileError&&<p role="alert" className="mt-2 text-sm text-red-700">{fileError}</p>}
+            {filePreviews.length>0&&<div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {filePreviews.map(({file,url},index)=><div key={`${file.name}-${file.lastModified}-${index}`} className="overflow-hidden rounded-control border border-border bg-background">
+                <div className="relative aspect-square bg-slate-100">
+                  {file.type.startsWith("image/")?<img src={url} alt={`Preview of ${file.name}`} className="h-full w-full object-cover"/>:<div className="flex h-full flex-col items-center justify-center gap-2 text-text-muted"><FileVideo size={30}/><span className="px-2 text-center text-xs">Video attached</span></div>}
+                  <button type="button" onClick={()=>removeFile(index)} aria-label={`Remove ${file.name}`} className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/95 text-primary shadow hover:bg-white"><X size={16}/></button>
+                </div>
+                <p className="truncate px-2 py-2 text-xs text-text-muted" title={file.name}>{file.name}</p>
+              </div>)}
+            </div>}
+            {files.length===0&&<div className="mt-3 flex items-center gap-2 rounded-control border border-dashed border-border p-4 text-sm text-text-muted"><ImagePlus size={18}/>No reference files added yet.</div>}
+          </div>
         </div>
         {mutation.isError&&<p role="alert" aria-live="assertive" className="mt-5 rounded-control border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">{mutation.error instanceof Error?mutation.error.message:"We could not submit your enquiry. Please try again."}</p>}
-        <button type="submit" disabled={mutation.isPending||files.length>10} className="mt-7 inline-flex min-h-12 w-full items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white transition hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60">{mutation.isPending?"Submitting enquiry…":"Submit custom enquiry"}</button>
+        <button type="submit" disabled={mutation.isPending||files.length>MAX_FILES||Boolean(fileError)} className="mt-7 inline-flex min-h-12 w-full items-center justify-center rounded-control bg-secondary px-6 py-3 font-semibold text-white transition hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60">{mutation.isPending?"Submitting enquiry…":"Submit custom enquiry"}</button>
         <p className="mt-4 text-xs leading-6 text-text-muted">We use your contact details to respond to this request. Submitting an enquiry does not require an account or initiate a payment.</p>
       </form>
     </div></Container></section>
