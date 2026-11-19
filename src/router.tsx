@@ -115,7 +115,7 @@ const routeDefinitions = [
       { path: "/souvenirs", element: <SouvenirCataloguePage /> },
       { path: "/souvenirs/enquire", element: <SouvenirEnquiryPage /> },
       { path: "/souvenirs/track-enquiry", element: <SouvenirEnquiryTrackerPage /> },
-      { path: "/souvenirs/enquiries/access/:reference/:token", element: <SouvenirGuestAccessPage /> },
+      { path: "/souvenirs/:resource/access/:reference/:token", element: <SouvenirGuestAccessPage /> },
       { path: "/souvenirs/:resource/access/:token", element: <SouvenirGuestAccessPage /> },
       { path: "/souvenirs/:slug", element: <SouvenirProductPage /> },
     ],
