@@ -38,6 +38,10 @@ export const STATIC_PAGE_METADATA: Record<string, PageMetadata> = {
     description:
       "View student projects, creative work, and practical training activities from KPX Academy.",
   },
+  "/calculators/resin": {
+    title: "Resin Planning & Cost Calculator | KPX Academy",
+    description: "Estimate resin and hardener quantities, mould capacity, production costs and selling prices with the browser-based KPX Academy resin calculator.",
+  },
   "/faq": {
     title: "KPX Academy FAQs | Courses, Registration & Payments",
     description:
