@@ -44,6 +44,11 @@ const SouvenirEnquiryPage = lazy(() =>
     default: SouvenirEnquiryPage,
   })),
 );
+const SouvenirEnquiryTrackerPage = lazy(() =>
+  import("./features/souvenirs/pages/SouvenirEnquiryTrackerPage").then(({ SouvenirEnquiryTrackerPage }) => ({
+    default: SouvenirEnquiryTrackerPage,
+  })),
+);
 const SouvenirGuestAccessPage = lazy(() =>
   import("./features/souvenirs/pages/SouvenirGuestAccessPage").then(({ SouvenirGuestAccessPage }) => ({
     default: SouvenirGuestAccessPage,
@@ -109,6 +114,8 @@ const routeDefinitions = [
       { path: "/workshops/access/:reference/:token", element: <WorkshopGuestAccessPage /> },
       { path: "/souvenirs", element: <SouvenirCataloguePage /> },
       { path: "/souvenirs/enquire", element: <SouvenirEnquiryPage /> },
+      { path: "/souvenirs/track-enquiry", element: <SouvenirEnquiryTrackerPage /> },
+      { path: "/souvenirs/:resource/access/:reference/:token", element: <SouvenirGuestAccessPage /> },
       { path: "/souvenirs/:resource/access/:token", element: <SouvenirGuestAccessPage /> },
       { path: "/souvenirs/:slug", element: <SouvenirProductPage /> },
     ],

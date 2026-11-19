@@ -27,9 +27,10 @@ export const SouvenirCataloguePage = () => {
       icon={Gift}
       image={siteImages.souvenirs}
       actions={
-        <Link to="/souvenirs/enquire" className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-[#17324D] transition hover:bg-[#FAF8F5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-          Start a souvenir enquiry
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link to="/souvenirs/enquire" className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-[#17324D] transition hover:bg-[#FAF8F5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Start a souvenir enquiry</Link>
+          <Link to="/souvenirs/track-enquiry" className="inline-flex min-h-12 items-center justify-center rounded-control border border-white/70 bg-[#17324D]/30 px-6 py-3 font-semibold text-white transition hover:bg-[#17324D]/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Track an enquiry</Link>
+        </div>
       }
     />
     <section className="py-12 sm:py-16 lg:py-20"><Container>

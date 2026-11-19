@@ -155,3 +155,68 @@ export const deleteAdminSouvenirPriceTier = async (tierId: string) =>
   (await registrationApi.delete<Envelope<{ id: string; deleted: boolean }>>(
     `/souvenirs/admin/price-tiers/${encodeURIComponent(tierId)}`,
   )).data.data;
+
+
+export interface AdminSouvenirOrder {
+  id: string;
+  publicReference: string;
+  customerName: string;
+  customerEmail: string;
+  customerWhatsApp: string;
+  productNameSnapshot: string;
+  quantity: number;
+  unitPriceSnapshot: number | string;
+  totalPriceSnapshot: number | string;
+  currency: string;
+  status: string;
+  customerNotes?: string | null;
+  adminNotes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  colorSelections: Array<{ nameSnapshot: string; colorHexSnapshot: string }>;
+  product?: { id: string; name: string; slug: string } | null;
+}
+
+export interface AdminSouvenirOrderPage {
+  items: AdminSouvenirOrder[];
+  pagination: { page: number; limit: number; total: number };
+}
+
+export const getAdminSouvenirOrders = async (status: string, page: number, limit = 10): Promise<AdminSouvenirOrderPage> =>
+  (await registrationApi.get<Envelope<AdminSouvenirOrderPage>>("/souvenirs/admin/orders", {
+    params: { page, limit, ...(status ? { status } : {}) },
+  })).data.data;
+
+export const updateAdminSouvenirOrder = async (id: string, payload: { status?: string; adminNotes?: string | null }): Promise<AdminSouvenirOrder> =>
+  (await registrationApi.patch<Envelope<AdminSouvenirOrder>>(
+    `/souvenirs/admin/orders/${encodeURIComponent(id)}`, payload,
+  )).data.data;
+
+
+export interface SouvenirGuestAccessChallenge {
+  challengeToken: string;
+  expiresInSeconds: number;
+  message: string;
+}
+export interface SouvenirGuestAccessSession {
+  accessToken: string;
+  expiresAt: string;
+  accessUrlPath: string;
+}
+export const requestGuestSouvenirEnquiryAccessCode = async (reference: string): Promise<SouvenirGuestAccessChallenge> =>
+  (await registrationApi.post<Envelope<SouvenirGuestAccessChallenge>>(
+    "/souvenirs/enquiries/track/request", { reference: reference.trim().toUpperCase() },
+  )).data.data;
+export const verifyGuestSouvenirEnquiryAccessCode = async (payload: { reference: string; challengeToken: string; code: string }): Promise<SouvenirGuestAccessSession> =>
+  (await registrationApi.post<Envelope<SouvenirGuestAccessSession>>(
+    "/souvenirs/enquiries/track/verify", { ...payload, reference: payload.reference.trim().toUpperCase() },
+  )).data.data;
+export const getGuestSouvenirEnquiryByCredentials = async (reference: string, token: string): Promise<SouvenirGuestEnquiry> =>
+  (await registrationApi.get<Envelope<SouvenirGuestEnquiry>>(
+    `/souvenirs/enquiries/access/${encodeURIComponent(reference)}/${encodeURIComponent(token)}`,
+  )).data.data;
+export const respondToSouvenirQuoteByCredentials = async (reference: string, token: string, quoteId: string, decision: "ACCEPT" | "DECLINE") =>
+  (await registrationApi.post<Envelope<unknown>>(
+    `/souvenirs/enquiries/access/${encodeURIComponent(reference)}/${encodeURIComponent(token)}/quote-response`,
+    { quoteId, decision },
+  )).data;

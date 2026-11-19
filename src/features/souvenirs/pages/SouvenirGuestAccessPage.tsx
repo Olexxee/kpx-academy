@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Container } from "../../../components/ui/Container";
-import { getGuestSouvenirEnquiry, getGuestSouvenirOrder, respondToSouvenirQuote, verifySouvenirPayment, retryGuestSouvenirPayment } from "../api";
+import { getGuestSouvenirEnquiry, getGuestSouvenirEnquiryByCredentials, getGuestSouvenirOrder, respondToSouvenirQuote, respondToSouvenirQuoteByCredentials, verifySouvenirPayment, retryGuestSouvenirPayment } from "../api";
 import type { SouvenirGuestEnquiry, SouvenirGuestOrder } from "../types";
 
 const money = (amount: number | string, currency = "NGN") => {
@@ -12,7 +12,7 @@ const money = (amount: number | string, currency = "NGN") => {
 const niceDate = (value?: string | null) => value ? new Date(value).toLocaleDateString("en-NG",{day:"numeric",month:"long",year:"numeric"}) : null;
 
 export const SouvenirGuestAccessPage = () => {
-  const { resource = "", token = "" } = useParams();
+  const { resource = "", token = "", reference } = useParams();
   const [searchParams] = useSearchParams();
   const paymentReference = searchParams.get("reference");
   const isEnquiry = resource === "enquiries";
@@ -23,7 +23,7 @@ export const SouvenirGuestAccessPage = () => {
     queryKey: key,
     queryFn: async (): Promise<SouvenirGuestOrder | SouvenirGuestEnquiry> =>
       isEnquiry
-        ? getGuestSouvenirEnquiry(token)
+        ? reference ? getGuestSouvenirEnquiryByCredentials(reference, token) : getGuestSouvenirEnquiry(token)
         : getGuestSouvenirOrder(token),
     enabled: valid && Boolean(token),
     retry: false,
@@ -43,7 +43,7 @@ export const SouvenirGuestAccessPage = () => {
     onSuccess: (result) => { window.location.assign(result.authorizationUrl); },
   });
   const mutation = useMutation({
-    mutationFn:({quoteId,decision}:{quoteId:string;decision:"ACCEPT"|"DECLINE"})=>respondToSouvenirQuote(token,quoteId,decision),
+    mutationFn:({quoteId,decision}:{quoteId:string;decision:"ACCEPT"|"DECLINE"})=>reference ? respondToSouvenirQuoteByCredentials(reference,token,quoteId,decision) : respondToSouvenirQuote(token,quoteId,decision),
     onSuccess:()=>client.invalidateQueries({queryKey:key}),
   });
 

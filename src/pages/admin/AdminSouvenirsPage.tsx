@@ -4,6 +4,7 @@ import { Plus, Save, Eye, EyeOff, Trash2, Star, X } from "lucide-react";
 import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, uploadAdminSouvenirProductMedia, updateAdminSouvenirProductMedia, deleteAdminSouvenirProductMedia, deleteAdminSouvenirProduct, archiveAdminSouvenirProduct, restoreAdminSouvenirProduct } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
 import AdminSouvenirEnquiries from "./AdminSouvenirEnquiries";
+import AdminSouvenirOrders from "./AdminSouvenirOrders";
 import SouvenirPricingScheduleEditor from "./SouvenirPricingScheduleEditor";
 
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]";
@@ -12,6 +13,7 @@ const slugify = (value: string) => value.toLowerCase().trim().replace(/[^a-z0-9]
 
 export default function AdminSouvenirsPage() {
   const client = useQueryClient();
+  const [activeTab, setActiveTab] = useState<"catalogue" | "enquiries" | "orders">("catalogue");
   const [editing, setEditing] = useState<string | null>(null);
   const [notice, setNotice] = useState("");
   const [previewImage, setPreviewImage] = useState<{ url: string; altText: string } | null>(null);
@@ -66,7 +68,11 @@ export default function AdminSouvenirsPage() {
   return <div className="mx-auto w-full max-w-7xl px-3 py-6 sm:px-6 sm:py-7 xl:px-8">
     <p className="text-xs font-bold uppercase tracking-[.18em] text-[#8B1E5A]">Catalogue management</p>
     <h1 className="mt-2 text-3xl font-bold text-slate-900">Souvenir packages</h1>
-    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Create and maintain ready-made souvenir packages shown on the public catalogue. Product images and quantity pricing are managed here. Customers choose their colours directly from the fixed palette when placing an order.</p>
+    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Manage the public catalogue, custom design enquiries and customer orders from one workspace.</p>
+    <nav aria-label="Souvenir management sections" className="mt-6 flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+      {([["catalogue", "Catalogue"], ["enquiries", "Custom enquiries"], ["orders", "Orders"]] as const).map(([key, label]) => <button key={key} type="button" aria-pressed={activeTab === key} onClick={() => setActiveTab(key)} className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition ${activeTab === key ? "bg-[#17324D] text-white" : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"}`}>{label}</button>)}
+    </nav>
+    {activeTab === "catalogue" && <>
     {notice && <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{notice}</p>}
     {save.isError && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{save.error instanceof Error ? save.error.message : "Could not save package."}</p>}
     <div className="mt-7 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,.8fr)]">
@@ -135,8 +141,10 @@ export default function AdminSouvenirsPage() {
         <p className="text-xs leading-5 text-slate-500">This editor manages package details, reference image uploads, catalogue visibility, and volume-based per-piece pricing. Customers choose their preferred colours during checkout. Reference images are visual guides for customers; customers choose colours separately when placing an order.</p>
       </form>
     </div>
-    <AdminSouvenirEnquiries />
-    {previewImage && <div role="dialog" aria-modal="true" aria-label="Image preview" className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-4" onClick={() => setPreviewImage(null)}>
+    </>}
+    {activeTab === "enquiries" && <AdminSouvenirEnquiries />}
+    {activeTab === "orders" && <AdminSouvenirOrders />}
+    {activeTab === "catalogue" && previewImage && <div role="dialog" aria-modal="true" aria-label="Image preview" className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 p-4" onClick={() => setPreviewImage(null)}>
       <button type="button" onClick={() => setPreviewImage(null)} aria-label="Close image preview" className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"><X size={22}/></button>
       <img src={previewImage.url} alt={previewImage.altText} onClick={(event) => event.stopPropagation()} className="max-h-[88vh] max-w-full rounded-xl object-contain shadow-2xl"/>
     </div>}

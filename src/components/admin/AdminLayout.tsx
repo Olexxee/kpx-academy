@@ -17,7 +17,7 @@ const links = [
   { to: "/admin/faq", label: "FAQs", icon: CircleHelp },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/resources", label: "Resources", icon: FileText },
-  { to: "/admin/souvenirs", label: "Souvenirs", icon: Package },
+  { to: "/admin/souvenirs", label: "Souvenir management", icon: Package },
   { to: "/admin/founder", label: "Founder media", icon: UserRound },
 ];
 
