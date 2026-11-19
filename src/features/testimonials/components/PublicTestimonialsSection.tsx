@@ -38,7 +38,10 @@ export function PublicTestimonialsSection() {
 
     const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {\n        setIsFormOpen(false);\n        window.requestAnimationFrame(() => triggerRef.current?.focus());\n      }
+      if (event.key === "Escape") {
+        setIsFormOpen(false);
+        window.requestAnimationFrame(() => triggerRef.current?.focus());
+      }
     };
 
     document.body.style.overflow = "hidden";
