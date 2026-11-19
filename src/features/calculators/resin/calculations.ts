@@ -158,6 +158,9 @@ export function calculateResinProject(input: ResinCalculatorInput): ResinCalcula
 
   const cavityVolumeMl = calculateCavityVolumeMl(input);
   const productionCapacityPerRound = input.cavitiesPerMould * input.mouldsUsed;
+  if (!Number.isSafeInteger(productionCapacityPerRound)) {
+    throw new CalculationInputError("The production capacity per round is too large to calculate safely.");
+  }
   const productionRounds = Math.ceil(input.orderQuantity / productionCapacityPerRound);
 
   // Order volume is based on pieces ordered, never on mould capacity or production rounds.
