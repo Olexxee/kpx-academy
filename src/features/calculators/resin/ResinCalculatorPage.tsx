@@ -213,7 +213,21 @@ export default function ResinCalculatorPage() {
           <Section number="02" title="Mould Measurement" description="Measure one cavity. The calculator uses that capacity for each finished piece.">
             <div className="mb-5 rounded-xl bg-[#f1f6f5] p-4">
               <p className="text-sm font-semibold text-[#17324D]">How to measure your mould</p>
-              <svg viewBox="0 0 520 170" role="img" aria-label="Mould measurement diagram showing length, width, diameter and depth" className="mb-4 h-auto w-full rounded-lg bg-white p-3">\n                <path d="M85 55 L250 55 L315 90 L150 90 Z" fill="#e7f1ef" stroke="#2A7F7F" strokeWidth="2" />\n                <path d="M85 55 L85 112 L150 147 L150 90" fill="#d6e8e4" stroke="#2A7F7F" strokeWidth="2" />\n                <path d="M150 90 L315 90 L315 147 L150 147 Z" fill="#f7faf9" stroke="#2A7F7F" strokeWidth="2" />\n                <path d="M85 38 L250 38 M85 33 L85 43 M250 33 L250 43" stroke="#D94A91" strokeWidth="2" />\n                <text x="167" y="28" textAnchor="middle" fontSize="12" fill="#17324D">Length</text>\n                <path d="M65 55 L65 112 M60 55 L70 55 M60 112 L70 112" stroke="#D94A91" strokeWidth="2" />\n                <text x="55" y="88" textAnchor="end" fontSize="12" fill="#17324D">Depth</text>\n                <path d="M260 48 L325 83 M257 43 L263 53 M320 78 L330 88" stroke="#D94A91" strokeWidth="2" />\n                <text x="342" y="79" fontSize="12" fill="#17324D">Width</text>\n                <ellipse cx="420" cy="90" rx="43" ry="36" fill="#f7faf9" stroke="#2A7F7F" strokeWidth="2" />\n                <path d="M377 90 L463 90 M377 85 L377 95 M463 85 L463 95" stroke="#D94A91" strokeWidth="2" />\n                <text x="420" y="143" textAnchor="middle" fontSize="12" fill="#17324D">Diameter</text>\n              </svg>\n              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <svg viewBox="0 0 520 170" role="img" aria-label="Mould measurement diagram showing length, width, diameter and depth" className="mb-4 h-auto w-full rounded-lg bg-white p-3">
+                <path d="M85 55 L250 55 L315 90 L150 90 Z" fill="#e7f1ef" stroke="#2A7F7F" strokeWidth="2" />
+                <path d="M85 55 L85 112 L150 147 L150 90" fill="#d6e8e4" stroke="#2A7F7F" strokeWidth="2" />
+                <path d="M150 90 L315 90 L315 147 L150 147 Z" fill="#f7faf9" stroke="#2A7F7F" strokeWidth="2" />
+                <path d="M85 38 L250 38 M85 33 L85 43 M250 33 L250 43" stroke="#D94A91" strokeWidth="2" />
+                <text x="167" y="28" textAnchor="middle" fontSize="12" fill="#17324D">Length</text>
+                <path d="M65 55 L65 112 M60 55 L70 55 M60 112 L70 112" stroke="#D94A91" strokeWidth="2" />
+                <text x="55" y="88" textAnchor="end" fontSize="12" fill="#17324D">Depth</text>
+                <path d="M260 48 L325 83 M257 43 L263 53 M320 78 L330 88" stroke="#D94A91" strokeWidth="2" />
+                <text x="342" y="79" fontSize="12" fill="#17324D">Width</text>
+                <ellipse cx="420" cy="90" rx="43" ry="36" fill="#f7faf9" stroke="#2A7F7F" strokeWidth="2" />
+                <path d="M377 90 L463 90 M377 85 L377 95 M463 85 L463 95" stroke="#D94A91" strokeWidth="2" />
+                <text x="420" y="143" textAnchor="middle" fontSize="12" fill="#17324D">Diameter</text>
+              </svg>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-lg bg-white p-3 text-sm leading-6 text-[#52616a]"><strong className="text-[#17324D]">Length:</strong> longest measurement from one end to the other.</div>
                 <div className="rounded-lg bg-white p-3 text-sm leading-6 text-[#52616a]"><strong className="text-[#17324D]">Width:</strong> measurement across the mould from side to side.</div>
                 <div className="rounded-lg bg-white p-3 text-sm leading-6 text-[#52616a]"><strong className="text-[#17324D]">Diameter:</strong> straight measurement across the centre of a circular mould.</div>
@@ -223,7 +237,10 @@ export default function ResinCalculatorPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <SelectField label="Measurement unit" name="unit" value={values.unit} onChange={update} options={[["cm", "Centimetres (cm)"], ["mm", "Millimetres (mm)"], ["in", "Inches (in)"]]} />
               {isIrregular ? (
-                <Field label="Water capacity of one cavity (ml)" name="waterCapacityMl" value={values.waterCapacityMl} onChange={update} hint="Measure one cavity using water, not the full mould." required />
+                <>
+                  <Field label="Water capacity of one cavity (ml)" name="waterCapacityMl" value={values.waterCapacityMl} onChange={update} hint="Measure one cavity using water, not the full mould." required />
+                  <Field label={`Depth reference (${values.unit}, optional)`} name="depth" value={values.depth} onChange={update} hint="Recorded for reference only; water capacity drives the volume estimate." />
+                </>
               ) : (
                 <>
                   {isRound ? <Field label={`Diameter (${values.unit})`} name="diameter" value={values.diameter} onChange={update} required /> : <Field label={`Length (${values.unit})`} name="length" value={values.length} onChange={update} required />}
@@ -319,7 +336,8 @@ export default function ResinCalculatorPage() {
                   <div>
                     <h3 className="font-semibold text-[#17324D]">Cost breakdown</h3>
                     <ResultLine label="Resin used" value={money(result.resinCost)} />
-                    <ResultLine label="Hardener used" value={money(result.hardenerCost)} />\n                    <ResultLine label="Resin + hardener total" value={money(result.resinCost + result.hardenerCost)} strong />
+                    <ResultLine label="Hardener used" value={money(result.hardenerCost)} />
+                    <ResultLine label="Resin + hardener total" value={money(result.resinCost + result.hardenerCost)} strong />
                     {expenseFields.map(([name, label]) => <ResultLine key={name} label={label} value={money(Number(values[name]) || 0)} />)}
                     <ResultLine label="Mould allocation" value={money(result.mouldAllocationCost)} />
                     <ResultLine label="Total estimated order cost" value={money(result.totalOrderCost)} strong />
