@@ -35,7 +35,7 @@ export default function SouvenirPricingScheduleEditor({ productId, productName }
       const price = bands[index].unitPrice.trim();
       if (!Number.isSafeInteger(min) || min < 1) return `Band ${index + 1}: minimum quantity must be a whole number of at least 1.`;
       if (index > 0 && min <= Number(bands[index - 1].minQuantity)) return "Minimum quantities must be strictly increasing.";
-      if (!/^\\d+(?:\\.\\d{1,2})?$/.test(price) || Number(price) <= 0) return `Band ${index + 1}: enter a positive NGN rate with no more than two decimal places.`;
+      if (!/^\d+(?:\.\d{1,2})?$/.test(price) || Number(price) <= 0) return `Band ${index + 1}: enter a positive NGN rate with no more than two decimal places.`;
     }
     return "";
   }, [bands]);
