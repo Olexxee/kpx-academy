@@ -271,7 +271,7 @@ Before opening the implementation PR:
 - [x] Review the approved About-page source document.
 - [x] Review the calculator functional requirements.
 - [x] Agree to require manufacturer-provided mixed-system density for weight-based estimates.
-- [x] Separate About refresh and Resin Calculator into independent tracks.
+- [x] Separate About refresh and Product Calculators into independent tracks.
 - [ ] Merge this planning document.
 - [ ] Implement and review PR A — About page refresh.
 - [x] Implement PR #69 — shared Resin and Lip Care calculators (open; CI/review pending).
