@@ -115,7 +115,7 @@ export default function ResinCalculatorPage() {
         accessories: numeric("accessories"), pigments: numeric("pigments"), decorative: numeric("decorative"),
         customisation: numeric("customisation"), packaging: numeric("packaging"), labourOther: numeric("labourOther"),
       },
-      costPerMould: numeric("costPerMould"), mouldsUsed: numeric("mouldsUsed"), mouldAllocationPercent: numeric("mouldAllocationPercent"),
+      costPerMould: numeric("costPerMould"), mouldAllocationPercent: numeric("mouldAllocationPercent"),
       sellingPricePerPiece: values.sellingPricePerPiece.trim() ? numeric("sellingPricePerPiece") : undefined,
     };
     try { return { result: calculateResinProject(input), error: "" }; }
