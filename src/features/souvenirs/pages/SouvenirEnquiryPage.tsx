@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
-import { FileVideo, ImagePlus, X } from "lucide-react";
-import { PackagePlus } from "lucide-react";
+import { FileVideo, ImagePlus, PackagePlus, X } from "lucide-react";
 import { Container } from "../../../components/ui/Container";
 import { PublicPageHero } from "../../../components/ui/PublicPageHero";
 import { createSouvenirEnquiry, getSouvenirProducts } from "../api";
@@ -22,16 +21,16 @@ export const SouvenirEnquiryPage = () => {
   const [description,setDescription] = useState("");
   const [files,setFiles] = useState<File[]>([]);
   const [filePreviews,setFilePreviews] = useState<Array<{ file: File; url: string }>>([]);
+  const previewUrls = useRef(new Set<string>());
   const [fileError,setFileError] = useState("");
   const [result,setResult] = useState<SouvenirEnquiryResult|null>(null);
   const productsQuery = useQuery({queryKey:["souvenirs","catalogue"],queryFn:getSouvenirProducts,staleTime:300000});
   const mutation = useMutation({mutationFn:createSouvenirEnquiry,onSuccess:setResult});
 
-  useEffect(() => {
-    const previews = files.map((file) => ({ file, url: URL.createObjectURL(file) }));
-    setFilePreviews(previews);
-    return () => previews.forEach(({ url }) => URL.revokeObjectURL(url));
-  }, [files]);
+  useEffect(() => () => {
+    previewUrls.current.forEach((url) => URL.revokeObjectURL(url));
+    previewUrls.current.clear();
+  }, []);
 
   const addFiles = (selected: File[]) => {
     setFileError("");
@@ -49,11 +48,23 @@ export const SouvenirEnquiryPage = () => {
       setFileError(`You can attach up to ${MAX_FILES} files.`);
       return;
     }
+    const previews = selected.map((file) => {
+      const url = URL.createObjectURL(file);
+      previewUrls.current.add(url);
+      return { file, url };
+    });
     setFiles((current) => [...current, ...selected]);
+    setFilePreviews((current) => [...current, ...previews]);
   };
 
   const removeFile = (index: number) => {
+    const preview = filePreviews[index];
+    if (preview) {
+      URL.revokeObjectURL(preview.url);
+      previewUrls.current.delete(preview.url);
+    }
     setFiles((current) => current.filter((_, fileIndex) => fileIndex !== index));
+    setFilePreviews((current) => current.filter((_, fileIndex) => fileIndex !== index));
     setFileError("");
   };
 
