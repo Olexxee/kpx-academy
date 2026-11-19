@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { isAxiosError } from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowRight, Quote, Send, Sparkles, Star, X } from "lucide-react";
@@ -38,7 +38,7 @@ export function PublicTestimonialsSection() {
 
     const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsFormOpen(false);
+      if (event.key === "Escape") { setIsFormOpen(false); window.requestAnimationFrame(() => triggerRef.current?.focus()); }
     };
 
     document.body.style.overflow = "hidden";
@@ -203,7 +203,7 @@ function TestimonialCard({
   return (
     <article
       className="kpx-testimonial-card"
-      style={{ "--card-index": index } as React.CSSProperties}
+      style={{ "--card-index": index % 8 } as CSSProperties}
     >
       <div className="kpx-testimonial-card__topline" aria-hidden="true" />
       <div className="kpx-testimonial-card__meta">
@@ -286,6 +286,7 @@ function TestimonialSubmissionForm({
         <input
           autoFocus
           required
+          minLength={2}
           maxLength={100}
           value={name}
           onChange={(event) => setName(event.target.value)}
