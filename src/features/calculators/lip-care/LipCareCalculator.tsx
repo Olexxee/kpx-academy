@@ -11,7 +11,7 @@ import {
 
 type ProductType = "Lip Gloss" | "Lip Balm" | "Lip Scrub";
 type PercentageRow = LipCareIngredientInput & { id: number; percentageText: string };
-type ManualRow = ManualIngredientInput & { id: number; quantityText: string };
+type ManualRow = Omit<ManualIngredientInput, "unit"> & { id: number; quantityText: string; unit: ManualMeasurementUnit | "" };
 const productOptions: ProductType[] = ["Lip Gloss", "Lip Balm", "Lip Scrub"];
 const units: Array<[ManualMeasurementUnit, string]> = [
   ["g", "Grams (g)"], ["ml", "Millilitres (ml)"], ["tsp", "Teaspoons"], ["tbsp", "Tablespoons"], ["cup", "Cups"], ["drop", "Drops"],
@@ -28,14 +28,14 @@ export default function LipCareCalculator() {
     { id: 1, name: "", percentage: 0, percentageText: "" },
   ]);
   const [manualRows, setManualRows] = useState<ManualRow[]>([
-    { id: 1, name: "", quantity: 0, quantityText: "", unit: "g" },
+    { id: 1, name: "", quantity: 0, quantityText: "", unit: "" },
   ]);
 
   const addPercentageRow = () => setPercentageRows((rows) => [
     ...rows, { id: nextId.current++, name: "", percentage: 0, percentageText: "" },
   ]);
   const addManualRow = () => setManualRows((rows) => [
-    ...rows, { id: nextId.current++, name: "", quantity: 0, quantityText: "", unit: "g" },
+    ...rows, { id: nextId.current++, name: "", quantity: 0, quantityText: "", unit: "" },
   ]);
   const updatePercentage = (id: number, patch: Partial<PercentageRow>) =>
     setPercentageRows((rows) => rows.map((row) => row.id === id ? { ...row, ...patch } : row));
@@ -64,14 +64,14 @@ export default function LipCareCalculator() {
   }));
   const manualValid = manualRows.length > 0
     && parsedManualRows.every((row) => row.name.trim() && Number.isFinite(row.quantity) && row.quantity > 0 && units.some(([unit]) => unit === row.unit));
-  const manualResult = manualValid ? calculateManualMeasurements(parsedManualRows) : null;
+  const manualResult = manualValid ? calculateManualMeasurements(parsedManualRows as ManualIngredientInput[]) : null;
 
   const reset = () => {
     setProduct("Lip Gloss");
     setMethod("percentage");
     setBatchSize("");
     setPercentageRows([{ id: nextId.current++, name: "", percentage: 0, percentageText: "" }]);
-    setManualRows([{ id: nextId.current++, name: "", quantity: 0, quantityText: "", unit: "g" }]);
+    setManualRows([{ id: nextId.current++, name: "", quantity: 0, quantityText: "", unit: "" }]);
   };
 
   return (
@@ -169,7 +169,7 @@ export default function LipCareCalculator() {
                 <div key={row.id} className="grid gap-3 rounded-xl border border-[#e7eceb] bg-[#faf8f5] p-3 sm:grid-cols-[minmax(0,1fr)_130px_160px_48px] sm:items-end">
                   <label className="block min-w-0"><span className="mb-2 block text-xs font-semibold text-[#52616a]">Ingredient {index + 1}</span><input type="text" value={row.name} onChange={(event) => updateManual(row.id, { name: event.target.value })} placeholder="Enter ingredient name" className={fieldClass} /></label>
                   <label className="block min-w-0"><span className="mb-2 block text-xs font-semibold text-[#52616a]">Ingredient quantity</span><input type="number" min="0" step="any" inputMode="decimal" value={row.quantityText} onChange={(event) => updateManual(row.id, { quantityText: event.target.value, quantity: event.target.value.trim() === "" ? 0 : Number(event.target.value) })} placeholder="e.g. 5" className={fieldClass} /><span className="mt-1 block text-xs leading-5 text-[#64717a]">Enter the quantity of this ingredient using your preferred measurement unit.</span></label>
-                  <label className="block min-w-0"><span className="mb-2 block text-xs font-semibold text-[#52616a]">Measurement unit</span><select value={row.unit} onChange={(event) => updateManual(row.id, { unit: event.target.value as ManualMeasurementUnit })} className={fieldClass}>{units.map(([unit, label]) => <option key={unit} value={unit}>{label}</option>)}</select><span className="mt-1 block text-xs leading-5 text-[#64717a]">Select the unit you used to measure this ingredient.</span></label>
+                  <label className="block min-w-0"><span className="mb-2 block text-xs font-semibold text-[#52616a]">Measurement unit</span><select value={row.unit} onChange={(event) => updateManual(row.id, { unit: event.target.value as ManualMeasurementUnit | "" })} className={fieldClass}><option value="">Select a unit</option>{units.map(([unit, label]) => <option key={unit} value={unit}>{label}</option>)}</select><span className="mt-1 block text-xs leading-5 text-[#64717a]">Select the unit you used to measure this ingredient.</span></label>
                   <button type="button" onClick={() => setManualRows((rows) => rows.filter((item) => item.id !== row.id))} aria-label={`Remove ingredient ${index + 1}`} className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#f0cbdc] bg-white text-[#8b1e5a] transition hover:bg-[#fdf1f6]"><Trash2 size={17} aria-hidden="true" /></button>
                 </div>
               ))}
