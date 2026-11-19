@@ -14,9 +14,9 @@ export const DEFAULT_PAGE_METADATA: PageMetadata = {
 export const STATIC_PAGE_METADATA: Record<string, PageMetadata> = {
   "/": DEFAULT_PAGE_METADATA,
   "/about": {
-    title: "About KPX Academy | Our Story & Training Approach",
+    title: "About KPX Academy | Our Story, Mission & Values",
     description:
-      "Learn about KPX Academy's practical approach to skills training, creative learning, product development, and entrepreneurship.",
+      "Get to know KPX Academy, our founder Kepemi Oluwafunke (Keplex), our practical learning approach, purpose, mission, vision and values across creative skills and entrepreneurship.",
   },
   "/programs": {
     title: "Practical Skills Training Courses | KPX Academy",
