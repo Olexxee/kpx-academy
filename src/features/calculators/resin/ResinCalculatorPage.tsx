@@ -168,7 +168,7 @@ export default function ResinCalculatorPage() {
       </div>
     </section>
 
-    {activeCalculator === "resin" ? <div className="mx-auto grid max-w-6xl gap-7 px-4 pt-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+    <div className={activeCalculator === "resin" ? "block" : "hidden"}><div className="mx-auto grid max-w-6xl gap-7 px-4 pt-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
       <div className="space-y-6">
         <div className="sticky top-20 z-20 rounded-2xl bg-[#1d4ed8] p-4 text-white shadow-md lg:hidden" aria-live="polite">
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#f4dcd6]">Live estimate</p>
@@ -351,6 +351,7 @@ export default function ResinCalculatorPage() {
           <p className="mt-5 rounded-xl bg-[#f4dcd6] p-4 text-sm leading-6 text-[#68153f]">Resin products differ in composition, mixing ratios, curing requirements and safety precautions. Always follow the specific instructions and Safety Data Sheet supplied by your resin manufacturer.</p>
         </Section>
       </div>
-    </div> : <div className="mx-auto max-w-6xl px-4 pt-8"><LipCareCalculator /></div>}
+    </div></div>
+    <div className={activeCalculator === "lip-care" ? "block" : "hidden"}><div className="mx-auto max-w-6xl px-4 pt-8"><LipCareCalculator /></div></div>
   </div>;
 }
