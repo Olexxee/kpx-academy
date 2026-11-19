@@ -395,7 +395,7 @@ export default function ResinCalculatorPage() {
         <div className="space-y-6 lg:col-span-2">
           <Section number="09" title="Resin Colour Combination Guide" description="Choose two colours to see a common beginner colour-mixing result. This guide works independently of the cost estimate.">
             <div className="grid gap-4 sm:grid-cols-2">
-              <SelectField label="First colour" name="colourA" value={colourA} onChange={(_, value) => setColourA(value)} options={["Red", "Yellow", "Blue", "White", "Black", "Purple", "Green"].map((colour) => [colour, colour])} />
+              <SelectField label="First colour" name="colourA" value={colourA} onChange={(_, value) => setColourA(value)} options={["Red", "Yellow", "Blue", "White", "Black", "Purple", "Green"].map((colour): [string, string] => [colour, colour])} />
               <SelectField label="Second colour" name="colourB" value={colourB} onChange={(_, value) => setColourB(value)} options={["Red", "Yellow", "Blue", "White", "Black", "Purple", "Green"].map((colour) => [colour, colour])} />
             </div>
             {selectedCombination ? (
