@@ -591,3 +591,13 @@ These are relevance-led editorial titles, not claims about keyword search volume
 - Confirm hydrated navigation produces the same metadata as the prerendered HTML.
 - Confirm private and transactional routes retain their existing noindex behavior.
 - No build, CI, deployed HTML, or Search Console query analysis is claimed by this source update.
+
+## Browser-only product calculators
+
+The public calculator experience lives at **/calculators/resin** and contains two tools on the same page: **Resin Planning & Cost Calculator** and **Lip Care Formulation Calculator**. Visitors switch between them without navigating to a second route; the shared page has one SEO metadata entry and one sitemap URL.
+
+- Resin calculations, cost estimates, colour guidance and safety guidance run in the browser. Results are displayed on the page; there is no print/download workflow.
+- Lip Care supports Lip Gloss, Lip Balm and Lip Scrub. Visitors enter their own batch size and ingredient percentages; the calculator converts percentages to grams and only returns a formulation when the total is 100% within floating-point tolerance.
+- The Lip Care tool does not create or recommend recipes. It is a mathematical aid only and displays the formulation safety disclaimer.
+- Neither calculator sends or persists visitor entries. No backend, database, account or browser storage is used.
+- Calculation logic is isolated in `src/features/calculators/*/calculations.ts`; unit tests run through `npm test`.
