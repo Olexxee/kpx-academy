@@ -201,15 +201,22 @@ export default function ResinCalculatorPage() {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 pt-6">
-        <div className="grid grid-cols-2 gap-2 rounded-2xl border border-[#e2e7e8] bg-white p-2 shadow-sm" role="tablist" aria-label="Choose a calculator">
-          <button type="button" role="tab" aria-selected={activeCalculator === "resin"} onClick={() => setActiveCalculator("resin")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "resin" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Resin Calculator</button>
-          <button type="button" role="tab" aria-selected={activeCalculator === "lip-care"} onClick={() => setActiveCalculator("lip-care")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "lip-care" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Lip Care Formulation</button>
+        <div className="grid grid-cols-2 gap-2 rounded-2xl border border-[#e2e7e8] bg-white p-2 shadow-sm" role="group" aria-label="Choose a calculator">
+          <button type="button" aria-pressed={activeCalculator === "resin"} onClick={() => setActiveCalculator("resin")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "resin" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Resin Calculator</button>
+          <button type="button" aria-pressed={activeCalculator === "lip-care"} onClick={() => setActiveCalculator("lip-care")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "lip-care" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Lip Care Formulation</button>
         </div>
       </div>
 
-      {activeCalculator === "resin" ? (
+      <div className={activeCalculator === "resin" ? "block" : "hidden"}>
       <div className="mx-auto grid max-w-6xl gap-7 px-4 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
         <div className="space-y-6">
+          <div className="sticky top-20 z-20 rounded-2xl bg-[#17324D] p-4 text-white shadow-md lg:hidden" aria-live="polite">
+            <div className="flex items-start justify-between gap-3">
+              <div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#D4A85A]">Live estimate</p><p className="mt-1 text-xs text-white/65">Estimated order cost</p><p className="text-xl font-bold tabular-nums">{result ? money(result.totalOrderCost) : "—"}</p></div>
+              {result && <div className="text-right"><p className="text-xs text-white/65">Cost per piece</p><p className="text-base font-semibold tabular-nums">{money(result.costPerPiece)}</p></div>}
+            </div>
+            {!result && <p className="mt-1 text-xs leading-5 text-white/70">{calculation.error}</p>}
+          </div>
           <Section number="01" title="Project Information" description="Name your project and tell us how many finished pieces you need.">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Project name or description (optional)" name="projectName" value={values.projectName} onChange={update} type="text" />
@@ -457,11 +464,12 @@ export default function ResinCalculatorPage() {
           </Section>
         </div>
       </div>
-      ) : (
+      </div>
+      <div className={activeCalculator === "lip-care" ? "block" : "hidden"}>
         <div className="mx-auto max-w-6xl px-4 pt-8">
           <LipCareCalculator />
         </div>
-      )}
+      </div>
     </div>
   );
 }
