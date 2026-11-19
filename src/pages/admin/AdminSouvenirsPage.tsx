@@ -148,7 +148,7 @@ export default function AdminSouvenirsPage() {
                 createTier.mutate({ productId: product.id, data: {
                   label: String(form.get("tierLabel") || "").trim(),
                   minQuantity: Number(form.get("minQuantity")),
-                  maxQuantity: String(form.get("maxQuantity") || "").trim() ? Number(form.get("maxQuantity")) : null,
+                  maxQuantity: Number(form.get("maxQuantity")),
                   unitPrice: Number(form.get("unitPrice")),
                   currency: String(form.get("currency") || "NGN"),
                   displayOrder: (product.priceTiers ?? []).length,
