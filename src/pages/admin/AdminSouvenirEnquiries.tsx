@@ -77,20 +77,161 @@ export default function AdminSouvenirEnquiries() {
   </section>;
 }
 
-function EnquiryReview({item,notes,setNotes,response,setResponse,quoteName,setQuoteName,quantity,setQuantity,price,setPrice,quoteMessage,setQuoteMessage,terms,setTerms,files,setFiles,draftId,onPreview,onSave,onStatus,onDraft,onUpload,onSend,pending,error}:{
- item:Enquiry;notes:string;setNotes:(v:string)=>void;response:string;setResponse:(v:string)=>void;quoteName:string;setQuoteName:(v:string)=>void;quantity:string;setQuantity:(v:string)=>void;price:string;setPrice:(v:string)=>void;quoteMessage:string;setQuoteMessage:(v:string)=>void;terms:string;setTerms:(v:string)=>void;files:File[];setFiles:(v:File[])=>void;draftId?:string;onPreview:(v:Media)=>void;onSave:()=>void;onStatus:(v:Status)=>void;onDraft:()=>void;onUpload:()=>void;onSend:(id:string)=>void;pending:boolean;error:unknown;
+function EnquiryReview({
+  item, notes, setNotes, response, setResponse, quoteName, setQuoteName,
+  quantity, setQuantity, price, setPrice, quoteMessage, setQuoteMessage,
+  terms, setTerms, files, setFiles, draftId, onPreview, onSave, onStatus,
+  onDraft, onUpload, onSend, pending, error,
+}: {
+  item: Enquiry;
+  notes: string; setNotes: (value: string) => void;
+  response: string; setResponse: (value: string) => void;
+  quoteName: string; setQuoteName: (value: string) => void;
+  quantity: string; setQuantity: (value: string) => void;
+  price: string; setPrice: (value: string) => void;
+  quoteMessage: string; setQuoteMessage: (value: string) => void;
+  terms: string; setTerms: (value: string) => void;
+  files: File[]; setFiles: (value: File[]) => void;
+  draftId?: string;
+  onPreview: (media: Media) => void;
+  onSave: () => void;
+  onStatus: (status: Status) => void;
+  onDraft: () => void;
+  onUpload: () => void;
+  onSend: (quoteId: string) => void;
+  pending: boolean;
+  error: unknown;
 }) {
- const [quoteExpanded,setQuoteExpanded]=useState(true);
- const activeDraftId = draftId ?? item.quotes.find(quote => quote.status === "DRAFT")?.id;
- return <div className="mt-4 space-y-5 border-t border-slate-100 pt-4">
-  <div className="grid gap-4 sm:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Customer</p><p className="mt-1 text-sm font-semibold">{item.customerName}</p><a className="text-sm text-[#8B1E5A] underline" href={`mailto:${item.customerEmail}`}>{item.customerEmail}</a><p className="text-sm text-slate-600">{item.customerWhatsApp}</p></div><div><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Request details</p><p className="mt-1 text-sm">{item.product?.name ?? "Custom souvenir"}</p><p className="text-sm text-slate-600">Quantity: {item.requestedQuantity ?? "Not specified"}</p><p className="text-xs text-slate-500">Submitted {new Date(item.createdAt).toLocaleString()}</p></div></div>
-  <div><h3 className="text-sm font-bold">Design brief</h3><p className="mt-2 whitespace-pre-wrap rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">{item.designDescription}</p></div>
-  <div><div className="flex items-center justify-between"><h3 className="text-sm font-bold">Customer reference uploads ({item.media.length})</h3><span className="text-xs text-slate-500">Select to preview</span></div>{item.media.length?<div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{item.media.map((media,i)=><button key={media.url+i} type="button" onClick={()=>onPreview(media)} className="overflow-hidden rounded-xl border border-slate-200 text-left">{media.mimeType?.startsWith("video/")?<span className="flex h-28 items-center justify-center bg-slate-100"><FileVideo size={28}/></span>:<img src={media.url} alt={media.originalName??"Reference upload"} className="h-28 w-full object-cover"/>}<span className="block truncate px-2 py-1.5 text-xs text-slate-600">{media.originalName??"Reference file"}</span></button>)}</div>:<p className="mt-2 text-sm text-slate-500">No reference files were uploaded.</p>}</div>
-  <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-semibold">Internal notes<textarea className={field} rows={3} value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Visible to admins only"/></label><label className="text-sm font-semibold">Customer response message<textarea className={field} rows={3} value={response} onChange={e=>setResponse(e.target.value)} placeholder="Optional message for the customer"/></label></div>
-  <div className="flex flex-wrap gap-2"><button type="button" disabled={pending} onClick={onSave} className={btn+" inline-flex items-center gap-2 bg-[#8B1E5A] text-white"}><Save size={14}/>Save review notes</button><select value={item.status} onChange={e=>onStatus(e.target.value as Status)} className={field+" mt-0 w-auto"}>{statuses.map(s=><option key={s} value={s}>{s.replaceAll("_"," ")}</option>)}</select></div>
-  <div className="rounded-xl border border-slate-200 p-3"><button type="button" onClick={()=>setQuoteExpanded(v=>!v)} className="flex w-full items-center justify-between text-left"><span className="font-bold text-sm">Quotation history ({item.quotes.length})</span>{quoteExpanded?<ChevronUp size={16}/>:<ChevronDown size={16}/>}</button>
-  {quoteExpanded&&<div className="mt-3 space-y-3">{item.quotes.map(q=><div key={q.id} className="rounded-lg bg-slate-50 p-3"><div className="flex justify-between gap-2"><strong className="text-sm">Quote v{q.version}</strong><span className="text-xs font-semibold">{q.status}</span></div><p className="mt-1 text-sm">{money(q.totalAmount,q.currency)}</p><ul className="mt-2 list-disc pl-5 text-xs text-slate-600">{q.items.map((line,i)=><li key={line.name+i}>{line.name} · {line.quantity} × {money(line.unitPrice,q.currency)}</li>)}</ul>{q.media.length>0&&<div className="mt-2 flex flex-wrap gap-2">{q.media.map((m,i)=><button key={m.url+i} type="button" onClick={()=>onPreview(m)} className="text-xs text-[#8B1E5A] underline">{m.originalName??"Quote attachment"}</button>)}</div>}{q.status==="DRAFT"&&<button type="button" disabled={pending} onClick={()=>onSend(q.id)} className={btn+" mt-2 bg-[#8B1E5A] text-white"}><Send size={13} className="inline"/> Publish quote</button>}</div>)}
-  {["NEW","UNDER_REVIEW","RESPONDED"].includes(item.status)&&<div className="border-t border-slate-200 pt-3"><h4 className="text-sm font-bold">Create quotation</h4><div className="mt-2 grid gap-2 sm:grid-cols-3"><input className={field} value={quoteName} onChange={e=>setQuoteName(e.target.value)} placeholder="Line item"/><input className={field} type="number" min="1" value={quantity} onChange={e=>setQuantity(e.target.value)} placeholder="Quantity"/><input className={field} type="number" min="0.01" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Unit price (NGN)"/></div><textarea className={field} rows={2} value={quoteMessage} onChange={e=>setQuoteMessage(e.target.value)} placeholder="Message to customer"/><textarea className={field} rows={2} value={terms} onChange={e=>setTerms(e.target.value)} placeholder="Quotation terms"/><button type="button" disabled={pending||!quoteName.trim()||Number(quantity)<1||Number(price)<=0} onClick={onDraft} className={btn+" mt-2 bg-[#8B1E5A] text-white"}>Create quote draft</button>{activeDraftId&&<div className="mt-3 rounded-lg border border-dashed border-slate-300 p-3"><p className="text-xs font-semibold">Attach design/proof files to the new draft</p><input className="mt-2 block w-full text-xs" type="file" multiple accept="image/*,video/*" onChange={e=>setFiles(Array.from(e.target.files??[]))}/><button type="button" disabled={pending||!files.length} onClick={onUpload} className={btn+" mt-2 border border-slate-300"}><ImagePlus size={13} className="inline"/>Upload attachments</button></div>}</div>}</div>}
-  {error&&<p role="alert" className="text-sm text-red-700">{messageOf(error)}</p>}
- </div>;
+  const [quoteExpanded, setQuoteExpanded] = useState(true);
+  const activeDraftId = draftId ?? item.quotes.find((quote) => quote.status === "DRAFT")?.id;
+
+  return (
+    <div className="mt-4 space-y-5 border-t border-slate-100 pt-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Customer</p>
+          <p className="mt-1 text-sm font-semibold">{item.customerName}</p>
+          <a className="text-sm text-[#8B1E5A] underline" href={`mailto:${item.customerEmail}`}>{item.customerEmail}</a>
+          <p className="text-sm text-slate-600">{item.customerWhatsApp}</p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Request details</p>
+          <p className="mt-1 text-sm">{item.product?.name ?? "Custom souvenir"}</p>
+          <p className="text-sm text-slate-600">Quantity: {item.requestedQuantity ?? "Not specified"}</p>
+          <p className="text-xs text-slate-500">Submitted {new Date(item.createdAt).toLocaleString()}</p>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-bold">Design brief</h3>
+        <p className="mt-2 whitespace-pre-wrap rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700">{item.designDescription}</p>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold">Customer reference uploads ({item.media.length})</h3>
+          <span className="text-xs text-slate-500">Select to preview</span>
+        </div>
+        {item.media.length > 0 ? (
+          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {item.media.map((media, index) => (
+              <button key={media.url + index} type="button" onClick={() => onPreview(media)} className="overflow-hidden rounded-xl border border-slate-200 text-left">
+                {media.mimeType?.startsWith("video/") ? (
+                  <span className="flex h-28 items-center justify-center bg-slate-100"><FileVideo size={28} /></span>
+                ) : (
+                  <img src={media.url} alt={media.originalName ?? "Reference upload"} className="h-28 w-full object-cover" />
+                )}
+                <span className="block truncate px-2 py-1.5 text-xs text-slate-600">{media.originalName ?? "Reference file"}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-2 text-sm text-slate-500">No reference files were uploaded.</p>
+        )}
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="text-sm font-semibold">Internal notes
+          <textarea className={field} rows={3} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="Visible to admins only" />
+        </label>
+        <label className="text-sm font-semibold">Customer response message
+          <textarea className={field} rows={3} value={response} onChange={(event) => setResponse(event.target.value)} placeholder="Optional message for the customer" />
+        </label>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <button type="button" disabled={pending} onClick={onSave} className={btn + " inline-flex items-center gap-2 bg-[#8B1E5A] text-white"}>
+          <Save size={14} /> Save review notes
+        </button>
+        <select value={item.status} onChange={(event) => onStatus(event.target.value as Status)} className={field + " mt-0 w-auto"}>
+          {statuses.map((value) => <option key={value} value={value}>{value.replaceAll("_", " ")}</option>)}
+        </select>
+      </div>
+
+      <div className="rounded-xl border border-slate-200 p-3">
+        <button type="button" onClick={() => setQuoteExpanded((value) => !value)} className="flex w-full items-center justify-between text-left">
+          <span className="text-sm font-bold">Quotation history ({item.quotes.length})</span>
+          {quoteExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+
+        {quoteExpanded && (
+          <div className="mt-3 space-y-3">
+            {item.quotes.map((quote) => (
+              <div key={quote.id} className="rounded-lg bg-slate-50 p-3">
+                <div className="flex justify-between gap-2">
+                  <strong className="text-sm">Quote v{quote.version}</strong>
+                  <span className="text-xs font-semibold">{quote.status}</span>
+                </div>
+                <p className="mt-1 text-sm">{money(quote.totalAmount, quote.currency)}</p>
+                <ul className="mt-2 list-disc pl-5 text-xs text-slate-600">
+                  {quote.items.map((line, index) => <li key={line.name + index}>{line.name} · {line.quantity} × {money(line.unitPrice, quote.currency)}</li>)}
+                </ul>
+                {quote.media.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {quote.media.map((media, index) => (
+                      <button key={media.url + index} type="button" onClick={() => onPreview(media)} className="text-xs text-[#8B1E5A] underline">
+                        {media.originalName ?? "Quote attachment"}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {quote.status === "DRAFT" && (
+                  <button type="button" disabled={pending} onClick={() => onSend(quote.id)} className={btn + " mt-2 bg-[#8B1E5A] text-white"}>
+                    <Send size={13} className="inline" /> Publish quote
+                  </button>
+                )}
+              </div>
+            ))}
+
+            {["NEW", "UNDER_REVIEW", "RESPONDED"].includes(item.status) && (
+              <div className="border-t border-slate-200 pt-3">
+                <h4 className="text-sm font-bold">Create quotation</h4>
+                <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                  <input className={field} value={quoteName} onChange={(event) => setQuoteName(event.target.value)} placeholder="Line item" />
+                  <input className={field} type="number" min="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} placeholder="Quantity" />
+                  <input className={field} type="number" min="0.01" step="0.01" value={price} onChange={(event) => setPrice(event.target.value)} placeholder="Unit price (NGN)" />
+                </div>
+                <textarea className={field} rows={2} value={quoteMessage} onChange={(event) => setQuoteMessage(event.target.value)} placeholder="Message to customer" />
+                <textarea className={field} rows={2} value={terms} onChange={(event) => setTerms(event.target.value)} placeholder="Quotation terms" />
+                <button type="button" disabled={pending || !quoteName.trim() || Number(quantity) < 1 || Number(price) <= 0} onClick={onDraft} className={btn + " mt-2 bg-[#8B1E5A] text-white"}>
+                  Create quote draft
+                </button>
+                {activeDraftId && (
+                  <div className="mt-3 rounded-lg border border-dashed border-slate-300 p-3">
+                    <p className="text-xs font-semibold">Attach design/proof files to the draft</p>
+                    <input className="mt-2 block w-full text-xs" type="file" multiple accept="image/*,video/*" onChange={(event) => setFiles(Array.from(event.target.files ?? []))} />
+                    <button type="button" disabled={pending || !files.length} onClick={onUpload} className={btn + " mt-2 border border-slate-300"}>
+                      <ImagePlus size={13} className="inline" /> Upload attachments
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {error && <p role="alert" className="text-sm text-red-700">{messageOf(error)}</p>}
+    </div>
+  );
 }
