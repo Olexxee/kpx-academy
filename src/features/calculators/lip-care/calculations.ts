@@ -8,7 +8,7 @@ export interface LipCareCalculationResult {
   totalIngredientWeightGrams: number;
 }
 export interface ManualIngredientInput { name: string; quantity: number; unit: ManualMeasurementUnit; }
-export interface ManualIngredientResult extends ManualIngredientInput {}
+export type ManualIngredientResult = ManualIngredientInput;
 export const PERCENTAGE_TOLERANCE = 0.0001;
 
 export function getLipCarePercentageSummary(ingredients: LipCareIngredientInput[]) {
