@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Calculator, Printer, RotateCcw, ShieldCheck } from "lucide-react";
 import {
@@ -91,7 +91,7 @@ function SelectField({ label, name, value, onChange, options, hint }: {
 }
 
 function Section({ number, title, description, children }: {
-  number: string; title: string; description?: string; children: React.ReactNode;
+  number: string; title: string; description?: string; children: ReactNode;
 }) {
   return (
     <section className="rounded-2xl border border-[#e2e7e8] bg-white p-5 shadow-sm sm:p-7">
