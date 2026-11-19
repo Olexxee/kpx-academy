@@ -14,8 +14,8 @@ type FormValues = Record<string, string>;
 const initialValues: FormValues = {
   projectName: "", shape: "round", unit: "cm", diameter: "", length: "", width: "", depth: "",
   waterCapacityMl: "", cavities: "1", pieces: "1", allowancePercent: "10", ratioBasis: "volume",
-  ratio: "1:1", mixedSystemDensity: "", resinPurchaseQuantity: "1000", resinPurchaseCost: "",
-  hardenerPurchaseQuantity: "1000", hardenerPurchaseCost: "", accessories: "", pigments: "",
+  ratio: "1:1", mixedSystemDensity: "", resinPurchaseQuantity: "", resinPurchaseCost: "",
+  hardenerPurchaseQuantity: "", hardenerPurchaseCost: "", accessories: "", pigments: "",
   decorative: "", customisation: "", packaging: "", labourOther: "", mouldPurchaseCost: "",
   mouldAllocation: "0", customMouldAllocationPercent: "", sellingPricePerPiece: "",
 };
@@ -160,6 +160,9 @@ export default function ResinCalculatorPage() {
       sellingPricePerPiece: numeric("sellingPricePerPiece"),
     };
     try {
+      if (!values.resinPurchaseQuantity.trim() || !values.resinPurchaseCost.trim() || !values.hardenerPurchaseQuantity.trim() || !values.hardenerPurchaseCost.trim()) {
+        throw new Error("Enter the purchased quantity and amount paid for both resin and hardener to calculate project cost.");
+      }
       return { result: calculateResinProject(input), error: "" };
     } catch (error) {
       return { result: null, error: error instanceof Error ? error.message : "Complete the required fields to calculate your estimate." };
@@ -379,7 +382,7 @@ export default function ResinCalculatorPage() {
             </div>
             {selectedCombination ? (
               <div className="mt-5 flex flex-wrap items-center justify-center gap-5 rounded-xl bg-[#f7faf9] p-5">
-                {selectedCombination.colors.map((color, index) => <div key={color + index} className="text-center"><span className="mx-auto block h-14 w-14 rounded-full border border-black/10 shadow-sm" style={{ backgroundColor: color }} /><span className="mt-2 block text-xs font-semibold text-[#52616a]">{index === 0 ? colourA : index === 1 ? colourB : selectedCombination.result}</span></div>)}
+                {selectedCombination.colors.map((color, index) => <div key={color + index} className="text-center"><span className="mx-auto block h-14 w-14 rounded-full border border-black/10 shadow-sm" style={{ backgroundColor: color }} /><span className="mt-2 block text-xs font-semibold text-[#52616a]">{index === 0 ? selectedCombination.a : index === 1 ? selectedCombination.b : selectedCombination.result}</span></div>)}
                 <div className="text-lg font-bold text-[#17324D]">= {selectedCombination.result}</div>
               </div>
             ) : <p className="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">No basic combination is listed for {colourA} + {colourB}. Test a small sample before colouring your full batch.</p>}
