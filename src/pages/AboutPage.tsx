@@ -58,7 +58,7 @@ function Eyebrow({
   return (
     <p
       className={`text-xs font-bold uppercase tracking-[0.2em] ${
-        light ? "text-[#F3D7CC]" : "text-[#2A7F7F]"
+        light ? "text-[#f4dcd6]" : "text-[#8b1e5a]"
       }`}
     >
       {children}
@@ -73,7 +73,7 @@ export default function AboutPage() {
   });
 
   return (
-    <div className="overflow-hidden bg-[#F7F5F0] text-[#212529]">
+    <div className="overflow-hidden bg-[#faf8f5] text-[#212529]">
       <PublicPageHero
         eyebrow="Get to Know KPX Academy"
         title="Skills are the start. Possibility is the point."
@@ -85,7 +85,7 @@ export default function AboutPage() {
           <>
             <Link
               to="/programs"
-              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F3D7CC] px-6 py-3 text-sm font-bold text-[#212529] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#f4dcd6] px-6 py-3 text-sm font-bold text-[#212529] transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               Explore our programmes <ArrowRight size={17} aria-hidden="true" />
             </Link>
@@ -101,7 +101,7 @@ export default function AboutPage() {
           <div className="relative">
             <div className="rounded-[2rem] border border-white/20 bg-white/[0.08] p-7 backdrop-blur-sm sm:p-9">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2A7F7F]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#8b1e5a]">
                   <Compass size={18} aria-hidden="true" />
                 </span>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/80">
@@ -112,7 +112,7 @@ export default function AboutPage() {
               <p className="text-3xl font-semibold leading-tight sm:text-4xl">
                 Practical Knowledge.
               </p>
-              <p className="mt-3 text-3xl font-semibold leading-tight text-[#F3D7CC] sm:text-4xl">
+              <p className="mt-3 text-3xl font-semibold leading-tight text-[#f4dcd6] sm:text-4xl">
                 Detailed Training.
               </p>
               <p className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
@@ -149,8 +149,8 @@ export default function AboutPage() {
                 Clear explanations, proper demonstrations, useful resources
                 and knowledge learners can apply.
               </p>
-              <div className="mt-8 inline-flex items-center gap-3 border-l-2 border-[#D94A91] py-2 pl-4">
-                <Compass className="shrink-0 text-[#2A7F7F]" size={22} />
+              <div className="mt-8 inline-flex items-center gap-3 border-l-2 border-[#8b1e5a] py-2 pl-4">
+                <Compass className="shrink-0 text-[#8b1e5a]" size={22} />
                 <p className="text-sm font-semibold leading-6">
                   Understand the process. Practise where applicable. Put
                   knowledge to use.
@@ -196,7 +196,7 @@ export default function AboutPage() {
                 accessible, giving people room to discover their abilities
                 and explore what they can do with them.
               </p>
-              <p className="border-l-2 border-[#D4A85A] pl-5 font-semibold text-[#17324D]">
+              <p className="border-l-2 border-[#8b1e5a] pl-5 font-semibold text-[#1d4ed8]">
                 Because gaining knowledge is a beginning; what you do with
                 it is where new possibilities emerge.
               </p>
@@ -209,7 +209,7 @@ export default function AboutPage() {
         <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="grid items-start gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
             <div className="mx-auto w-full max-w-md lg:sticky lg:top-24">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-[#F3D7CC]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-[#f4dcd6]">
                 {founder.data?.mediaUrl ? (
                   <img
                     src={founder.data.mediaUrl}
@@ -222,10 +222,10 @@ export default function AboutPage() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#17324D] text-3xl font-semibold text-white">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#1d4ed8] text-3xl font-semibold text-white">
                       KO
                     </div>
-                    <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-[#2A7F7F]">
+                    <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-[#8b1e5a]">
                       The founder
                     </p>
                     <p className="mt-2 max-w-[15rem] text-sm leading-6 text-[#212529]/70">
@@ -235,7 +235,7 @@ export default function AboutPage() {
                 )}
                 <div
                   aria-hidden="true"
-                  className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-[#17324D]/90 p-4 text-white backdrop-blur-sm"
+                  className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-[#1d4ed8]/90 p-4 text-white backdrop-blur-sm"
                 >
                   <p className="text-xs uppercase tracking-[0.16em] text-white/65">
                     The person behind the vision
@@ -254,7 +254,7 @@ export default function AboutPage() {
               <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
                 Kepemi Oluwafunke (Keplex)
               </h2>
-              <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#2A7F7F]">
+              <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#8b1e5a]">
                 Founder, KPX Academy
               </p>
               <div className="mt-7 space-y-5 text-base leading-8 text-[#212529]/75">
@@ -358,7 +358,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#17324D] py-20 text-white sm:py-28">
+      <section className="bg-[#1d4ed8] py-20 text-white sm:py-28">
         <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <Eyebrow light>Our Purpose</Eyebrow>
@@ -376,7 +376,7 @@ export default function AboutPage() {
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-2">
             <article className="rounded-[1.75rem] border border-white/15 bg-white/[0.06] p-7 sm:p-10">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2A7F7F]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#8b1e5a]">
                 <Compass size={21} aria-hidden="true" />
               </span>
               <h3 className="mt-7 text-2xl font-semibold">Our Mission</h3>
@@ -388,7 +388,7 @@ export default function AboutPage() {
               </p>
             </article>
             <article className="rounded-[1.75rem] border border-white/15 bg-white/[0.06] p-7 sm:p-10">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D4A85A] text-[#17324D]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#8b1e5a] text-[#1d4ed8]">
                 <Lightbulb size={21} aria-hidden="true" />
               </span>
               <h3 className="mt-7 text-2xl font-semibold">Our Vision</h3>
@@ -424,7 +424,7 @@ export default function AboutPage() {
                   key={value.number}
                   className="grid gap-3 border-b border-[#212529]/15 py-6 sm:grid-cols-[3.5rem_0.8fr_1.2fr] sm:gap-6 sm:py-8"
                 >
-                  <span className="text-sm font-bold tracking-widest text-[#2A7F7F]">
+                  <span className="text-sm font-bold tracking-widest text-[#8b1e5a]">
                     {value.number}
                   </span>
                   <h3 className="text-lg font-semibold">{value.title}</h3>
@@ -438,7 +438,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#F3D7CC] py-20 sm:py-24">
+      <section className="bg-[#f4dcd6] py-20 sm:py-24">
         <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
@@ -452,13 +452,13 @@ export default function AboutPage() {
                 and entrepreneurship.
               </p>
             </div>
-            <ul className="divide-y divide-[#17324D]/15 border-y border-[#17324D]/15">
+            <ul className="divide-y divide-[#1d4ed8]/15 border-y border-[#1d4ed8]/15">
               {areas.map((area) => (
                 <li
                   key={area}
                   className="flex items-center gap-3 py-4 text-sm font-semibold sm:text-base"
                 >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2A7F7F] text-white">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#8b1e5a] text-white">
                     <Check size={15} aria-hidden="true" />
                   </span>
                   {area}
@@ -469,7 +469,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#2A7F7F] py-20 text-white sm:py-24">
+      <section className="bg-[#1d4ed8] py-20 text-white sm:py-24">
         <div className="mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <Eyebrow light>Your Next Chapter Starts Here</Eyebrow>
@@ -484,7 +484,7 @@ export default function AboutPage() {
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 to="/programs"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-[#17324D] transition hover:bg-[#F7F5F0]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-[#1d4ed8] transition hover:bg-[#faf8f5]"
               >
                 Explore programmes <ArrowRight size={17} aria-hidden="true" />
               </Link>
