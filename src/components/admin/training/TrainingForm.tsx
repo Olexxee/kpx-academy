@@ -452,6 +452,7 @@ export default function TrainingForm({ program, onClose }: Props) {
                 label="Capacity"
                 value={form.capacity}
                 onChange={(v) => setField("capacity", v)}
+                error={errors.capacity}
                 hint="Leave empty for unlimited."
                 min={1}
                 integer
@@ -740,11 +741,17 @@ function NumberField({
   const lastEmitted = useRef<number | null>(value);
 
   useEffect(() => {
+    // The required price field stores an empty input as 0 in the form model.
+    // Preserve the raw empty string so the native required check can catch it.
+    if (text === "" && value === 0) {
+      lastEmitted.current = value;
+      return;
+    }
     if (value !== lastEmitted.current) {
       setText(value === null || value === undefined ? "" : String(value));
       lastEmitted.current = value;
     }
-  }, [value]);
+  }, [value, text]);
 
   const handleChange = (raw: string) => {
     setText(raw);
