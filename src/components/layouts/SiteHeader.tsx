@@ -14,6 +14,7 @@ const navigation = [
   { label: "Souvenirs", to: "/souvenirs" },
   { label: "Gallery", to: "/gallery" },
   { label: "Resources", to: "/resources" },
+  { label: "Calculators", to: "/calculators/resin" },
   { label: "Certificates", to: "/certificates" },
 ];
 
