@@ -38,7 +38,7 @@ export function PublicTestimonialsSection() {
 
     const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { setIsFormOpen(false); window.requestAnimationFrame(() => triggerRef.current?.focus()); }
+      if (event.key === "Escape") {\n        setIsFormOpen(false);\n        window.requestAnimationFrame(() => triggerRef.current?.focus());\n      }
     };
 
     document.body.style.overflow = "hidden";
@@ -94,7 +94,7 @@ export function PublicTestimonialsSection() {
         </header>
 
         {testimonialsQuery.isPending ? (
-          <div className="kpx-testimonials__grid" aria-label="Loading testimonials">
+          <div className="kpx-testimonials__grid" role="status" aria-live="polite" aria-label="Loading testimonials">
             {Array.from({ length: 3 }, (_, index) => (
               <div className="kpx-testimonial-skeleton" key={index}>
                 <span />
@@ -208,7 +208,7 @@ function TestimonialCard({
       <div className="kpx-testimonial-card__topline" aria-hidden="true" />
       <div className="kpx-testimonial-card__meta">
         <Quote size={25} aria-hidden="true" />
-        <div className="kpx-testimonial-card__rating" aria-label={`${rating} out of 5 stars`}>
+        <div className="kpx-testimonial-card__rating" role="img" aria-label={`${rating} out of 5 stars`}>
           {Array.from({ length: 5 }, (_, starIndex) => (
             <Star
               key={starIndex}
