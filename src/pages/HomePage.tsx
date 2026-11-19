@@ -3,6 +3,7 @@ import { FeaturedProgrammes } from "../components/home/programmes/FeaturedProgra
 import { GalleryPreview } from "../components/home/gallery/GalleryPreview";
 import { HowTrainingWorks } from "../components/home/how-it-works/HowTrainingWorks";
 import { WhyKPX } from "../components/home/why-kpx/WhyKPX";
+import { PublicTestimonialsSection } from "../features/testimonials/components/PublicTestimonialsSection";
 import { FinalCTA } from "../components/home/cta/FinalCTA";
 
 export const HomePage = () => (
@@ -12,6 +13,7 @@ export const HomePage = () => (
     <GalleryPreview />
     <HowTrainingWorks />
     <WhyKPX />
+    <PublicTestimonialsSection />
     <FinalCTA />
   </>
 );
