@@ -217,7 +217,16 @@ async function loadFrameworkRouteData(request: Request) {
     await load(["souvenirs", "catalogue"], "/souvenirs");
   }
 
-  if (pathname.startsWith("/souvenirs/") && pathname !== "/souvenirs/enquire") {
+  // Only a single-segment /souvenirs/:slug path represents a catalogue product.
+  // Guest tracking and private access routes must not be sent to the product API.
+  const souvenirPathSegments = pathname.split("/").filter(Boolean);
+  const isSouvenirProductPath =
+    souvenirPathSegments.length === 2 &&
+    souvenirPathSegments[0] === "souvenirs" &&
+    souvenirPathSegments[1] !== "enquire" &&
+    souvenirPathSegments[1] !== "track-enquiry";
+
+  if (isSouvenirProductPath) {
     const slug = decodeURIComponent(pathname.slice("/souvenirs/".length));
     const product = await load<{
       name?: string;
