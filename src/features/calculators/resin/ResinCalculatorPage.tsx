@@ -191,9 +191,9 @@ export default function ResinCalculatorPage() {
           </Link>
           <div className="mt-8 max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D4A85A]">KPX Academy · Practical project planning</p>
-            <h1 className="mt-3 font-heading text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">Practical Product Calculators</h1>
+            <h1 className="mt-3 font-heading text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">Resin &amp; Lip Care Formulation Calculators</h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
-              Plan resin projects or calculate the weights in your own lip care formulation. Results update as you enter your figures.
+              Use the free resin calculator to estimate mould capacity, resin and hardener quantities, and project costs. Switch to the lip care formulation calculator to convert your own product percentages into gram weights.
             </p>
             <p className="mt-3 text-sm text-white/65">All calculations run in this browser. Your entries are not saved or sent to KPX Academy.</p>
           </div>
@@ -206,6 +206,29 @@ export default function ResinCalculatorPage() {
           <button type="button" aria-pressed={activeCalculator === "lip-care"} onClick={() => setActiveCalculator("lip-care")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "lip-care" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Lip Care Formulation</button>
         </div>
       </div>
+
+      <section aria-labelledby="calculator-overview" className="mx-auto max-w-6xl px-4 pt-8">
+        <div className="rounded-2xl border border-[#e2e7e8] bg-white p-5 shadow-sm sm:p-7">
+          <h2 id="calculator-overview" className="font-heading text-xl font-semibold text-[#17324D]">What you can calculate</h2>
+          <div className="mt-5 grid gap-6 md:grid-cols-2">
+            <div>
+              <h3 className="font-semibold text-[#17324D]">Resin quantity and project cost</h3>
+              <p className="mt-2 text-sm leading-6 text-[#52616a]">
+                Estimate mould capacity, total material volume, resin and hardener quantities using the ratio and measurement basis supplied by your manufacturer. Add production expenses to estimate total order cost, cost per piece and potential profit.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-[#17324D]">Lip care formulation weights</h3>
+              <p className="mt-2 text-sm leading-6 text-[#52616a]">
+                Enter your own batch size and ingredient percentages to calculate gram weights for a lip gloss, lip balm or lip scrub formulation. Ingredient percentages must add up to 100% before the calculator displays results; it does not provide or approve recipes.
+              </p>
+            </div>
+          </div>
+          <p className="mt-5 border-t border-[#e7eceb] pt-4 text-xs leading-5 text-[#64717a]">
+            Both tools perform calculations from the values you enter. They do not replace manufacturer instructions, verified formulations, ingredient suitability checks or applicable product safety requirements.
+          </p>
+        </div>
+      </section>
 
       <div className={activeCalculator === "resin" ? "block" : "hidden"}>
       <div className="mx-auto grid max-w-6xl gap-7 px-4 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
