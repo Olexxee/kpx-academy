@@ -79,6 +79,25 @@ export interface SouvenirPriceTier {
   active?: boolean;
 }
 
+export interface SouvenirPricingBand {
+  id: string;
+  version: number;
+  minQuantity: number;
+  maxQuantity: number | null;
+  label: string;
+  unitPrice: string | number;
+  currency: string;
+}
+
+export interface SouvenirPricingSchedule {
+  productId: string;
+  productName: string;
+  version: number;
+  isValid: boolean;
+  isPublished: boolean;
+  bands: SouvenirPricingBand[];
+}
+
 export interface SouvenirProduct {
   id: string;
   name: string;
