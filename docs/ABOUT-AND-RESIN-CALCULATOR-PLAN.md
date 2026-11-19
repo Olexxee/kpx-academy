@@ -1,9 +1,9 @@
-# KPX Academy: About Page and Resin Calculator Delivery Plan
+# KPX Academy: About Page and Product Calculators Delivery Plan
 
-**Status:** Planning baseline  
+**Status:** Planning baseline; combined calculator implementation in PR #69  
 **Repository:** `Olexxee/kpx-academy`  
 **Base branch at planning:** `master`  
-**Scope:** About page content alignment and the Resin Planning & Cost Calculator  
+**Scope:** About page content alignment, Resin Planning & Cost Calculator, and Lip Care Formulation Calculator  
 **Source documents:** `The KPX Approach new.docx` and `KPX Calculator.docx`
 
 ## 1. Delivery strategy
@@ -11,7 +11,7 @@
 Deliver this work in two independent implementation pull requests, after this planning document is reviewed:
 
 1. **Track A — About page refresh.** Update the existing About page to reflect the approved November KPX Approach document.
-2. **Track B — Resin Planning & Cost Calculator.** Add a browser-only resin planning and costing tool with its own route and supporting guidance.
+2. **Track B — Product Calculators.** Add browser-only resin planning/costing and lip care formulation tools on one shared page and canonical URL.
 
 Track A is intentionally independent of Track B and should be completed first. Track B must not be bundled into the About page PR. The calculator work may be further divided into implementation commits or sub-phases, but it should remain one coherent feature PR unless scope or review risk justifies splitting it.
 
@@ -65,13 +65,13 @@ Bring the existing `/about` page into alignment with *The KPX Approach new.docx*
 
 ### Objective
 
-Build a dedicated, beginner-friendly calculator that estimates mould material requirements, resin/hardener quantities, project costs and optional selling-price outcomes.
+Build a beginner-friendly calculator page with a resin planning/costing tool and a separate lip care formulation calculator, both running entirely in the visitor's browser.
 
 ### Product boundaries
 
-- Deliver the **Resin Planning & Cost Calculator only** in this track.
-- The source requirements also describe a Lip Care Formulation Calculator. It is explicitly deferred; do not build it, expose an inactive option, or imply it is available.
-- A future calculator landing page may be added only if it has a real, working destination for the resin tool. Do not publish a dead-end Lip Care tile.
+- The original plan deferred the Lip Care Formulation Calculator. The owner has now authorized it as part of PR #69.
+- Both calculators share the existing `/calculators/resin` page. Use an in-page switch; do not add a second route or a second canonical SEO page.
+- The Lip Care calculator is arithmetic-only: no recipe generation, ingredient recommendations, or preloaded percentages.
 - Calculations must run in the visitor's browser.
 - Do not add a backend endpoint, database table, account requirement, analytics payload, remote persistence or server submission for calculator inputs.
 - Do not store visitor entries in local storage/session storage unless a later explicit product decision changes this privacy boundary.
@@ -152,7 +152,7 @@ Example: four cavities, 20 ml per cavity and five ordered pieces require 100 ml 
 - Optional selling price per piece.
 - Results must include material estimates, each cost category, total order cost, piece count, cost per piece, and (when a selling price is supplied) sales value and estimated profit per piece/order.
 - Clearly flag a proposed selling price below estimated cost per piece.
-- Include reset and browser-based print/download summary where feasible.
+- Include reset. Keep results visible and easy to review on the page; print/download is not part of the requested user experience.
 - Include the exact disclaimer from the source requirements.
 
 ### Colour combination guide
@@ -219,7 +219,7 @@ Preserve the source's manufacturer-first wording. Include PPE, ventilation, labe
 - Colour guide works independently of the cost calculator.
 - Safety/working-condition panels are accessible and preserve manufacturer/SDS caveats.
 - Reset clears all user-entered calculator state.
-- Print/download output is generated locally in the browser.
+- Results remain visible on the page; no print/download workflow is required.
 - No calculator inputs are sent to or stored by the backend.
 - Responsive layout works on mobile, tablet and desktop.
 - Unit tests cover geometry, unit conversion, ratio splitting, density validation, partial production rounds, extra allowance, purchase costs, expense aggregation, mould allocation and profit calculations.
@@ -237,23 +237,36 @@ Before opening the implementation PR:
 6. Confirm no calculator request is made to the API and no input is persisted.
 7. Record actual test commands and outcomes in the PR description. Do not report a check as passing unless it was run and passed.
 
-## 5. Out of scope / deferred
+## 5. Lip Care Formulation Calculator requirements
 
-- Lip Care Formulation Calculator and any formulation or recipe recommendations.
+- Product types: Lip Gloss, Lip Balm and Lip Scrub only. Do not add pink lip cream.
+- Product selection is a label only; it must not load or modify a formula.
+- User supplies total batch size in grams and any number of ingredient rows. Each row contains an ingredient name and percentage.
+- Calculate each ingredient weight as `batchSizeGrams × percentage / 100`.
+- Show total percentage, remaining percentage below 100%, and overage above 100%.
+- Only show a valid formulation result when batch size is positive, each row is named, percentages are in range and the total is 100% (allowing only floating-point rounding tolerance).
+- Support adding, removing, editing and resetting ingredient rows. Results update as values change.
+- Show product label, batch size, ingredient names, percentages, calculated grams and total ingredient weight.
+- Include the exact disclaimer: “This calculator performs mathematical formulation calculations only. It does not create, verify or approve recipes. Always use a properly verified formulation and check ingredient suitability, usage limits, compatibility, preservation requirements and applicable product safety standards before preparing or selling lip care products.”
+- Do not send or persist visitor inputs; no backend/API/database or browser storage.
+
+## 6. Out of scope / deferred
+
+- Formulation/recipe generation, ingredient recommendations, and manufacturer-specific ingredient libraries.
 - Backend, database, authentication, saved projects or cloud calculation history.
 - Manufacturer-specific resin catalogue or preloaded density database.
 - Automatic density inference or assumed 1 ml = 1 g conversion.
 - New training, payment, souvenir or workshop workflows.
 - Changes to admin-managed founder content APIs beyond preserving the existing About-page integration.
 
-## 6. Pull request plan
+## 7. Pull request plan
 
 | PR | Scope | Dependency | Merge gate |
 |---|---|---|---|
 | PR A — Refresh About page using the approved KPX Approach | About content/layout/metadata only | This planning baseline | Review content against source; founder integration preserved; CI passes |
-| PR B — Add Resin Planning & Cost Calculator | Dedicated route, UI, pure calculation engine, colour/safety guides, navigation/metadata, tests | Can start after PR A is reviewed; should branch from the updated base after PR A merges to avoid overlap | Formula tests, privacy check, responsive review and CI pass |
+| PR B — Add shared Product Calculators page | Resin and Lip Care calculators on the existing route, pure calculation engines, resin colour/safety guides, shared SEO metadata, sitemap and tests | PR A reviewed; owner-approved lip care scope | Formula tests, privacy check, responsive review and CI pass |
 
-## 7. Progress tracker
+## 8. Progress tracker
 
 - [x] Review the approved About-page source document.
 - [x] Review the calculator functional requirements.
@@ -261,5 +274,6 @@ Before opening the implementation PR:
 - [x] Separate About refresh and Resin Calculator into independent tracks.
 - [ ] Merge this planning document.
 - [ ] Implement and review PR A — About page refresh.
-- [ ] Implement and review PR B — Resin calculator.
+- [x] Implement PR #69 — shared Resin and Lip Care calculators (open; CI/review pending).
+- [ ] Owner review and merge PR #69.
 - [ ] Verify production behaviour after owner-controlled merges.
