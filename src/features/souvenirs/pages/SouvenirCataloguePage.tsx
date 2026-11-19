@@ -28,7 +28,7 @@ export const SouvenirCataloguePage = () => {
       image={siteImages.souvenirs}
       actions={
         <Link to="/souvenirs/enquire" className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-[#17324D] transition hover:bg-[#FAF8F5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-          Request a custom design
+          Start a souvenir enquiry
         </Link>
       }
     />
@@ -42,6 +42,20 @@ export const SouvenirCataloguePage = () => {
       : !data?.length ? <div className="mt-10 rounded-card border border-border bg-white p-10 text-center"><h3 className="font-heading text-xl font-bold text-primary">New packages are coming soon.</h3><p className="mt-3 leading-7 text-text-muted">You can still send us a custom request and describe the souvenir you need.</p><Link to="/souvenirs/enquire" className="mt-5 inline-flex rounded-control bg-secondary px-5 py-3 font-semibold text-white hover:bg-primary">Request a custom design</Link></div>
       : <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{data.map((product)=><SouvenirCard key={product.id} product={product}/>)}</div>}
     </Container></section>
+    <section aria-labelledby="souvenir-enquiry-heading" className="pb-14 sm:pb-20">
+      <Container>
+        <div className="flex flex-col gap-5 rounded-card border border-border bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-secondary">Planning a celebration or event?</p>
+            <h2 id="souvenir-enquiry-heading" className="mt-2 font-heading text-2xl font-bold text-primary sm:text-3xl">Let's plan your souvenirs.</h2>
+            <p className="mt-3 text-sm leading-7 text-text-muted">Share the occasion, quantity, colour preferences and any custom requirements. Our souvenir enquiry form gives us the details needed to review your request and respond.</p>
+          </div>
+          <Link to="/souvenirs/enquire" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-control bg-secondary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2">
+            Book / enquire about souvenirs <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </Container>
+    </section>
   </div>;
 };
 
