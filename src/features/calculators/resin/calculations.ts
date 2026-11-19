@@ -113,10 +113,10 @@ function ratioParts(ratio: Ratio): [number, number] {
 }
 
 export function calculateResinProject(input: ResinCalculatorInput): ResinCalculationResult {
-  if (!Number.isInteger(input.cavities) || input.cavities < 1) {
+  if (!Number.isSafeInteger(input.cavities) || input.cavities < 1) {
     throw new CalculationInputError("Number of cavities must be a whole number greater than zero.");
   }
-  if (!Number.isInteger(input.pieces) || input.pieces < 1) {
+  if (!Number.isSafeInteger(input.pieces) || input.pieces < 1) {
     throw new CalculationInputError("Number of pieces must be a whole number greater than zero.");
   }
   if (!finiteNonNegative(input.allowancePercent)) {
@@ -145,6 +145,9 @@ export function calculateResinProject(input: ResinCalculatorInput): ResinCalcula
   const baseVolumeMl = cavityVolumeMl * input.pieces;
   const allowanceVolumeMl = baseVolumeMl * (input.allowancePercent / 100);
   const totalVolumeMl = baseVolumeMl + allowanceVolumeMl;
+  if (![baseVolumeMl, allowanceVolumeMl, totalVolumeMl].every(Number.isFinite)) {
+    throw new CalculationInputError("The requested order is too large to calculate safely. Check the dimensions and piece count.");
+  }
 
   let totalMixedQuantity = totalVolumeMl;
   if (input.ratioBasis === "weight") {
@@ -172,6 +175,9 @@ export function calculateResinProject(input: ResinCalculatorInput): ResinCalcula
   }
   const mouldAllocationCost = input.mouldPurchaseCost * allocationPercent / 100;
   const totalOrderCost = resinCost + hardenerCost + expensesTotal + mouldAllocationCost;
+  if (![totalMixedQuantity, resinQuantity, hardenerQuantity, resinCost, hardenerCost, mouldAllocationCost, totalOrderCost].every(Number.isFinite)) {
+    throw new CalculationInputError("The entered quantities or prices are too large to calculate safely. Check your inputs.");
+  }
   const costPerPiece = totalOrderCost / input.pieces;
   const hasSellingPrice = input.sellingPricePerPiece !== undefined;
   const totalSales = hasSellingPrice ? input.sellingPricePerPiece! * input.pieces : undefined;
