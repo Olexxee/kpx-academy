@@ -14,6 +14,7 @@ const navigation = [
   { label: "Souvenirs", to: "/souvenirs" },
   { label: "Gallery", to: "/gallery" },
   { label: "Resources", to: "/resources" },
+  { label: "Calculators", to: "/calculators/resin" },
   { label: "Certificates", to: "/certificates" },
 ];
 
@@ -33,9 +34,10 @@ const ctaClass =
   "focus-visible:ring-secondary focus-visible:ring-offset-2";
 
 export const SiteHeader = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mobileMenuPath, setMobileMenuPath] = useState<string | null>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
+  const isMobileMenuOpen = mobileMenuPath === location.pathname;
   const branding = useQuery({ queryKey: ["site-content", "branding"], queryFn: getSiteBranding, staleTime: 5 * 60 * 1000 });
 
   useEffect(() => {
@@ -46,15 +48,11 @@ export const SiteHeader = () => {
   }, [branding.data?.logoUrl]);
 
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
     if (!isMobileMenuOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsMobileMenuOpen(false);
+        setMobileMenuPath(null);
         mobileMenuButtonRef.current?.focus();
       }
     };
@@ -104,7 +102,7 @@ export const SiteHeader = () => {
             ref={mobileMenuButtonRef}
             type="button"
             className="inline-flex h-11 w-11 items-center justify-center rounded-control text-primary transition-colors hover:bg-accent-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 lg:hidden"
-            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            onClick={() => setMobileMenuPath(isMobileMenuOpen ? null : location.pathname)}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
             aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}

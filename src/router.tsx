@@ -68,6 +68,7 @@ const ResourcesPage = lazy(() => import("./pages/ResourcesPage"));
 const ResourceReaderPage = lazy(() => import("./pages/ResourceReaderPage"));
 const GalleryPage = lazy(() => import("./pages/GalleryPage"));
 const FaqPage = lazy(() => import("./pages/FaqPage"));
+const ResinCalculatorPage = lazy(() => import("./features/calculators/resin/ResinCalculatorPage"));
 
 // Administrator-only modules remain independently split from public routes.
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"));
@@ -100,6 +101,7 @@ const routeDefinitions = [
       { path: "/resources/:slug", element: <ResourceReaderPage /> },
       { path: "/gallery", element: <GalleryPage /> },
       { path: "/faq", element: <FaqPage /> },
+      { path: "/calculators/resin", element: <ResinCalculatorPage /> },
       { path: "/payment/success", element: <PaymentSuccessPage /> },
       { path: "/payment/failed", element: <PaymentFailedPage /> },
       { path: "/workshops/book", element: <WorkshopBookingPage /> },
