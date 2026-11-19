@@ -179,6 +179,7 @@ export function calculateResinProject(input: ResinCalculatorInput): ResinCalcula
     ? totalVolumeMl * input.mixedSystemDensity!
     : totalVolumeMl;
   const ratioTotal = input.resinRatioParts + input.hardenerRatioParts;
+  if (!positive(ratioTotal)) throw new CalculationInputError("The combined resin and hardener ratio parts are too large to calculate safely.");
   const resinQuantity = totalMixedQuantity * input.resinRatioParts / ratioTotal;
   const hardenerQuantity = totalMixedQuantity * input.hardenerRatioParts / ratioTotal;
 
