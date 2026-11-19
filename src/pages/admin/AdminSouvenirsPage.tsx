@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Save, Eye, EyeOff, Trash2, Star, X } from "lucide-react";
-import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, updateAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, uploadAdminSouvenirProductMedia, updateAdminSouvenirProductMedia, deleteAdminSouvenirProductMedia, deleteAdminSouvenirProduct, archiveAdminSouvenirProduct, restoreAdminSouvenirProduct } from "../../features/souvenirs/api";
+import { getAdminSouvenirProducts, createAdminSouvenirProduct, updateAdminSouvenirProduct, setAdminSouvenirProductActive, createAdminSouvenirPriceTier, updateAdminSouvenirPriceTier, setAdminSouvenirPriceTierActive, deleteAdminSouvenirPriceTier, uploadAdminSouvenirProductMedia, updateAdminSouvenirProductMedia, deleteAdminSouvenirProductMedia, deleteAdminSouvenirProduct, archiveAdminSouvenirProduct, restoreAdminSouvenirProduct } from "../../features/souvenirs/api";
 import type { SouvenirProduct } from "../../features/souvenirs/types";
 import AdminSouvenirEnquiries from "./AdminSouvenirEnquiries";
 
@@ -27,7 +27,7 @@ export default function AdminSouvenirsPage() {
     mutationFn: ({ productId, data }: { productId: string; data: { label: string; minQuantity: number; maxQuantity: number | null; unitPrice: number; currency: string; displayOrder: number } }) => createAdminSouvenirPriceTier(productId, data),
     onSuccess: async () => { setNotice("Price tier saved and activated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
   });
-  const updateTier = useMutation({ mutationFn: ({ id, data }: { id: string; data: { unitPrice: number } }) => updateAdminSouvenirPriceTier(id, data), onSuccess: async () => { setNotice("Per-piece rate saved."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });
+  const updateTier = useMutation({ mutationFn: ({ id, data }: { id: string; data: { label?: string; minQuantity?: number; maxQuantity?: number | null; unitPrice?: number } }) => updateAdminSouvenirPriceTier(id, data), onSuccess: async () => { setNotice("Price tier updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });\n  const deleteTier = useMutation({ mutationFn: (id: string) => deleteAdminSouvenirPriceTier(id), onSuccess: async () => { setNotice("Unreferenced price tier deleted."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); } });
   const toggleTier = useMutation({
     mutationFn: ({ id, active }: { id: string; active: boolean }) => setAdminSouvenirPriceTierActive(id, active),
     onSuccess: async () => { setNotice("Price tier status updated."); await client.invalidateQueries({ queryKey: ["souvenirs"] }); },
@@ -129,9 +129,16 @@ export default function AdminSouvenirsPage() {
               {(product.priceTiers ?? []).map((tier) => <div key={tier.id} className="border-b border-slate-200 py-3 last:border-0">
                 <div className="flex flex-wrap items-center justify-between gap-2"><div className="min-w-0"><p className="text-sm font-medium text-slate-800">{tier.label} · {tier.minQuantity}{tier.maxQuantity == null ? "+" : "–" + tier.maxQuantity} units</p><p className="text-xs text-slate-500">{tier.unitPrice == null ? "Needs per-piece rate" : `${tier.currency} ${Number(tier.unitPrice).toLocaleString()} per piece`} · {tier.active === false ? "Inactive" : "Active"}</p></div>
                   <button type="button" disabled={toggleTier.isPending || tier.unitPrice == null} onClick={() => toggleTier.mutate({ id: tier.id, active: tier.active === false })} className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 disabled:opacity-50">{tier.active === false ? "Activate" : "Deactivate"}</button></div>
-                <form className="mt-2 flex gap-2" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); updateTier.mutate({ id: tier.id, data: { unitPrice: Number(form.get("unitPrice")) } }); }}>
-                  <input name="unitPrice" aria-label="Unit price per piece" required type="number" min="0.01" step="0.01" defaultValue={tier.unitPrice ?? ""} placeholder="Unit price per piece (NGN)" className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]"/>
+                <form className="mt-2 grid gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); updateTier.mutate({ id: tier.id, data: { unitPrice: Number(form.get("unitPrice")) } }); }}>
+                  <input name="unitPrice" aria-label="Unit price per piece" required type="number" min="0.01" step="0.01" defaultValue={tier.unitPrice ?? ""} placeholder="Unit price (NGN)" className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#1D4ED8]"/>
                   <button type="submit" disabled={updateTier.isPending} className="rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700">Save rate</button>
+                  <button type="button" disabled={deleteTier.isPending} onClick={() => { if (window.confirm(`Delete price tier "${tier.label}"? Historical orders that reference it will block deletion. If it is still referenced, deactivate it instead.`)) deleteTier.mutate(tier.id); }} className="rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-700 disabled:opacity-50">Delete tier</button>
+                </form>
+                <form className="mt-2 grid gap-2 sm:grid-cols-3" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); updateTier.mutate({ id: tier.id, data: { label: String(form.get("label")).trim(), minQuantity: Number(form.get("minQuantity")), maxQuantity: String(form.get("maxQuantity") || "").trim() ? Number(form.get("maxQuantity")) : null } }); }}>
+                  <input name="label" aria-label="Tier label" required defaultValue={tier.label} className={field}/>
+                  <input name="minQuantity" aria-label="Minimum quantity" required type="number" min="1" defaultValue={tier.minQuantity} className={field}/>
+                  <input name="maxQuantity" aria-label="Maximum quantity" type="number" min="1" defaultValue={tier.maxQuantity ?? ""} placeholder="No upper limit" className={field}/>
+                  <button type="submit" disabled={updateTier.isPending} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 sm:col-span-3">Save range and label</button>
                 </form>
               </div>)}
               <form className="mt-3 grid gap-2 sm:grid-cols-2" onSubmit={(event) => {
@@ -154,7 +161,7 @@ export default function AdminSouvenirsPage() {
                 <input type="hidden" name="currency" value="NGN" />
                 <button type="submit" disabled={createTier.isPending} className="rounded-xl bg-[#1D4ED8] px-3 py-2.5 text-xs font-semibold text-white disabled:opacity-50">{createTier.isPending ? "Saving tier…" : "Add active tier"}</button>
               </form>
-              {(createTier.isError || toggleTier.isError || updateTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error ?? toggleTier.error ?? updateTier.error)?.message || "Could not update pricing."}</p>}
+              {(createTier.isError || toggleTier.isError || updateTier.isError || deleteTier.isError) && <p role="alert" className="mt-2 text-xs text-red-700">{(createTier.error ?? toggleTier.error ?? updateTier.error ?? deleteTier.error)?.message || "Could not update pricing."}</p>}
             </div>
           </article>)}
           {!products.data?.length && <p className="py-8 text-sm text-slate-500">No souvenir packages yet. Create the first one.</p>}
