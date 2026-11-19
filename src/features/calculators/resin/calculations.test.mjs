@@ -53,12 +53,22 @@ test("splits volume by the selected resin-to-hardener ratio", () => {
   assert.equal(result.hardenerQuantity, 2);
 });
 
+test("supports all listed resin-to-hardener ratios", () => {
+  const dimensions = { ...base, shape: "rectangle", length: 2, width: 3, depth: 1, pieces: 1 };
+  const equal = calculateResinProject({ ...dimensions, ratio: "1:1" });
+  const threeToOne = calculateResinProject({ ...dimensions, ratio: "3:1" });
+  assert.equal(equal.resinQuantity, 3);
+  assert.equal(equal.hardenerQuantity, 3);
+  assert.equal(threeToOne.resinQuantity, 4.5);
+  assert.equal(threeToOne.hardenerQuantity, 1.5);
+});
+
 test("requires manufacturer density for weight basis and converts total mix mass", () => {
   assert.throws(() => calculateResinProject({ ...base, ratioBasis: "weight" }), CalculationInputError);
   const result = calculateResinProject({ ...base, shape: "rectangle", length: 2, width: 3, depth: 1, pieces: 1, ratioBasis: "weight", mixedSystemDensity: 1.2 });
-  assert.equal(result.totalMixedQuantity, 7.2);
-  assert.equal(result.resinQuantity, 4.8);
-  assert.equal(result.hardenerQuantity, 2.4);
+  assert.ok(Math.abs(result.totalMixedQuantity - 7.2) < 1e-10);
+  assert.ok(Math.abs(result.resinQuantity - 4.8) < 1e-10);
+  assert.ok(Math.abs(result.hardenerQuantity - 2.4) < 1e-10);
 });
 
 test("applies allowance and mould allocation to project cost", () => {
