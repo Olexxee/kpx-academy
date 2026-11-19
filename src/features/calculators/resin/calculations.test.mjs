@@ -65,6 +65,7 @@ test("supports all listed resin-to-hardener ratios", () => {
 
 test("requires manufacturer density for weight basis and converts total mix mass", () => {
   assert.throws(() => calculateResinProject({ ...base, ratioBasis: "weight" }), CalculationInputError);
+  assert.throws(() => calculateResinProject({ ...base, ratioBasis: "weight", mixedSystemDensity: 0 }), CalculationInputError);
   const result = calculateResinProject({ ...base, shape: "rectangle", length: 2, width: 3, depth: 1, pieces: 1, ratioBasis: "weight", mixedSystemDensity: 1.2 });
   assert.ok(Math.abs(result.totalMixedQuantity - 7.2) < 1e-10);
   assert.ok(Math.abs(result.resinQuantity - 4.8) < 1e-10);
@@ -76,6 +77,11 @@ test("applies allowance and mould allocation to project cost", () => {
   assert.ok(Math.abs(result.totalVolumeMl - 6.6) < 1e-10);
   assert.equal(result.mouldAllocationCost, 1000);
   assert.equal(result.expensesTotal, 0);
+});
+
+test("supports a custom mould allocation percentage", () => {
+  const result = calculateResinProject({ ...base, shape: "rectangle", length: 2, width: 3, depth: 1, pieces: 1, mouldAllocation: "custom", customMouldAllocationPercent: 7.5 });
+  assert.equal(result.mouldAllocationCost, 750);
 });
 
 test("calculates expense totals, cost per piece and profit", () => {
