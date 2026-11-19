@@ -178,7 +178,10 @@ function FeaturedProgrammeCard({ program }: { program: TrainingProgram }) {
           </Link>
         </h3>
 
-        <p className="mt-3 flex-1 text-sm leading-7 text-text-muted">
+        <p
+          title={program.shortDescription || undefined}
+          className="mt-3 line-clamp-3 flex-1 text-sm leading-6 text-text-muted"
+        >
           {program.shortDescription ||
             "Explore this programme to learn more about its content and training details."}
         </p>
