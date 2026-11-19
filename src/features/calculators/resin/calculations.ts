@@ -109,7 +109,7 @@ export function calculateCavityVolumeMl(input: Pick<ResinCalculatorInput,
 
 function ratioParts(ratio: Ratio): [number, number] {
   const [resin, hardener] = ratio.split(":").map(Number);
-  return [resin, hardener];
+  return [resin, hardener] as [number, number];
 }
 
 export function calculateResinProject(input: ResinCalculatorInput): ResinCalculationResult {
