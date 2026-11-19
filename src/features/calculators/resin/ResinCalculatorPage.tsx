@@ -1,6 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calculator, Printer, RotateCcw, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Calculator, RotateCcw, ShieldCheck } from "lucide-react";
+import LipCareCalculator from "../lip-care/LipCareCalculator";
 import {
   calculateResinProject,
   type MouldShape,
@@ -117,6 +118,7 @@ function ResultLine({ label, value, strong = false }: { label: string; value: st
 }
 
 export default function ResinCalculatorPage() {
+  const [activeCalculator, setActiveCalculator] = useState<"resin" | "lip-care">("resin");
   const [values, setValues] = useState<FormValues>(initialValues);
   const [colourA, setColourA] = useState("Red");
   const [colourB, setColourB] = useState("Yellow");
@@ -189,15 +191,23 @@ export default function ResinCalculatorPage() {
           </Link>
           <div className="mt-8 max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D4A85A]">KPX Academy · Practical project planning</p>
-            <h1 className="mt-3 font-heading text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">Resin Planning & Cost Calculator</h1>
+            <h1 className="mt-3 font-heading text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">Practical Product Calculators</h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/80">
-              Estimate mould capacity, resin and hardener quantities, production costs and a workable selling price before you begin.
+              Plan resin projects or calculate the weights in your own lip care formulation. Results update as you enter your figures.
             </p>
             <p className="mt-3 text-sm text-white/65">All calculations run in this browser. Your entries are not saved or sent to KPX Academy.</p>
           </div>
         </div>
       </div>
 
+      <div className="mx-auto max-w-6xl px-4 pt-6">
+        <div className="grid grid-cols-2 gap-2 rounded-2xl border border-[#e2e7e8] bg-white p-2 shadow-sm" role="tablist" aria-label="Choose a calculator">
+          <button type="button" role="tab" aria-selected={activeCalculator === "resin"} onClick={() => setActiveCalculator("resin")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "resin" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Resin Calculator</button>
+          <button type="button" role="tab" aria-selected={activeCalculator === "lip-care"} onClick={() => setActiveCalculator("lip-care")} className={`min-h-12 rounded-xl px-3 py-3 text-sm font-semibold transition ${activeCalculator === "lip-care" ? "bg-[#17324D] text-white shadow-sm" : "text-[#52616a] hover:bg-[#f1f6f5]"}`}>Lip Care Formulation</button>
+        </div>
+      </div>
+
+      {activeCalculator === "resin" ? (
       <div className="mx-auto grid max-w-6xl gap-7 px-4 pt-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start">
         <div className="space-y-6">
           <Section number="01" title="Project Information" description="Name your project and tell us how many finished pieces you need.">
@@ -355,9 +365,6 @@ export default function ResinCalculatorPage() {
                     {result.isSellingPriceBelowCost && <p className="mt-3 text-sm font-semibold text-red-800">Your proposed selling price is below the estimated cost per piece. You would make a loss at this price.</p>}
                   </div>
                 )}
-                <button type="button" onClick={() => window.print()} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#17324D] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2A7F7F]">
-                  <Printer size={16} aria-hidden="true" /> Print calculation summary
-                </button>
                 <p className="text-xs leading-5 text-[#64717a]">These figures are estimates based on the information entered. Actual material usage and costs may vary depending on the resin brand, mould design, working conditions, material prices and production method. Review your estimates before accepting an order or quoting a customer.</p>
               </div>
             ) : (
@@ -377,6 +384,19 @@ export default function ResinCalculatorPage() {
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-24">
+          <div className="rounded-2xl bg-[#17324D] p-5 text-white shadow-sm" aria-live="polite">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#D4A85A]">Live estimate</p>
+            {result ? (
+              <div className="mt-3 space-y-3">
+                <div><p className="text-xs text-white/65">Estimated order cost</p><p className="mt-1 text-2xl font-bold tabular-nums">{money(result.totalOrderCost)}</p></div>
+                <div className="grid grid-cols-2 gap-3 border-t border-white/15 pt-3">
+                  <div><p className="text-xs text-white/65">Material required</p><p className="mt-1 text-lg font-semibold tabular-nums">{quantity(result.totalMixedQuantity)} {unitLabel}</p></div>
+                  <div><p className="text-xs text-white/65">Cost per piece</p><p className="mt-1 text-lg font-semibold tabular-nums">{money(result.costPerPiece)}</p></div>
+                </div>
+                <p className="text-xs leading-5 text-white/65">This summary updates as you change your inputs. Full breakdown appears in Calculation Results.</p>
+              </div>
+            ) : <p className="mt-3 text-sm leading-6 text-white/75">{calculation.error}</p>}
+          </div>
           <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-[#e2e7e8]">
             <div className="flex items-center gap-2 text-[#2A7F7F]"><Calculator size={18} aria-hidden="true" /><h2 className="font-heading font-semibold text-[#17324D]">Quick planning notes</h2></div>
             <ul className="mt-4 space-y-3 text-sm leading-6 text-[#52616a]">
@@ -437,6 +457,11 @@ export default function ResinCalculatorPage() {
           </Section>
         </div>
       </div>
+      ) : (
+        <div className="mx-auto max-w-6xl px-4 pt-8">
+          <LipCareCalculator />
+        </div>
+      )}
     </div>
   );
 }
