@@ -51,6 +51,38 @@ const slugify = (value: string) =>
 const toDateInput = (value: string | null | undefined): string =>
   value ? value.slice(0, 10) : "";
 
+const getSubmitErrorMessage = (error: unknown): string => {
+  const responseData = (
+    error as {
+      response?: {
+        data?: {
+          message?: unknown;
+          details?: unknown;
+        };
+      };
+    }
+  )?.response?.data;
+
+  const message =
+    typeof responseData?.message === "string" ? responseData.message : "";
+  const details = Array.isArray(responseData?.details)
+    ? responseData.details
+        .map((detail) => {
+          if (typeof detail === "string") return detail;
+          if (detail && typeof detail === "object" && "message" in detail) {
+            return String(detail.message);
+          }
+          return "";
+        })
+        .filter(Boolean)
+    : [];
+
+  return (
+    [message, ...details].filter(Boolean).join(" ") ||
+    (error instanceof Error ? error.message : "Could not save this programme. Please try again.")
+  );
+};
+
 const isValidTelegramGroupUrl = (value: string): boolean => {
   try {
     const url = new URL(value);
@@ -143,6 +175,7 @@ export default function TrainingForm({ program, onClose }: Props) {
 
   const [form, setForm] = useState<TrainingProgramFormValues>(emptyForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState("");
   // Slug is auto-derived from title until the user types into it manually.
   // On edit, we start "locked" so we never clobber an existing slug.
   const [slugLocked, setSlugLocked] = useState(!!program);
@@ -163,6 +196,7 @@ export default function TrainingForm({ program, onClose }: Props) {
     field: K,
     value: TrainingProgramFormValues[K],
   ) => {
+    setSubmitError("");
     setForm((current) => ({ ...current, [field]: value }));
     setErrors((current) => {
       if (!current[field]) return current;
@@ -173,6 +207,7 @@ export default function TrainingForm({ program, onClose }: Props) {
   };
 
   const handleTitleChange = (value: string) => {
+    setSubmitError("");
     setForm((current) => ({
       ...current,
       title: value,
@@ -189,8 +224,20 @@ export default function TrainingForm({ program, onClose }: Props) {
   const validate = (): boolean => {
     const next: Record<string, string> = {};
 
-    if (!form.title.trim()) next.title = "Title is required";
-    if (form.price < 0) next.price = "Price cannot be negative";
+    const title = form.title.trim();
+    if (!title) next.title = "Title is required";
+    else if (title.length < 3) next.title = "Title must be at least 3 characters";
+    else if (title.length > 200) next.title = "Title cannot exceed 200 characters";
+
+    if (!Number.isFinite(form.price) || form.price <= 0) {
+      next.price = "Price must be greater than zero";
+    }
+    if (form.capacity !== null && (!Number.isInteger(form.capacity) || form.capacity <= 0)) {
+      next.capacity = "Capacity must be a positive whole number";
+    }
+    if (!Number.isInteger(form.displayOrder)) {
+      next.displayOrder = "Display order must be a whole number";
+    }
     if (form.telegramGroupUrl.trim() && !isValidTelegramGroupUrl(form.telegramGroupUrl.trim())) {
       next.telegramGroupUrl = "Enter a valid HTTPS Telegram group link (t.me or telegram.me).";
     }
@@ -214,13 +261,18 @@ export default function TrainingForm({ program, onClose }: Props) {
     event.preventDefault();
     if (!validate()) return;
 
+    setSubmitError("");
     const payload = toPayload(form);
-    if (program) {
-      await updateMutation.mutateAsync({ id: program.id, data: payload });
-    } else {
-      await createMutation.mutateAsync(payload);
+    try {
+      if (program) {
+        await updateMutation.mutateAsync({ id: program.id, data: payload });
+      } else {
+        await createMutation.mutateAsync(payload);
+      }
+      onClose();
+    } catch (error) {
+      setSubmitError(getSubmitErrorMessage(error));
     }
-    onClose();
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
@@ -250,12 +302,19 @@ export default function TrainingForm({ program, onClose }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 p-6">
+          {submitError && (
+            <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {submitError}
+            </div>
+          )}
           {/* ─── Basics ──────────────────────────────────────────── */}
           <Section index={1} title="Basics">
             <Field
               label="Title"
               value={form.title}
               required
+              minLength={3}
+              maxLength={200}
               error={errors.title}
               onChange={handleTitleChange}
             />
@@ -306,6 +365,7 @@ export default function TrainingForm({ program, onClose }: Props) {
                 onChange={(v) => setField("price", v ?? 0)}
                 error={errors.price}
                 required
+                min={0.01}
               />
 
               <div>
@@ -393,6 +453,7 @@ export default function TrainingForm({ program, onClose }: Props) {
                 value={form.capacity}
                 onChange={(v) => setField("capacity", v)}
                 hint="Leave empty for unlimited."
+                min={1}
                 integer
               />
             </div>
@@ -475,6 +536,7 @@ export default function TrainingForm({ program, onClose }: Props) {
                   value={form.displayOrder}
                   onChange={(v) => setField("displayOrder", v ?? 0)}
                   hint="Lower numbers appear first."
+                  error={errors.displayOrder}
                   integer
                 />
               </div>
@@ -550,6 +612,8 @@ function Field({
   value,
   type = "text",
   required,
+  minLength,
+  maxLength,
   placeholder,
   error,
   onChange,
@@ -558,6 +622,8 @@ function Field({
   value: string;
   type?: string;
   required?: boolean;
+  minLength?: number;
+  maxLength?: number;
   placeholder?: string;
   error?: string;
   onChange: (value: string) => void;
@@ -572,6 +638,9 @@ function Field({
         type={type}
         value={value}
         required={required}
+        minLength={minLength}
+        maxLength={maxLength}
+        aria-invalid={Boolean(error)}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className={error ? ERROR_INPUT_CLASS : INPUT_CLASS}
@@ -653,6 +722,7 @@ function NumberField({
   error,
   hint,
   required,
+  min,
   integer = false,
 }: {
   label: string;
@@ -661,6 +731,7 @@ function NumberField({
   error?: string;
   hint?: string;
   required?: boolean;
+  min?: number;
   integer?: boolean;
 }) {
   const [text, setText] = useState(
@@ -682,7 +753,9 @@ function NumberField({
       onChange(null);
       return;
     }
-    const parsed = integer ? Number.parseInt(raw, 10) : Number(raw);
+    const parsed = integer
+      ? (/^-?\\d+$/.test(raw) ? Number(raw) : Number.NaN)
+      : Number(raw);
     if (Number.isFinite(parsed)) {
       lastEmitted.current = parsed;
       onChange(parsed);
@@ -700,6 +773,9 @@ function NumberField({
         value={text}
         onChange={(e) => handleChange(e.target.value)}
         step={integer ? "1" : "any"}
+        min={min}
+        required={required}
+        aria-invalid={Boolean(error)}
         className={error ? ERROR_INPUT_CLASS : INPUT_CLASS}
       />
       {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
