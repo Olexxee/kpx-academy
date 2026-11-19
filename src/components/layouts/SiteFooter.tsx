@@ -8,7 +8,7 @@ const exploreLinks = [
   { label: "Home", to: "/" },
   { label: "About KPX Academy", to: "/about" },
   { label: "Training programmes", to: "/programs" },
-  { label: "Resin planning calculator", to: "/calculators/resin" },
+  { label: "Product calculators", to: "/calculators/resin" },
   { label: "Creative workshops", to: "/workshops/book" },
   { label: "Souvenir catalogue", to: "/souvenirs" },
   { label: "Certificates", to: "/certificates" },
