@@ -41,7 +41,7 @@ export const STATIC_PAGE_METADATA: Record<string, PageMetadata> = {
   "/calculators/resin": {
     title: "Resin Calculator & Lip Care Formulation | KPX Academy",
     description:
-      "Estimate resin volume, mixing quantities and project costs. Convert your own lip gloss, lip balm or lip scrub percentages into gram weights for your chosen batch size.",
+      "Estimate resin volume, production rounds, material costs and project profit. Calculate your own lip gloss, lip balm or lip scrub formulation by percentage or manual measurement.",
   },
   "/faq": {
     title: "KPX Academy FAQs | Courses, Registration & Payments",
