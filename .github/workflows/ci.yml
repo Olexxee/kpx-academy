@@ -20,5 +20,7 @@ jobs:
         run: npm ci
       - name: TypeScript and production build
         run: npm run build
+      - name: Resin calculator unit tests
+        run: npm test
       - name: ESLint on changed feature files
-        run: npx eslint src/api/siteContent.api.ts src/components/admin/AdminLayout.tsx src/components/layouts/SiteFooter.tsx src/pages/admin/AdminOrganizationPage.tsx src/pages/admin/AdminFaqPage.tsx src/pages/FaqPage.tsx src/router.tsx src/lib/seo.ts src/features/training/pages/ProgramDetailsPage.tsx src/pages/ResourceReaderPage.tsx src/features/souvenirs/pages/SouvenirProductPage.tsx src/components/admin/training/TrainingForm.tsx src/components/home/programmes/FeaturedProgrammes.tsx
+        run: npx eslint src/features/calculators/resin/ResinCalculatorPage.tsx src/features/calculators/resin/calculations.ts src/router.tsx src/lib/pageMetadata.ts src/components/layouts/SiteHeader.tsx src/components/layouts/SiteFooter.tsx src/api/siteContent.api.ts src/components/admin/AdminLayout.tsx src/components/layouts/SiteFooter.tsx src/pages/admin/AdminOrganizationPage.tsx src/pages/admin/AdminFaqPage.tsx src/pages/FaqPage.tsx src/router.tsx src/lib/seo.ts src/features/training/pages/ProgramDetailsPage.tsx src/pages/ResourceReaderPage.tsx src/features/souvenirs/pages/SouvenirProductPage.tsx src/components/admin/training/TrainingForm.tsx src/components/home/programmes/FeaturedProgrammes.tsx
