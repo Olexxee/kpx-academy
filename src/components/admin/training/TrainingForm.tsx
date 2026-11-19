@@ -173,24 +173,16 @@ export default function TrainingForm({ program, onClose }: Props) {
   const createMutation = useCreateTrainingProgram();
   const updateMutation = useUpdateTrainingProgram();
 
-  const [form, setForm] = useState<TrainingProgramFormValues>(emptyForm);
+  // The parent mounts this form only while it is open, so initialize directly
+  // from the selected programme instead of synchronizing props through an effect.
+  const [form, setForm] = useState<TrainingProgramFormValues>(() =>
+    program ? toFormValues(program) : emptyForm(),
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
   // Slug is auto-derived from title until the user types into it manually.
   // On edit, we start "locked" so we never clobber an existing slug.
   const [slugLocked, setSlugLocked] = useState(!!program);
-
-  useEffect(() => {
-    if (!program) {
-      setForm(emptyForm());
-      setSlugLocked(false);
-      setErrors({});
-      return;
-    }
-    setForm(toFormValues(program));
-    setSlugLocked(true);
-    setErrors({});
-  }, [program]);
 
   const setField = <K extends keyof TrainingProgramFormValues>(
     field: K,
