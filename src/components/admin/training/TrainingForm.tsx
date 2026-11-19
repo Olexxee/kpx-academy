@@ -754,7 +754,7 @@ function NumberField({
       return;
     }
     const parsed = integer
-      ? (/^-?\\d+$/.test(raw) ? Number(raw) : Number.NaN)
+      ? (/^-?\d+$/.test(raw) ? Number(raw) : Number.NaN)
       : Number(raw);
     if (Number.isFinite(parsed)) {
       lastEmitted.current = parsed;
