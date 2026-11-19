@@ -81,6 +81,7 @@ export default function AboutPage() {
         icon={Compass}
         image={siteImages.about}
         variant="split"
+        brandPalette="current"
         actions={
           <>
             <Link
