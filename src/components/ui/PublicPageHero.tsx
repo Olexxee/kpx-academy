@@ -13,6 +13,7 @@ type PublicPageHeroProps = {
   children?: ReactNode;
   actions?: ReactNode;
   className?: string;
+  brandPalette?: "legacy" | "current";
 };
 
 export function PublicPageHero({
@@ -27,6 +28,7 @@ export function PublicPageHero({
   actions,
   aside,
   className = "",
+  brandPalette = "legacy",
 }: PublicPageHeroProps) {
   const titleId = useId();
   const hasImage = (variant === "image" || variant === "split") && Boolean(image);
@@ -34,7 +36,7 @@ export function PublicPageHero({
   return (
     <header
       aria-labelledby={titleId}
-      className={`public-page-hero relative isolate overflow-hidden text-white ${hasImage ? "bg-[#07152F]" : "bg-[#17324D]"} ${className}`}
+      className={`public-page-hero relative isolate overflow-hidden text-white ${brandPalette === "current" ? "bg-[#1d4ed8]" : hasImage ? "bg-[#07152F]" : "bg-[#17324D]"} ${className}`}
     >
       {hasImage && image && (
         <>
@@ -46,8 +48,8 @@ export function PublicPageHero({
             loading="eager"
             fetchPriority="high"
           />
-          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07152F]/95 via-[#07152F]/85 to-[#07152F]/65" />
-          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-[#07152F]/35 to-transparent" />
+          <div aria-hidden="true" className={`absolute inset-0 -z-10 bg-gradient-to-r ${brandPalette === "current" ? "from-[#1d4ed8]/95 via-[#1d4ed8]/85 to-[#1d4ed8]/65" : "from-[#07152F]/95 via-[#07152F]/85 to-[#07152F]/65"}`} />
+          <div aria-hidden="true" className={`absolute inset-0 -z-10 bg-gradient-to-t ${brandPalette === "current" ? "from-[#1d4ed8]/35" : "from-[#07152F]/35"} to-transparent`} />
         </>
       )}
       <div className={`mx-auto w-full max-w-container px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20 ${variant === "split" && aside ? "grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14" : ""}`}>
