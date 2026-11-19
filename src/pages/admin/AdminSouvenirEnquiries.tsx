@@ -231,7 +231,7 @@ function EnquiryReview({
         )}
       </div>
 
-      {error && <p role="alert" className="text-sm text-red-700">{messageOf(error)}</p>}
+      {Boolean(error) && <p role="alert" className="text-sm text-red-700">{messageOf(error)}</p>}
     </div>
   );
 }
