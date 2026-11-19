@@ -135,3 +135,8 @@ export const setAdminSouvenirColorOptionActive = async (colorId: string, active:
   (await registrationApi.patch<Envelope<SouvenirProduct["colorOptions"][number]>>(
     `/souvenirs/admin/colors/${encodeURIComponent(colorId)}/status`, { active },
   )).data.data;
+
+export const deleteAdminSouvenirPriceTier = async (tierId: string) =>
+  (await registrationApi.delete<Envelope<{ id: string; deleted: boolean }>>(
+    `/souvenirs/admin/price-tiers/${encodeURIComponent(tierId)}`,
+  )).data.data;
