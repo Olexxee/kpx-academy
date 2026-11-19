@@ -4,6 +4,14 @@ import { ChevronDown, ChevronUp, Save } from "lucide-react";
 import { getAdminSouvenirOrders, updateAdminSouvenirOrder, type AdminSouvenirOrder } from "../../features/souvenirs/api";
 
 const statuses = ["SUBMITTED", "AWAITING_PAYMENT", "PAID", "IN_PRODUCTION", "READY", "FULFILLED", "CANCELLED", "REJECTED"];
+const nextStatuses: Record<string, string[]> = {
+  SUBMITTED: ["AWAITING_PAYMENT", "CANCELLED", "REJECTED"],
+  AWAITING_PAYMENT: ["CANCELLED", "REJECTED"],
+  PAID: ["IN_PRODUCTION", "CANCELLED"],
+  IN_PRODUCTION: ["READY", "CANCELLED"],
+  READY: ["FULFILLED"],
+  FULFILLED: [], CANCELLED: [], REJECTED: [],
+};
 const field = "mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#17324D]";
 const money = (value: number | string, currency = "NGN") => new Intl.NumberFormat("en-NG", { style: "currency", currency, maximumFractionDigits: 2 }).format(Number(value));
 const errorMessage = (error: unknown) => error instanceof Error ? error.message : "The request failed.";
@@ -23,7 +31,7 @@ export default function AdminSouvenirOrders() {
   const totalPages = Math.max(1, Math.ceil((query.data?.pagination.total ?? 0) / (query.data?.pagination.limit ?? 10)));
   return <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
     <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-bold text-slate-900">Souvenir orders</h2><p className="mt-1 text-sm text-slate-500">Review customer orders, payment state and production progress.</p></div>
-      <select aria-label="Filter orders by status" value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} className={field + " mt-0 w-auto"}><option value="">All statuses</option>{statuses.map((value) => <option key={value} value={value}>{value.replaceAll("_", " ")}</option>)}</select>
+      <select aria-label="Filter orders by status" value={status} onChange={(event) => { setStatus(event.target.value); setPage(1); }} className={field + " mt-0 w-auto"}><option value="">All statuses</option>{[item.status, ...(nextStatuses[item.status] ?? [])].map((value) => <option key={value} value={value}>{value.replaceAll("_", " ")}</option>)}</select>
     </div>
     {query.isLoading ? <p className="py-8 text-sm text-slate-500">Loading souvenir orders…</p> : query.isError ? <p role="alert" className="py-8 text-sm text-red-700">{errorMessage(query.error)}</p> : !items.length ? <p className="py-8 text-sm text-slate-500">No souvenir orders match this filter.</p> : <div className="mt-4 space-y-3">
       {items.map((item: AdminSouvenirOrder) => <OrderRow key={item.id} item={item} expanded={expanded === item.id} onToggle={() => setExpanded(expanded === item.id ? null : item.id)} notes={notes[item.id] ?? item.adminNotes ?? ""} setNotes={(value) => setNotes((current) => ({ ...current, [item.id]: value }))} onStatus={(next) => update.mutate({ id: item.id, payload: { status: next } })} onSaveNotes={() => update.mutate({ id: item.id, payload: { adminNotes: (notes[item.id] ?? item.adminNotes ?? "").trim() || null } })} pending={update.isPending} />)}
