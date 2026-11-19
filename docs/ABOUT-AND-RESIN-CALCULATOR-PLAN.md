@@ -61,7 +61,7 @@ Bring the existing `/about` page into alignment with *The KPX Approach new.docx*
 - Accessibility basics are maintained: semantic heading order, meaningful link text, image alternatives and visible focus states.
 - Build and CI pass.
 
-## 3. Track B — Resin Planning & Cost Calculator
+## 3. Track B — Product Calculators
 
 ### Objective
 
