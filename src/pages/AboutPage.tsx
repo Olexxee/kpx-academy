@@ -389,7 +389,7 @@ export default function AboutPage() {
               </p>
             </article>
             <article className="rounded-[1.75rem] border border-white/15 bg-white/[0.06] p-7 sm:p-10">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#8b1e5a] text-[#1d4ed8]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4dcd6] text-[#1d4ed8]">
                 <Lightbulb size={21} aria-hidden="true" />
               </span>
               <h3 className="mt-7 text-2xl font-semibold">Our Vision</h3>
