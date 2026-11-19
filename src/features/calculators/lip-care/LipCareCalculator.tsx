@@ -16,11 +16,13 @@ export default function LipCareCalculator() {
   const [ingredients, setIngredients] = useState<IngredientRow[]>([{ id: 1, name: "", percentage: 0 }]);
   const updateIngredient = (id: number, patch: Partial<LipCareIngredientInput>) =>
     setIngredients((current) => current.map((row) => row.id === id ? { ...row, ...patch } : row));
-  const addIngredient = () => setIngredients((current) => [...current, { id: nextId.current++, name: "", percentage: 0 }]);
-  const removeIngredient = (id: number) => setIngredients((current) => {
-    const remaining = current.filter((row) => row.id !== id);
-    return remaining.length ? remaining : [{ id: nextId.current++, name: "", percentage: 0 }];
-  });
+  const addIngredient = () => {
+    const id = nextId.current++;
+    setIngredients((current) => [...current, { id, name: "", percentage: 0 }]);
+  };
+  const removeIngredient = (id: number) => {
+    setIngredients((current) => current.filter((row) => row.id !== id));
+  };
   const reset = () => {
     setProduct("Lip Gloss");
     setBatchSize("100");
@@ -31,7 +33,7 @@ export default function LipCareCalculator() {
   const summary = getLipCarePercentageSummary(numericRows);
   const batchValue = batchSize.trim() === "" ? NaN : Number(batchSize);
   const hasNamedRows = ingredients.every((row) => row.name.trim().length > 0);
-  const canCalculate = Number.isFinite(batchValue) && batchValue > 0 && hasNamedRows
+  const canCalculate = Number.isFinite(batchValue) && batchValue > 0 && ingredients.length > 0 && hasNamedRows
     && ingredients.every((row) => Number.isFinite(row.percentage) && row.percentage >= 0 && row.percentage <= 100)
     && summary.isBalanced;
   const calculation = canCalculate ? calculateLipCareFormulation(batchValue, numericRows) : null;
