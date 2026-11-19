@@ -1,6 +1,6 @@
 import { registrationApi } from "../../lib/registrationApi";
 import { prepareUploadFiles } from "../../lib/fileCompression";
-import type { SouvenirEnquiryResult, SouvenirGuestEnquiry, SouvenirGuestOrder, SouvenirOrderResult, SouvenirProduct } from "./types";
+import type { SouvenirEnquiryResult, SouvenirGuestEnquiry, SouvenirGuestOrder, SouvenirOrderResult, SouvenirProduct, SouvenirPricingSchedule } from "./types";
 
 interface Envelope<T> { success: boolean; message?: string; data: T; }
 
@@ -45,6 +45,21 @@ export const respondToSouvenirQuote = async (token: string, quoteId: string, dec
   )).data;
 
  
+// Versioned, whole-schedule pricing administration.
+export const getAdminSouvenirPricingSchedule = async (productId: string): Promise<SouvenirPricingSchedule> =>
+  (await registrationApi.get<Envelope<SouvenirPricingSchedule>>(
+    `/souvenirs/admin/products/${encodeURIComponent(productId)}/pricing-schedule`,
+  )).data.data;
+
+export const replaceAdminSouvenirPricingSchedule = async (productId: string, payload: {
+  expectedVersion: number;
+  bands: Array<{ minQuantity: number; unitPrice: string }>;
+}): Promise<SouvenirPricingSchedule> =>
+  (await registrationApi.put<Envelope<SouvenirPricingSchedule>>(
+    `/souvenirs/admin/products/${encodeURIComponent(productId)}/pricing-schedule`,
+    payload,
+  )).data.data;
+
 // Authenticated catalogue administration.
 export const getAdminSouvenirProducts = async (): Promise<SouvenirProduct[]> =>
   (await registrationApi.get<Envelope<SouvenirProduct[]>>("/souvenirs/admin/products")).data.data;
