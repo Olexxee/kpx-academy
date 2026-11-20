@@ -28,5 +28,17 @@
       "source": "/(.*)",
       "destination": "/__spa-fallback.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/programs/kpx-1-on-1-live-resin-art-training",
+      "destination": "/programs/one-on-one-online-resin-training-nigeria",
+      "permanent": true
+    },
+    {
+      "source": "/programs/physical-resin-art-training-nigeria",
+      "destination": "/programs/physical-resin-art-training-ileife-osun-nigeria",
+      "permanent": true
+    }
   ]
 }
