@@ -116,6 +116,22 @@ async function loadFrameworkRouteData(request: Request) {
     return data;
   };
 
+  // Public API dependencies must not take down the whole route. In particular,
+  // programme details have their own query-level loading/error UI; a failed
+  // prerender/client-loader prefetch should fall back to that UI instead of
+  // surfacing an uncaught React Router application error.
+  const loadOptional = async <T,>(
+    key: readonly unknown[],
+    path: string,
+  ): Promise<T | undefined> => {
+    try {
+      return await load<T>(key, path);
+    } catch (error) {
+      console.warn(`[route-data] Optional public request failed: GET ${path}`, error);
+      return undefined;
+    }
+  };
+
   const isPublicContentPath =
     pathname === "/" ||
     pathname === "/about" ||
@@ -131,8 +147,8 @@ async function loadFrameworkRouteData(request: Request) {
 
   if (isPublicContentPath) {
     await Promise.all([
-      load(["site-content", "branding"], "/site-content/branding"),
-      load(["site-content", "organization"], "/site-content/organization"),
+      loadOptional(["site-content", "branding"], "/site-content/branding"),
+      loadOptional(["site-content", "organization"], "/site-content/organization"),
     ]);
   }
 
@@ -154,8 +170,9 @@ async function loadFrameworkRouteData(request: Request) {
 
   if (pathname.startsWith("/programs/")) {
     const slug = decodeURIComponent(pathname.slice("/programs/".length));
-    const programme = await load<{
+    const programme = await loadOptional<{
       id: string;
+      slug?: string;
       title?: string;
       shortDescription?: string | null;
       description?: string | null;
@@ -163,15 +180,15 @@ async function loadFrameworkRouteData(request: Request) {
       ["training", "detail", slug],
       `/training/slug/${encodeURIComponent(slug)}`,
     );
-    if (programme.title) {
+    if (programme?.title) {
       detailMetadata = getProgrammeMetadata(
         programme.title,
         programme.shortDescription || programme.description,
-        slug,
+        programme.slug || slug,
       );
     }
-    if (programme.id) {
-      await load(
+    if (programme?.id) {
+      await loadOptional(
         ["training", "media", programme.id],
         `/training/${encodeURIComponent(programme.id)}/media`,
       );
